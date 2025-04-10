@@ -1,0 +1,55 @@
+@use "../../styles/colors" as *;
+
+.modal {
+  &_title {
+    font-size: 32px;
+    line-height: 39px;
+    font-weight: 600;
+    margin-bottom: 32px;
+  }
+
+  &.location {
+    max-height: 675px;
+    padding: 42px 24px 24px;
+    & .cities {
+      display: grid;
+      grid-template-columns: repeat(3, max-content);
+      gap: 8px 48px;
+    }
+    & .city {
+      display: block;
+      text-align: left;
+    }
+  }
+  &.location .location_top {
+    position: relative;
+    margin-bottom: 24px;
+
+    & .searchBtn {
+      position: absolute;
+      top: 0;
+      right: 1px;
+    }
+
+    &::after {
+      content: "";
+      width: 16px;
+      height: 16px;
+      background: url(../../assets/search-icon.svg);
+      position: absolute;
+      top: 50%;
+      right: 93px;
+      transform: translateY(-50%);
+    }
+
+    & input {
+      width: 576px;
+      padding: 7.5px 16px;
+    }
+  }
+
+  &.auth {
+    width: 587px;
+    padding: 40px;
+  }
+}

@@ -1,0 +1,86 @@
+@use "../../styles/colors" as *;
+
+.header {
+  &_top {
+    margin-bottom: 22px;
+    padding: 6px 0;
+    background: $light-gray;
+  }
+  &_top__wrap {
+    max-width: 1272px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+  &_top ul {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    & a {
+      color: $primary-black;
+      font-size: 14px;
+      transition: color 0.3s ease;
+    }
+    & a:hover {
+      color: $red-color;
+    }
+  }
+  &_profileMenu,
+  &_profileMenu_left {
+    display: flex;
+    align-items: center;
+  }
+  &_profileMenu {
+    gap: 24px;
+  }
+  &_profileMenu_left {
+    gap: 12px;
+    & a {
+      flex-shrink: 0;
+    }
+  }
+  &_bottom,
+  &_search {
+    display: flex;
+    align-items: center;
+  }
+  &_bottom {
+    justify-content: space-between;
+  }
+  &_bottom.wrap {
+    width: 71%;
+  }
+  &_search {
+    position: relative;
+    margin: 0 24px;
+    max-width: 478px;
+    min-width: 350px;
+    width: 100%;
+    &::before {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 15px;
+      height: 15px;
+      background: url(../../assets/search-icon.svg);
+    }
+    & input {
+      width: 100%;
+      padding: 7px 77px 7px 31px;
+    }
+    & .searchBtn {
+      height: 96%;
+      position: absolute;
+      right: 1px;
+    }
+  }
+  & .locationBtn {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+  }
+}

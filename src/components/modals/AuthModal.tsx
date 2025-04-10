@@ -1,0 +1,35 @@
+import { RadioButton } from "../../ui-components/RadioButton/RadioButton";
+import styles from "./Modals.module.scss";
+
+export const AuthModal = () => {
+  return (
+    <div className={`${styles.modal} ${styles.auth}`}>
+      <h2 className={styles.modal_title}>Для чего нужен профиль?</h2>
+      <div className={styles.choice}>
+        <RadioButton
+          label="Я арендую авто"
+          name="profileType"
+          value="1"
+          labelStyle={{
+            fontSize: "24px",
+            lineHeight: "29px",
+            fontWeight: 600,
+            paddingLeft: "40px",
+            marginBottom: "16px",
+          }}
+        />
+        <RadioButton
+          label=" Я сдаю авто в аренду"
+          name="profileType"
+          value="2"
+          labelStyle={{
+            fontSize: "24px",
+            lineHeight: "29px",
+            fontWeight: 600,
+            paddingLeft: "40px",
+          }}
+        />
+      </div>
+    </div>
+  );
+};
