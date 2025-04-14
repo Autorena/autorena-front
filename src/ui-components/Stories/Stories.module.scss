@@ -1,0 +1,29 @@
+@use "../../styles/colors" as *;
+
+.stories {
+  margin: 40px 0 22px;
+}
+.story {
+  &_title {
+    font-weight: 500;
+    line-height: 112%;
+  }
+  &_img {
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    overflow: hidden;
+    &_wrapper {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 2px solid $red-color;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin-bottom: 12px;
+    }
+  }
+}

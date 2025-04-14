@@ -26,7 +26,7 @@ body {
   white-space: nowrap;
   transition: background 0.3s ease;
   &:hover {
-    background: $primary-black;
+    background: #c52330;
   }
 }
 
@@ -40,4 +40,75 @@ input {
   &::placeholder {
     color: rgba(17, 17, 17, 0.4);
   }
+}
+
+.section-title {
+  font-size: 40px;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.swiper-wrap {
+  position: relative;
+  padding: 0 94px;
+  & .swiper-wrapper {
+    display: flex;
+    align-items: center;
+  }
+
+  & .swiper-slide {
+    display: flex;
+    flex-direction: column;
+  }
+  & .custom-button-next,
+  & .custom-button-prev {
+    position: absolute;
+    top: 38px;
+  }
+
+  & .custom-button-prev {
+    left: 0;
+  }
+
+  & .custom-button-next {
+    right: 0;
+  }
+
+  & .custom-button-next svg {
+    transform: rotate(180deg);
+  }
+}
+
+.swiper-arrow {
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  & svg path {
+    transition: fill 0.3s, fill-opacity 0.3s;
+  }
+  &:hover svg path {
+    fill: #111111;
+    fill-opacity: 0.64;
+  }
+  &:active svg path {
+    fill: #111111;
+    fill-opacity: 1;
+  }
+}
+
+.story-viewer .swiper-wrapper {
+  display: flex;
+  align-items: center;
+  & .swiper-slide {
+    width: 280px;
+  }
+
+  & .swiper-slide-active {
+    position: relative;
+    width: 400px;
+  }
+}
+
+.story-button-next svg {
+  transform: rotate(180deg);
 }

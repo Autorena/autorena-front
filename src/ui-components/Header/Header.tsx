@@ -23,16 +23,16 @@ export const Header = () => {
         <div className={styles.header_top__wrap}>
           <ul>
             <li>
-              <a href="#">Автомобили</a>
+              <a href="#">PRO Кабинет</a>
             </li>
             <li>
-              <a href="#">Работа водителям</a>
+              <a href="#">БАЗА ЧС</a>
             </li>
             <li>
-              <a href="#">Автосервисы</a>
+              <a href="#">Помощь</a>
             </li>
             <li>
-              <a href="#">Помощь на дороге</a>
+              <a href="#">Сотрудничество</a>
             </li>
           </ul>
           {!isLogged ? (

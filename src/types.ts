@@ -16,3 +16,15 @@ export type modalContextProps = {
   crossSize?: number;
   setCrossSize: (size: number) => void;
 };
+
+export type StoryType = {
+  id: number;
+  title: string;
+  img: string;
+};
+
+export type StoryModalProps = {
+  storiesData: Array<StoryType>;
+  initialIndex: number;
+  onClose: () => void;
+};

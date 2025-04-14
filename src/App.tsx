@@ -4,6 +4,7 @@ import { Layout } from "./Layout";
 import { Modal } from "./ui-components/Modal/Modal";
 import { useContext } from "react";
 import { ModalContext } from "./HOC/ModalProvider";
+import { Home } from "./pages/Home/Home";
 
 function App() {
   const {
@@ -25,7 +26,9 @@ function App() {
         setCrossSize={setCrossSize}
       />
       <Routes>
-        <Route path="/" element={<Layout />}></Route>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+        </Route>
       </Routes>
     </>
   );

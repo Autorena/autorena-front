@@ -1,0 +1,66 @@
+@use "../../styles/colors" as *;
+
+.home {
+  display: flex;
+  gap: 20px;
+  &_main {
+    max-width: 912px;
+  }
+  &_options {
+    display: flex;
+    gap: 8px;
+
+    & .top_row,
+    & .bottom_row,
+    &Wrap {
+      display: flex;
+      gap: 8px;
+    }
+
+    &Wrap {
+      flex-direction: column;
+    }
+  }
+  &_option {
+    position: relative;
+    width: 160px;
+    height: 150px;
+    padding-top: 12px;
+    border-radius: 18px;
+    border: 1px solid #dedede;
+    box-shadow: 1px 2px 32px 0px rgba(17, 17, 17, 0.08);
+    overflow: hidden;
+
+    &.full_height {
+      width: 253px;
+      height: 308px;
+    }
+    &.full_height .title {
+      color: rgba(17, 17, 17, 0.6);
+    }
+
+    & img,
+    & svg {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      z-index: -1;
+    }
+
+    &.big {
+      width: 327px;
+    }
+
+    &.big .title {
+      margin-left: 24px;
+    }
+
+    & .title {
+      margin-left: 20px;
+      font-size: 18px;
+      line-height: 22px;
+      font-weight: 600;
+      color: $primary-black;
+    }
+  }
+}
