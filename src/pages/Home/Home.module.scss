@@ -2,6 +2,7 @@
 
 .home {
   display: flex;
+  padding: 32px 0 96px;
   gap: 20px;
   &_main {
     max-width: 912px;
@@ -61,6 +62,70 @@
       line-height: 22px;
       font-weight: 600;
       color: $primary-black;
+    }
+  }
+  &_info_points {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    max-width: 394px;
+    margin: 24px 0 40px;
+  }
+  &_info_point {
+    background: $light-gray;
+    border-radius: 12px;
+    display: flex;
+    place-items: center;
+    color: #0a1910;
+    padding: 15px 20px;
+    &.large {
+      padding: 13px 17px;
+      font-size: 20px;
+      gap: 9px;
+    }
+    &.large svg {
+      width: 16px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+  }
+
+  &_recommends {
+    & .title span {
+      color: $red-color;
+    }
+    &_grid {
+      margin: 28px 0 52px;
+      max-width: 856px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(165px, 190px));
+      justify-content: space-between;
+      gap: 32px 28px;
+    }
+  }
+
+  &_ads {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  &_ad {
+    width: 100%;
+    border: 1px solid $light-gray;
+    background: #fff;
+    box-shadow: 1px 2px 32px 0px rgba(17, 17, 17, 0.08);
+    & p {
+      font-size: 24px;
+      font-weight: 500;
+    }
+    &:nth-child(1) {
+      padding: 40px 31px;
+      height: 250px;
+    }
+    &:nth-child(2) {
+      padding: 56px 26px;
+      height: 500px;
     }
   }
 }

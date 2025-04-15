@@ -1,0 +1,84 @@
+@use "../../styles/colors" as *;
+
+.carCard {
+  display: flex;
+  flex-direction: column;
+  &_imgWrap {
+    position: relative;
+    margin-bottom: 12px;
+  }
+  &.ads &_imgWrap::before {
+    content: "Реклама";
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    color: #b7b7b7;
+    font-size: 12px;
+    line-height: 15px;
+  }
+  &_moreBtn {
+    display: none;
+  }
+  &.ads &_moreBtn {
+    display: block;
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    right: 6px;
+    top: 6px;
+  }
+  &_img {
+    width: 100%;
+    border-radius: 16px;
+  }
+  &_title,
+  &_buyOption {
+    color: $primary-black;
+    font-weight: 500;
+  }
+  &_title {
+    position: relative;
+  }
+  &_likeBtn {
+    width: 20px;
+    height: 18px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    & svg path {
+      transition: fill 0.3 ease;
+    }
+
+    &:active svg path {
+      fill: $red-color;
+    }
+  }
+  &.ads &_likeBtn {
+    display: none;
+  }
+  &_buyOption {
+    font-size: 14px;
+  }
+  &_price {
+    width: 150px;
+    margin: 8px 0;
+    padding: 2px 0;
+    color: $red-color;
+    font-weight: 600;
+    line-height: 20px;
+  }
+  &.ads &_price {
+    padding: 2px 8px;
+    font-size: 15px;
+    color: #fff;
+    border-radius: 8px;
+    background: $red-color;
+  }
+  &_list li {
+    color: rgba(17, 17, 17, 0.4);
+    font-size: 13px;
+    &:not(:last-of-type) {
+      margin-bottom: 2px;
+    }
+  }
+}

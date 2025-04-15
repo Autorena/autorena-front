@@ -50,7 +50,7 @@ input {
 
 .swiper-wrap {
   position: relative;
-  padding: 0 94px;
+  padding: 0 84px;
   & .swiper-wrapper {
     display: flex;
     align-items: center;
@@ -86,13 +86,16 @@ input {
   & svg path {
     transition: fill 0.3s, fill-opacity 0.3s;
   }
-  &:hover svg path {
+  &:not(:disabled):hover svg path {
     fill: #111111;
     fill-opacity: 0.64;
   }
-  &:active svg path {
+  &:not(:disabled):active svg path {
     fill: #111111;
     fill-opacity: 1;
+  }
+  &:disabled {
+    cursor: not-allowed;
   }
 }
 

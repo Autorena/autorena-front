@@ -28,3 +28,29 @@ export type StoryModalProps = {
   initialIndex: number;
   onClose: () => void;
 };
+
+export type CarCardType = {
+  common: {
+    id: string;
+    photos: string[];
+    title: string;
+    description?: string;
+    ads?: boolean;
+  };
+  rent_auto: {
+    cost_per_day: number;
+    taxi_possible: boolean;
+    buy_option: boolean;
+    year: number;
+    color?: string;
+    discount?: number;
+    min_rental_period_days?: number;
+  };
+};
+
+export type PaginationProps = {
+  currentPage: number;
+  totalItems: number;
+  itemsPerPage: number;
+  onPageChange: (page: number) => void;
+};

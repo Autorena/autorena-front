@@ -6,15 +6,38 @@ import option4 from "../../assets/option_4.png";
 import option5 from "../../assets/option_5.png";
 import { ReactComponent as Option6 } from "../../assets/option_6.svg";
 import { Stories } from "../../ui-components/Stories/Stories";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { LocationContext } from "../../HOC/LocationProvider";
 import { ReactComponent as Location } from "../../assets/location-icon.svg";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { LocationModal } from "../../components/modals/LocationModal";
+import { cars } from "../../utils/cars";
+import { CarCard } from "../../ui-components/CarCard/CarCard";
+import { Pagination } from "../../ui-components/Pagination/Pagination";
 
 export const Home = () => {
   const { location } = useContext(LocationContext);
   const { setModalActive, setModalContent } = useContext(ModalContext);
+
+  const doubledCars = [
+    ...cars,
+    ...cars,
+    ...cars,
+    ...cars,
+    ...cars,
+    ...cars,
+    ...cars,
+    ...cars,
+    ...cars,
+    ...cars,
+  ];
+  const [currentPage, setCurrentPage] = useState(1);
+  const carsPerPage = 20;
+
+  const indexOfLastCar = currentPage * carsPerPage;
+  const indexOfFirstCar = indexOfLastCar - carsPerPage;
+  // const currentCars = cars.slice(indexOfFirstCar, indexOfLastCar);
+  const currentCars = doubledCars.slice(indexOfFirstCar, indexOfLastCar);
 
   return (
     <div className="container">
@@ -79,7 +102,7 @@ export const Home = () => {
               Посмотрите объявления в Москве и МО
             </h2>
             <div className={styles.home_info_points}>
-              <button>
+              <button className={`${styles.home_info_point} ${styles.large}`}>
                 <Location /> {location} и область
               </button>
               <button
@@ -87,13 +110,41 @@ export const Home = () => {
                   setModalContent(<LocationModal />);
                   setModalActive(true);
                 }}
+                style={{ padding: "0 8px" }}
               >
                 Выбрать город
               </button>
+
+              <div className={styles.home_info_point}>Авто до 1000 в сутки</div>
+              <div className={styles.home_info_point}>Аренда комфорт +</div>
             </div>
           </div>
+          <div className={styles.home_recommends}>
+            <h2 className={`section-title ${styles.title}`}>
+              Рекомендации <span>для вас</span>
+            </h2>
+            <div className={styles.home_recommends_grid}>
+              {currentCars.map((car) => (
+                <CarCard carData={car} key={car.common.id} />
+              ))}
+            </div>
+            <Pagination
+              currentPage={currentPage}
+              // totalItems={cars.length}
+              totalItems={doubledCars.length}
+              itemsPerPage={carsPerPage}
+              onPageChange={setCurrentPage}
+            />
+          </div>
         </div>
-        <div className={styles.home_ads}></div>
+        <div className={styles.home_ads}>
+          <div className={styles.home_ad}>
+            <p>Здесь будет реклама</p>
+          </div>
+          <div className={styles.home_ad}>
+            <p>Здесь будет реклама</p>
+          </div>
+        </div>
       </div>
     </div>
   );

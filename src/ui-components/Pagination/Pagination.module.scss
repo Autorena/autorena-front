@@ -1,0 +1,41 @@
+@use "../../styles/colors" as *;
+
+.pagination {
+  max-width: 856px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+  &Button {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #fff;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+
+    &.active {
+      background: $red-color;
+      color: white;
+    }
+  }
+  &Arrow {
+    width: 32px;
+    height: 32px;
+    padding: 2px;
+    &.right {
+      transform: rotate(180deg);
+    }
+  }
+
+  &_ellipsis {
+    align-self: flex-end;
+    margin: 0 14px;
+  }
+}

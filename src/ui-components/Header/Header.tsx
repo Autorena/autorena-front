@@ -10,6 +10,7 @@ import { ModalContext } from "../../HOC/ModalProvider";
 import { LocationModal } from "../../components/modals/LocationModal";
 import { LocationContext } from "../../HOC/LocationProvider";
 import { AuthModal } from "../../components/modals/AuthModal";
+import { Link } from "react-router-dom";
 
 export const Header = () => {
   const [isLogged, setIsLogged] = useState(false);
@@ -68,7 +69,11 @@ export const Header = () => {
       </div>
       <div className="container">
         <div className={styles.header_bottom}>
-          <img src={logo} alt="Logo" className={styles.header_logo} />
+          <Link to="/">
+            {" "}
+            <img src={logo} alt="Logo" className={styles.header_logo} />
+          </Link>
+
           <div className={`${styles.header_bottom} ${styles.wrap}`}>
             <button className={`red-btn ${styles.header_categoriesBtn}`}>
               Категории поиска
