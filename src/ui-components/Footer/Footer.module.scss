@@ -1,0 +1,33 @@
+@use "../../styles/colors" as *;
+
+.footer {
+  width: 100%;
+  padding: 28px 0 64px;
+  background: $light-gray;
+  & .container {
+    justify-content: space-between;
+  }
+  & .container,
+  &_itemsWrap,
+  &_socialMedia {
+    display: flex;
+  }
+  &_itemsWrap {
+    gap: 104px;
+  }
+  &_socialMedia {
+    gap: 16px;
+  }
+  &_logo {
+    display: block;
+    margin-bottom: 24px;
+  }
+  &_items {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  &_items a {
+    color: $primary-black;
+  }
+}
