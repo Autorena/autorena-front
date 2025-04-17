@@ -42,7 +42,9 @@ export const CarCard = ({ carData }: CarCardProps) => {
       <p className={styles.carCard_buyOption}>
         {buy_option && "возможен выкуп"}
       </p>
-      <p className={styles.carCard_price}>от {cost_per_day}₽ за день</p>
+      <p className={styles.carCard_price}>
+        от {cost_per_day.toLocaleString("ru-RU")}₽ за день
+      </p>
       <ul className={styles.carCard_list}>
         <li> Для личного пользования: {!taxi_possible ? "да" : "нет"}</li>
         <li>Для такси: {taxi_possible ? "да" : "нет"}</li>

@@ -22,7 +22,7 @@ export const LoginModal = () => {
     formState: { errors },
   } = useForm<LoginFormData>();
 
-  const onSubmit = (data: LoginFormData) => {
+  const onSubmit = () => {
     setModalActive(false);
   };
 
