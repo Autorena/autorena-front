@@ -1,0 +1,44 @@
+@use "../../styles/colors" as *;
+
+.input {
+  width: 100%;
+  font-size: inherit;
+  &:invalid:focus,
+  &.invalid {
+    border-color: $red-color;
+    color: $red-color;
+  }
+  &:valid:focus {
+    border-color: #dedede;
+  }
+  &::placeholder {
+    font-size: inherit;
+    color: rgba(17, 17, 17, 0.4);
+  }
+
+  &Wrap {
+    position: relative;
+  }
+  &Btn {
+    height: calc(100% - 2px);
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    font-size: inherit;
+    font-weight: 600;
+  }
+}
+.eyeBtn {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

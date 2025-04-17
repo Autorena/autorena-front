@@ -30,7 +30,26 @@ body {
   }
 }
 
+.white-btn {
+  padding: 16px 28px;
+  border-radius: 12px;
+  border: 2px solid $red-color;
+  background: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  transition: color 0.3s ease;
+  &:hover {
+    color: $red-color;
+  }
+}
+
+.gray-btn {
+  background: #dedede;
+}
+
 input {
+  width: 100%;
+  padding: 16px;
   background: $light-gray;
   border-radius: 8px;
   border: 1px solid #dedede;
@@ -39,6 +58,30 @@ input {
 
   &::placeholder {
     color: rgba(17, 17, 17, 0.4);
+  }
+
+  &.invalid {
+    border-color: $red-color;
+    color: $red-color;
+  }
+}
+
+.eyeBtn {
+  display: none;
+}
+
+.passwordWrap {
+  position: relative;
+  & input {
+    margin-bottom: 0 !important;
+  }
+  & .eyeBtn {
+    width: 24px;
+    height: 24px;
+    display: block;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
 

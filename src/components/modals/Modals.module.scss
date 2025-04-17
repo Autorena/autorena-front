@@ -8,8 +8,27 @@
     margin-bottom: 32px;
   }
 
+  &_note {
+    color: rgba(17, 17, 17, 0.6);
+    font-size: 14px;
+    & a {
+      text-decoration: underline;
+      color: inherit;
+    }
+  }
+  & .inputWrap {
+    position: relative;
+    & .inputBtn {
+      height: calc(100% - 2px);
+      position: absolute;
+      right: 1px;
+      top: 1px;
+    }
+  }
+
   &.location {
     max-height: 675px;
+    width: 624px;
     padding: 42px 24px 24px;
     & .cities {
       display: grid;
@@ -20,16 +39,30 @@
       display: block;
       text-align: left;
     }
+    & .inputWrap {
+      position: relative;
+    }
+    & .inputWrap input {
+      font-size: 14px;
+      line-height: 17px;
+      padding: 8px 112px 8px 16px;
+    }
+    & .inputWrap::after {
+      content: "";
+      width: 16px;
+      height: 16px;
+      background: url(../../assets/search-icon.svg);
+      position: absolute;
+      top: 50%;
+      right: 93px;
+      transform: translateY(-50%);
+    }
   }
   &.location .location_top {
     position: relative;
     margin-bottom: 24px;
-
-    & .searchBtn {
-      position: absolute;
-      top: 0;
-      right: 1px;
-    }
+    font-size: 14px;
+    line-height: 17px;
 
     &::after {
       content: "";
@@ -48,8 +81,181 @@
     }
   }
 
-  &.auth {
+  &.auth,
+  &.phone,
+  &.registr,
+  &.login {
     width: 587px;
     padding: 40px;
   }
+
+  &.phone input {
+    font-size: 20px;
+    line-height: 24px;
+    padding: 13.5px 50px 13.5px 16px;
+  }
+  & .inputWrap {
+    margin-bottom: 32px;
+  }
+  &.phone .phone_input {
+    margin-bottom: 32px;
+    font-size: 20px;
+    line-height: 24px;
+  }
+  &.phone .inputBtn {
+    font-size: 20px;
+  }
+
+  &.confirm .confirm {
+    &_text {
+      margin-bottom: 16px;
+      line-height: 19px;
+    }
+
+    &_input {
+      width: 232px;
+      font-size: 16px;
+      line-height: 20px;
+      padding: 14px 20px;
+    }
+  }
+  &.confirm {
+    & input {
+      width: 232px;
+    }
+    & .resendBtn,
+    & .modal_note {
+      margin: 16px 0;
+      line-height: 17px;
+    }
+    & .confirmBtn {
+      padding: 12px 44px;
+      font-size: 20px;
+      line-height: 24px;
+      border-radius: 12px;
+    }
+    & .modal_title {
+      margin-bottom: 16px;
+    }
+  }
+
+  &.registr {
+    & input {
+      font-size: 18px;
+      line-height: 22px;
+    }
+    & .registrBtn {
+      padding: 12px 24px;
+      margin: 24px 0;
+      font-size: 20px;
+      line-height: 24px;
+      border-radius: 12px;
+    }
+    & .passwordWrap {
+      margin-bottom: 16px;
+    }
+    & .eye {
+      right: 16px;
+    }
+    & .passwordWrap:last-of-type {
+      margin-bottom: 32px;
+    }
+  }
+
+  & .auth_input {
+    margin-bottom: 16px;
+    & input {
+      padding: 16px;
+      font-size: 18px;
+      line-height: 22px;
+    }
+    &:last-of-type {
+      margin-bottom: 24px;
+    }
+    &.invalid input {
+      border-color: $red-color;
+    }
+  }
+
+  &.login {
+    & input {
+      font-size: 20px;
+      line-height: 24px;
+    }
+    & .passwordWrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    & .auth_input:nth-child(3) {
+      margin-bottom: 32px;
+    }
+    & .forgotBtn {
+      color: $red-color;
+      font-size: 20px;
+    }
+    & .checkboxLabel {
+      font-size: 20px;
+    }
+    & .loginBtn {
+      margin: 24px 0 32px;
+      padding: 12px 48px;
+      font-size: 20px;
+      line-height: 24px;
+      border-radius: 12px;
+    }
+    & .loginWays {
+      margin-bottom: 32px;
+    }
+    & .login_text {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    & .loginItems {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    & .loginItems button {
+      width: 48px;
+      height: 48px;
+    }
+    & .regLink {
+      font-size: 20px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+    }
+  }
+}
+
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkboxInput {
+  display: none;
+}
+
+.checkboxCustom {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #dedede;
+  background: $light-gray;
+  border-radius: 4px;
+  margin-right: 16px;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.checkboxInput:checked + .checkboxCustom {
+  background: url(../../assets/checkbox-checked.svg);
+  background-size: 100%;
+}
+
+.checkboxLabel {
+  font-size: 18px;
+  line-height: 22px;
 }

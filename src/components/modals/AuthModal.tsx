@@ -1,7 +1,12 @@
+import { useContext } from "react";
 import { RadioButton } from "../../ui-components/RadioButton/RadioButton";
 import styles from "./Modals.module.scss";
+import { ModalContext } from "../../HOC/ModalProvider";
+import { PhoneModal } from "./PhoneModal";
 
 export const AuthModal = () => {
+  const { setModalContent } = useContext(ModalContext);
+
   return (
     <div className={`${styles.modal} ${styles.auth}`}>
       <h2 className={styles.modal_title}>Для чего нужен профиль?</h2>
@@ -17,6 +22,7 @@ export const AuthModal = () => {
             paddingLeft: "40px",
             marginBottom: "16px",
           }}
+          onClick={() => setModalContent(<PhoneModal />)}
         />
         <RadioButton
           label=" Я сдаю авто в аренду"
@@ -28,6 +34,7 @@ export const AuthModal = () => {
             fontWeight: 600,
             paddingLeft: "40px",
           }}
+          onClick={() => setModalContent(<PhoneModal />)}
         />
       </div>
     </div>

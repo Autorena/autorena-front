@@ -3,33 +3,41 @@ import { cities as citiesData } from "../../utils/cities";
 import { useContext, useState } from "react";
 import { LocationContext } from "../../HOC/LocationProvider";
 import { ModalContext } from "../../HOC/ModalProvider";
+import { useForm } from "react-hook-form";
+
+type FormData = {
+  searchValue: string;
+};
 
 export const LocationModal = () => {
-  const [searchValue, setSearchValue] = useState<string>("");
   const { setModalActive } = useContext(ModalContext);
   const { setLocation } = useContext(LocationContext);
   const [cities, setCities] = useState(citiesData);
 
-  const handleSearch = () => {
+  const { register, handleSubmit, reset } = useForm<FormData>();
+
+  const onSubmit = (data: FormData) => {
+    console.log(data);
     const filtered = citiesData.filter((city) =>
-      city.name.toLowerCase().includes(searchValue.toLowerCase())
+      city.name.toLowerCase().includes(data.searchValue.toLowerCase())
     );
     setCities(filtered);
   };
 
   return (
-    <div className={`${styles.modal} ${styles.location}`}>
-      <div className={styles.location_top}>
+    <form
+      className={`${styles.modal} ${styles.location}`}
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <div className={styles.inputWrap}>
         <input
           type="text"
+          {...register("searchValue", {
+            required: "Поле обязательно",
+          })}
           placeholder="Поиск по городам"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
         />
-        <button
-          className={`red-btn ${styles.searchBtn}`}
-          onClick={handleSearch}
-        >
+        <button className={`red-btn ${styles.inputBtn}`} type="submit">
           Найти
         </button>
       </div>
@@ -42,13 +50,13 @@ export const LocationModal = () => {
               setLocation(city.name);
               setModalActive(false);
               setCities(citiesData);
-              setSearchValue("");
+              reset();
             }}
           >
             {city.name}
           </button>
         ))}
       </div>
-    </div>
+    </form>
   );
 };

@@ -56,7 +56,6 @@ export const Pagination = ({
       {paginationItems.map((item, index) =>
         typeof item === "number" ? (
           <button
-            key={index}
             className={`${styles.paginationButton} ${
               currentPage === item ? styles.active : ""
             }`}

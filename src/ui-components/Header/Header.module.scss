@@ -27,6 +27,16 @@
       color: $red-color;
     }
   }
+  & .authBtn {
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.3s ease;
+    &:hover {
+      background: #d5d5d5;
+    }
+  }
   &_profileMenu,
   &_profileMenu_left {
     display: flex;
@@ -58,6 +68,8 @@
     max-width: 478px;
     min-width: 350px;
     width: 100%;
+    font-size: 14px;
+    line-height: 17px;
     &::before {
       content: "";
       position: absolute;
@@ -73,8 +85,9 @@
       padding: 7px 77px 7px 31px;
     }
     & .searchBtn {
-      height: 96%;
       position: absolute;
+      height: calc(100% - 2px);
+      top: 1px;
       right: 1px;
     }
   }

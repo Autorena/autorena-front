@@ -38,7 +38,7 @@ export const Header = () => {
           </ul>
           {!isLogged ? (
             <button
-              className="red-btn"
+              className={`gray-btn ${styles.authBtn}`}
               onClick={() => {
                 setModalActive(true);
                 setCrossSize(32);
