@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import styles from "./Header.module.scss";
 import { ReactComponent as Notification } from "../../assets/notification.svg";
 import { ReactComponent as Message } from "../../assets/message.svg";
@@ -9,11 +9,12 @@ import logo from "../../assets/logo-1.png";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { LocationModal } from "../../components/modals/LocationModal";
 import { LocationContext } from "../../HOC/LocationProvider";
-import { AuthModal } from "../../components/modals/AuthModal";
 import { Link } from "react-router-dom";
+import { LoginModal } from "../../components/modals/LoginModal";
+import { useAppSelector } from "../../redux/hooks";
 
 export const Header = () => {
-  const [isLogged, setIsLogged] = useState(false);
+  const user = useAppSelector((state) => state.user);
   const { setModalActive, setModalContent, setCrossSize } =
     useContext(ModalContext);
   const { location } = useContext(LocationContext);
@@ -36,13 +37,13 @@ export const Header = () => {
               <a href="#">Сотрудничество</a>
             </li>
           </ul>
-          {!isLogged ? (
+          {!user.isPhoneConfirmed ? (
             <button
               className={`gray-btn ${styles.authBtn}`}
               onClick={() => {
                 setModalActive(true);
                 setCrossSize(32);
-                setModalContent(<AuthModal />);
+                setModalContent(<LoginModal />);
               }}
             >
               Регистрация / вход
@@ -69,7 +70,12 @@ export const Header = () => {
       </div>
       <div className="container">
         <div className={styles.header_bottom}>
-          <Link to="/">
+          <Link
+            to="/"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          >
             {" "}
             <img src={logo} alt="Logo" className={styles.header_logo} />
           </Link>

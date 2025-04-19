@@ -3,6 +3,10 @@ import styles from "./CarCard.module.scss";
 import { ReactComponent as Favorite } from "../../assets/favorite.svg";
 import { ReactComponent as More } from "../../assets/more-icon.svg";
 import { CarCardType } from "../../types";
+import { useAppSelector } from "../../redux/hooks";
+import { useContext } from "react";
+import { ModalContext } from "../../HOC/ModalProvider";
+import { RegistrationModal } from "../../components/modals/RegistrationModal";
 
 interface CarCardProps {
   carData: CarCardType;
@@ -11,8 +15,12 @@ interface CarCardProps {
 export const CarCard = ({ carData }: CarCardProps) => {
   const {
     common: { id, photos, title, ads },
-    rent_auto: { cost_per_day, taxi_possible, buy_option, year, discount },
+    rent_auto: { cost_per_day, taxi_possible, buy_option, discount },
   } = carData;
+
+  const { isPhoneConfirmed } = useAppSelector((state) => state.user);
+  const { setModalContent, setModalActive } = useContext(ModalContext);
+
   return (
     <Link to={`/${id}`} className={`${styles.carCard} ${ads && styles.ads}`}>
       <div className={styles.carCard_imgWrap}>
@@ -34,6 +42,10 @@ export const CarCard = ({ carData }: CarCardProps) => {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
+            if (!isPhoneConfirmed) {
+              setModalActive(true);
+              setModalContent(<RegistrationModal />);
+            }
           }}
         >
           <Favorite />

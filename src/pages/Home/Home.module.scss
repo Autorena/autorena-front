@@ -1,8 +1,10 @@
 @use "../../styles/colors" as *;
 
 .home {
-  display: flex;
-  padding: 32px 0 96px;
+  // display: flex;
+  display: grid;
+  grid-template-columns: 912px 300px;
+  padding: 0 0 96px;
   gap: 20px;
   &_main {
     max-width: 912px;
@@ -68,16 +70,22 @@
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
-    max-width: 394px;
+    max-width: 450px;
     margin: 24px 0 40px;
   }
-  &_info_point {
+  &_filter {
     background: $light-gray;
     border-radius: 12px;
     display: flex;
     place-items: center;
     color: #0a1910;
     padding: 15px 20px;
+    transition: background 0.3s ease;
+    &:hover,
+    &:active,
+    &.active {
+      background: #dedede;
+    }
     &.large {
       padding: 13px 17px;
       font-size: 20px;
@@ -95,6 +103,7 @@
       color: $red-color;
     }
     &_grid {
+      position: relative;
       margin: 28px 0 52px;
       max-width: 856px;
       display: grid;
@@ -102,9 +111,15 @@
       justify-content: space-between;
       gap: 8px 4px;
     }
+    & .load {
+      bottom: -64px;
+    }
   }
 
   &_ads {
+    position: sticky;
+    top: 125px;
+    height: 750px;
     display: flex;
     flex-direction: column;
     gap: 24px;

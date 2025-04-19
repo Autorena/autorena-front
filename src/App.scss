@@ -145,6 +145,9 @@ input {
 .story-viewer .swiper-wrapper {
   display: flex;
   align-items: center;
+  & .modal_content {
+    background: transparent !important;
+  }
   & .swiper-slide {
     width: 280px;
   }
@@ -157,4 +160,8 @@ input {
 
 .story-button-next svg {
   transform: rotate(180deg);
+}
+
+.stories {
+  background: transparent;
 }

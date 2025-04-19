@@ -53,7 +53,7 @@ export const Pagination = ({
         <Arrow />
       </button>
 
-      {paginationItems.map((item, index) =>
+      {paginationItems.map((item) =>
         typeof item === "number" ? (
           <button
             className={`${styles.paginationButton} ${

@@ -1,9 +1,12 @@
 @use "../../styles/colors" as *;
 
 .header {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
   &_top {
-    margin-bottom: 22px;
-    padding: 6px 0;
+    padding: 5px 0;
     background: $light-gray;
   }
   &_top__wrap {
@@ -19,8 +22,10 @@
     align-items: center;
     gap: 32px;
     & a {
+      display: inline-block;
       color: $primary-black;
       font-size: 14px;
+      line-height: 17px;
       transition: color 0.3s ease;
     }
     & a:hover {
@@ -57,10 +62,13 @@
     align-items: center;
   }
   &_bottom {
+    padding: 16px 0 32px;
+    background: #fff;
     justify-content: space-between;
   }
   &_bottom.wrap {
     width: 71%;
+    padding: 0;
   }
   &_search {
     position: relative;

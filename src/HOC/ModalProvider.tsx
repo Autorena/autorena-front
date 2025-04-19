@@ -7,14 +7,27 @@ export const ModalContext = createContext<modalContextProps>({
   modalContent: null,
   setModalContent: () => {},
   setCrossSize: () => {},
+  modalClass: "",
 });
 
 export const ModalProvider = ({ children }: Children) => {
   const [isModalActive, setModalActive] = useState(false);
-  const [modalContent, setModalContent] = useState<React.ReactNode | null>(
-    null
-  );
+  const [modalContent, setContent] = useState<React.ReactNode | null>(null);
+  const [modalClass, setModalClass] = useState("");
   const [crossSize, setCrossSize] = useState(24);
+
+  const setModalContent = (
+    content: React.ReactNode,
+    options?: { modalClass?: string }
+  ) => {
+    setContent(content);
+    if (options?.modalClass) {
+      console.log(options.modalClass);
+      setModalClass(options.modalClass);
+    } else {
+      setModalClass("");
+    }
+  };
 
   return (
     <ModalContext.Provider
@@ -25,6 +38,7 @@ export const ModalProvider = ({ children }: Children) => {
         setModalContent,
         crossSize,
         setCrossSize,
+        modalClass,
       }}
     >
       {children}

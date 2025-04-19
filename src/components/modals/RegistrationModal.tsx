@@ -1,22 +1,19 @@
 import { useContext, useState } from "react";
 import styles from "./Modals.module.scss";
 import { ModalContext } from "../../HOC/ModalProvider";
-import { LoginModal } from "./LoginModal";
 import { useForm } from "react-hook-form";
 import { ReactComponent as Eye } from "../../assets/eye.svg";
 import { ReactComponent as EyeOff } from "../../assets/non-eye.svg";
-
-type RegFormData = {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
+import { AuthModal } from "./AuthModal";
+import { RegFormData } from "../../types";
+import { useAppDispatch } from "../../redux/hooks";
+import { setUser } from "../../redux/userSlice";
 
 export const RegistrationModal = () => {
   const { setModalContent } = useContext(ModalContext);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -29,7 +26,15 @@ export const RegistrationModal = () => {
 
   const onSubmit = (data: RegFormData) => {
     console.log(data);
-    setModalContent(<LoginModal />);
+    dispatch(
+      setUser({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        isPhoneConfirmed: false,
+      })
+    );
+    setModalContent(<AuthModal />);
   };
 
   return (

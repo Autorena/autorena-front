@@ -7,49 +7,89 @@ import "swiper/css/navigation";
 
 import story_1 from "../../assets/story_1.png";
 import story_2 from "../../assets/story_2.png";
-import { useState } from "react";
+import { useContext } from "react";
 import { StoryViewer } from "../../components/modals/StoryViewer/StoryViewer";
+import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../redux/hooks";
+import { ModalContext } from "../../HOC/ModalProvider";
+import { RegistrationModal } from "../../components/modals/RegistrationModal";
 
 export const Stories = () => {
-  const [modalIndex, setModalIndex] = useState<number | null>(null);
+  const { setModalContent, setModalActive } = useContext(ModalContext);
+  const { isPhoneConfirmed } = useAppSelector((state) => state.user);
+  const navigate = useNavigate();
 
   const stories = [
     {
       id: 1,
       img: story_1,
       title: "Правильная аренда авто",
+      content: (
+        <button
+          onClick={() => {
+            if (isPhoneConfirmed) {
+              setModalContent(null);
+              setModalActive(false);
+              navigate("/profile");
+            } else {
+              setModalContent(<RegistrationModal />);
+            }
+          }}
+          className="red-btn"
+        >
+          Подробнее
+        </button>
+      ),
     },
     {
       id: 2,
       img: story_2,
       title: "Главное про аренду авто",
+      content: "",
     },
     {
       id: 3,
       img: story_1,
       title: "Правильная аренда авто",
+      content: "",
     },
     {
       id: 4,
       img: story_2,
-      title: "Главное про аренду автоо",
+      title: "Главное про аренду авто",
+      content: "",
     },
     {
       id: 5,
       img: story_1,
       title: "Правильная аренда авто",
+      content: "",
     },
     {
       id: 6,
       img: story_2,
       title: "Главное про аренду авто",
+      content: "",
     },
     {
       id: 7,
       img: story_1,
       title: "Правильная аренда авто",
+      content: "",
     },
   ];
+
+  const handleStoryClick = (index: number) => {
+    setModalActive(true);
+    setModalContent(
+      <StoryViewer
+        storiesData={stories}
+        initialIndex={index}
+        onClose={() => setModalContent(null)}
+      />,
+      { modalClass: styles.storyModal }
+    );
+  };
 
   return (
     <div className={styles.stories}>
@@ -70,7 +110,10 @@ export const Stories = () => {
         >
           {stories.map((s, i) => (
             <SwiperSlide key={i}>
-              <button className={styles.story} onClick={() => setModalIndex(i)}>
+              <button
+                className={styles.story}
+                onClick={() => handleStoryClick(i)}
+              >
                 <div className={styles.story_img_wrapper}>
                   <img src={s.img} alt="" className={styles.story_img} />
                 </div>
@@ -83,13 +126,6 @@ export const Stories = () => {
           <Arrow />
         </div>
       </div>
-      {modalIndex !== null && (
-        <StoryViewer
-          storiesData={stories}
-          initialIndex={modalIndex}
-          onClose={() => setModalIndex(null)}
-        />
-      )}
     </div>
   );
 };

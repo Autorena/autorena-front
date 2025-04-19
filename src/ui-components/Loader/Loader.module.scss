@@ -1,0 +1,22 @@
+.loader {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+  & svg {
+    animation: rotate 1s linear infinite;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

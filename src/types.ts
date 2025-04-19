@@ -12,15 +12,20 @@ export type modalContextProps = {
   isModalActive: boolean;
   setModalActive: (active: boolean) => void;
   modalContent: React.ReactNode | null;
-  setModalContent: React.Dispatch<React.SetStateAction<React.ReactNode | null>>;
+  setModalContent: (
+    content: React.ReactNode,
+    options?: { modalClass: string }
+  ) => void;
   crossSize?: number;
   setCrossSize: (size: number) => void;
+  modalClass?: string;
 };
 
 export type StoryType = {
   id: number;
   title: string;
   img: string;
+  content?: ReactNode;
 };
 
 export type StoryModalProps = {
@@ -46,6 +51,9 @@ export type CarCardType = {
     discount?: number;
     min_rental_period_days?: number;
   };
+  search_auto: {
+    car_class: string;
+  };
 };
 
 export type PaginationProps = {
@@ -53,4 +61,11 @@ export type PaginationProps = {
   totalItems: number;
   itemsPerPage: number;
   onPageChange: (page: number) => void;
+};
+
+export type RegFormData = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
 };

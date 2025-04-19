@@ -1,16 +1,18 @@
 import { useContext, useEffect, useState } from "react";
 import styles from "./Modals.module.scss";
-import { ModalContext } from "../../HOC/ModalProvider";
-import { RegistrationModal } from "./RegistrationModal";
 import { useForm } from "react-hook-form";
+import { ModalContext } from "../../HOC/ModalProvider";
+import { useAppDispatch } from "../../redux/hooks";
+import { setPhoneConfirmed } from "../../redux/userSlice";
 
 type CodeType = {
   code: string;
 };
 
 export const PhoneConfirmModal = ({ phone }: { phone: string }) => {
-  const { setModalContent } = useContext(ModalContext);
   const [timeLeft, setTimeLeft] = useState(180);
+  const { setModalActive } = useContext(ModalContext);
+  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -39,8 +41,8 @@ export const PhoneConfirmModal = ({ phone }: { phone: string }) => {
   };
 
   const onSubmit = (data: CodeType) => {
-    console.log(data);
-    setModalContent(<RegistrationModal />);
+    dispatch(setPhoneConfirmed());
+    setModalActive(false);
   };
 
   return (

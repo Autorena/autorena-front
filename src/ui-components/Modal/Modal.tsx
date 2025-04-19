@@ -1,20 +1,24 @@
 import ReactDOM from "react-dom";
 import styles from "./Modal.module.scss";
 import { ReactComponent as Cross } from "../../assets/cross.svg";
-import { modalContextProps } from "../../types";
+import { ModalContext } from "../../HOC/ModalProvider";
+import { useContext } from "react";
 
-export const Modal = ({
-  isModalActive,
-  setModalActive,
-  setModalContent,
-  modalContent,
-  crossSize,
-}: modalContextProps) => {
+export const Modal = () => {
+  const {
+    isModalActive,
+    modalContent,
+    crossSize,
+    modalClass,
+    setModalActive,
+    setModalContent,
+  } = useContext(ModalContext);
+
   return ReactDOM.createPortal(
     <div
       className={`${styles.modal_overlay} ${isModalActive && styles.active}`}
     >
-      <div className={styles.modal_content}>
+      <div className={`${styles.modal_content} ${modalClass}`}>
         <button
           className={`${styles.modal_btnClose}`}
           onClick={() => {
