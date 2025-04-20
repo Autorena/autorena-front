@@ -46,3 +46,11 @@
     background: $red-color;
   }
 }
+
+@media (max-width: 550px) {
+  .checkboxWrapper {
+    & label {
+      font-size: 18px;
+    }
+  }
+}

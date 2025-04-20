@@ -4,7 +4,7 @@ import { Footer } from "./ui-components/Footer/Footer";
 
 export const Layout = () => {
   return (
-    <div>
+    <div className="app">
       <Header />
       <Outlet />
       <Footer />

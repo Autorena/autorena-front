@@ -98,14 +98,27 @@ export const Stories = () => {
           <Arrow />
         </div>
         <Swiper
-          spaceBetween={24}
-          slidesPerView={5}
+          // spaceBetween={24}
+          // slidesPerView={5}
           onSlideChange={() => console.log("slide change")}
           onSwiper={(swiper) => console.log(swiper)}
           modules={[Navigation]}
           navigation={{
             nextEl: ".custom-button-next",
             prevEl: ".custom-button-prev",
+          }}
+          breakpoints={{
+            320: {
+              slidesPerView: 3.7,
+              spaceBetween: 12,
+            },
+            550: {
+              slidesPerView: 5,
+            },
+            1000: {
+              slidesPerView: 5,
+              spaceBetween: 24,
+            },
           }}
         >
           {stories.map((s, i) => (

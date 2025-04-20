@@ -155,3 +155,35 @@
     width: 100%;
   }
 }
+
+@media (max-width: 1000px) {
+  .storyCard {
+    &.center {
+      width: 370px;
+      height: 80vh;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .storyCard {
+    &.center .arrowNext,
+    &.center .arrowPrev {
+      width: 54px;
+      height: 54px;
+    }
+
+    &.center .arrowNext {
+      right: -78px;
+    }
+    &.center .arrowPrev {
+      left: -78px;
+    }
+
+    &.center .arrowNext svg,
+    &.center .arrowPrev svg {
+      width: 30px;
+      height: 30px;
+    }
+  }
+}

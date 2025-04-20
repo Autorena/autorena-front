@@ -102,6 +102,7 @@ input {
   & .swiper-slide {
     display: flex;
     flex-direction: column;
+    align-items: center;
   }
   & .custom-button-next,
   & .custom-button-prev {
@@ -164,4 +165,48 @@ input {
 
 .stories {
   background: transparent;
+}
+
+.swiper.home_swiper {
+  display: none;
+}
+
+@media (max-width: 1000px) {
+  .swiper.home_swiper {
+    display: block;
+  }
+}
+
+@media (max-width: 900px) {
+  .swiper-wrap {
+    padding: 0 50px;
+  }
+
+  .swiper-arrow {
+    width: 36px;
+    height: 36px;
+  }
+  input {
+    font-size: 16px;
+  }
+
+  .section-title {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .swiper-wrap {
+    padding: 0;
+    & .custom-button-next,
+    & .custom-button-prev {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 550px) {
+  .section-title {
+    font-size: 24px;
+  }
 }

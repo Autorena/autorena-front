@@ -83,3 +83,42 @@
     }
   }
 }
+
+@media (max-width: 1000px) {
+  .carCard {
+    padding: 6px 6px 12px;
+  }
+}
+
+@media (max-width: 550px) {
+  .carCard {
+    &_imgWrap {
+      margin-bottom: 8px;
+    }
+    &_title,
+    &_price {
+      font-size: 14px;
+    }
+    &_buyOption {
+      font-size: 13px;
+    }
+    &_price {
+      margin: 6px 0;
+    }
+    &_list li {
+      font-size: 12px;
+      line-height: 15px;
+      margin-bottom: 4px;
+    }
+  }
+}
+
+@media (max-width: 390px) {
+  .carCard {
+    padding: 4px 4px 12px;
+    &_imgWrap {
+      max-width: 155px;
+      width: 100%;
+    }
+  }
+}

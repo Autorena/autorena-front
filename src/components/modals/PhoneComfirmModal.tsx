@@ -40,7 +40,7 @@ export const PhoneConfirmModal = ({ phone }: { phone: string }) => {
       .padStart(2, "0")}`;
   };
 
-  const onSubmit = (data: CodeType) => {
+  const onSubmit = () => {
     dispatch(setPhoneConfirmed());
     setModalActive(false);
   };
@@ -63,7 +63,7 @@ export const PhoneConfirmModal = ({ phone }: { phone: string }) => {
         })}
         className={`${styles.confirm_input} ${errors.code ? "invalid" : ""}`}
       />
-      <br />
+      <br className={styles.hide} />
       {timeLeft === 0 ? (
         <button
           type="button"

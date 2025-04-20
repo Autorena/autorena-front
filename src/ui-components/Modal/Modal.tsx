@@ -1,6 +1,7 @@
 import ReactDOM from "react-dom";
 import styles from "./Modal.module.scss";
 import { ReactComponent as Cross } from "../../assets/cross.svg";
+import { ReactComponent as Back } from "../../assets/arrowBack.svg";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { useContext } from "react";
 
@@ -12,6 +13,7 @@ export const Modal = () => {
     modalClass,
     setModalActive,
     setModalContent,
+    goBack,
   } = useContext(ModalContext);
 
   return ReactDOM.createPortal(
@@ -27,6 +29,9 @@ export const Modal = () => {
           }}
         >
           <Cross width={crossSize} height={crossSize} />
+        </button>
+        <button className={styles.modal_btnBack} onClick={goBack}>
+          <Back />
         </button>
         {modalContent}
       </div>

@@ -1,13 +1,13 @@
 @use "../../styles/colors" as *;
 
 .home {
-  // display: flex;
-  display: grid;
-  grid-template-columns: 912px 300px;
+  display: flex;
   padding: 0 0 96px;
   gap: 20px;
   &_main {
     max-width: 912px;
+    width: 100%;
+    width: 75.5%;
   }
   &_options {
     display: flex;
@@ -21,12 +21,15 @@
     }
 
     &Wrap {
+      width: 73%;
       flex-direction: column;
     }
   }
   &_option {
     position: relative;
-    width: 160px;
+    max-width: 160px;
+    width: 100%;
+    min-width: 140px;
     height: 150px;
     padding-top: 12px;
     border-radius: 18px;
@@ -35,11 +38,17 @@
     overflow: hidden;
 
     &.full_height {
-      width: 253px;
+      max-width: 253px;
+      width: 100%;
       height: 308px;
     }
     &.full_height .title {
       color: rgba(17, 17, 17, 0.6);
+    }
+
+    &.mobile,
+    &Visible {
+      display: none;
     }
 
     & img,
@@ -51,7 +60,8 @@
     }
 
     &.big {
-      width: 327px;
+      max-width: 327px;
+      width: 100%;
     }
 
     &.big .title {
@@ -114,9 +124,13 @@
     & .load {
       bottom: -64px;
     }
+    & .header_mobile {
+      display: none;
+    }
   }
 
   &_ads {
+    width: 24.5%;
     position: sticky;
     top: 125px;
     height: 750px;
@@ -141,6 +155,202 @@
     &:nth-child(2) {
       padding: 56px 26px;
       height: 500px;
+    }
+  }
+  &_swiper {
+    display: none;
+  }
+}
+
+@media (max-width: 1000px) {
+  .home {
+    &_ads {
+      display: none;
+    }
+    &_main {
+      max-width: 100%;
+      width: 100%;
+    }
+    &_options {
+      flex-wrap: nowrap;
+      overflow-x: scroll;
+      -webkit-overflow-scrolling: touch;
+      margin-right: -20px;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      &Wrap {
+        width: auto;
+      }
+    }
+
+    &_option {
+      width: 160px;
+      height: 150px;
+      min-width: unset;
+      max-width: unset;
+      &.big {
+        width: 327px;
+      }
+      &.full_height {
+        width: 253px;
+        max-width: 100%;
+        flex-shrink: 0;
+      }
+    }
+
+    &_swiper &_options {
+      display: flex;
+    }
+
+    &_recommends_grid {
+      max-width: 100%;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .home {
+    &Wrap {
+      padding: 0;
+    }
+    &_info,
+    &_recommends .title {
+      padding: 0 20px;
+    }
+    &_option {
+      width: 140px;
+      height: 140px;
+      &.big {
+        width: 288px;
+      }
+      &.full_height {
+        height: 288px;
+      }
+
+      &:nth-child(1) {
+        order: 1;
+      }
+
+      &:nth-child(3) {
+        order: 2;
+      }
+
+      &:nth-child(4) {
+        order: 3;
+      }
+
+      &:nth-child(2) {
+        order: 4;
+      }
+    }
+
+    &_options {
+      padding-left: 20px;
+      margin-right: 0;
+    }
+
+    &_recommends {
+      &_grid {
+        margin: 28px 0 52px;
+        padding: 0 20px;
+        max-width: 856px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(155px, 214px));
+        justify-content: space-between;
+        gap: 8px 4px;
+      }
+
+      & .header_mobile {
+        display: flex;
+      }
+    }
+
+    &_info_points {
+      margin: 24px 0;
+    }
+  }
+}
+
+@media (max-width: 550px) {
+  .home {
+    &_recommends {
+      &_grid {
+        grid-template-columns: repeat(2, minmax(155px, 1fr));
+        gap: 16px;
+      }
+    }
+    &_option {
+      width: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      &.big {
+        width: 200px;
+      }
+      &.big .title {
+        margin-left: 16px;
+      }
+      & .title {
+        margin-left: 13px;
+      }
+      & img,
+      & svg {
+        position: static;
+        height: 88px;
+        align-self: center;
+      }
+      &.full_height,
+      &Hide {
+        display: none;
+      }
+      &.mobile,
+      &Visible {
+        display: flex;
+      }
+
+      &.mobile svg {
+        width: 88px;
+      }
+
+      &.big.resize {
+        width: 140px;
+      }
+    }
+
+    &_filter.large {
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    &_info_points {
+      font-size: 14px;
+      line-height: 17px;
+      gap: 12px;
+    }
+
+    &_filter_choose {
+      padding: 0 !important;
+    }
+
+    &_filter {
+      padding: 12px 19px;
+    }
+
+    &_recommends {
+      margin: 24px 0 0;
+      & .title {
+        margin-top: 29px;
+      }
+    }
+  }
+}
+
+@media (max-width: 390px) {
+  .home {
+    &_recommends_grid {
+      gap: 10px;
+      grid-template-columns: repeat(2, minmax(145px, 1fr));
     }
   }
 }

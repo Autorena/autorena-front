@@ -15,6 +15,7 @@ import { CarCard } from "../../ui-components/CarCard/CarCard";
 import { fetchCars } from "../../redux/carsSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { Loader } from "../../ui-components/Loader/Loader";
+import { HeaderMobile } from "../../ui-components/HeaderMobile/HeaderMobile";
 
 export const Home = () => {
   const { location } = useContext(LocationContext);
@@ -72,7 +73,7 @@ export const Home = () => {
   const visibleCars = filteredCars.slice(0, visibleCount);
 
   return (
-    <div className="container">
+    <div className={`container ${styles.homeWrap}`}>
       <div className={styles.home}>
         <div className={styles.home_main}>
           <div className={styles.home_options}>
@@ -85,7 +86,10 @@ export const Home = () => {
                   </h3>
                   <img src={option1} alt="Service image" />
                 </a>
-                <a href="#" className={styles.home_option}>
+                <a
+                  href="#"
+                  className={`${styles.home_option} ${styles.home_optionHide}`}
+                >
                   {" "}
                   <h3 className={styles.title}>
                     Аренда от
@@ -98,8 +102,27 @@ export const Home = () => {
                   <h3 className={styles.title}>Автосервисы</h3>
                   <img src={option3} alt="Service image" />
                 </a>
+                <a
+                  href="#"
+                  className={`${styles.home_option} ${styles.mobile}`}
+                >
+                  {" "}
+                  <h3 className={styles.title}>Помощь на дороге</h3>
+                  <Option6 />
+                </a>
               </div>
               <div className={styles.bottom_row}>
+                <a
+                  href="#"
+                  className={`${styles.home_option} ${styles.home_optionVisible}`}
+                >
+                  {" "}
+                  <h3 className={styles.title}>
+                    Аренда от
+                    <br /> суток
+                  </h3>
+                  <img src={option2} alt="Service image" />
+                </a>
                 <a href="#" className={`${styles.home_option} ${styles.big}`}>
                   {" "}
                   <h3 className={styles.title}>
@@ -108,7 +131,10 @@ export const Home = () => {
                   </h3>
                   <img src={option4} alt="Service image" />
                 </a>
-                <a href="#" className={`${styles.home_option} ${styles.big}`}>
+                <a
+                  href="#"
+                  className={`${styles.home_option} ${styles.big} ${styles.resize}`}
+                >
                   {" "}
                   <h3 className={styles.title}>
                     Работа
@@ -118,7 +144,6 @@ export const Home = () => {
                 </a>
               </div>
             </div>
-
             <a
               href="#"
               className={`${styles.home_option} ${styles.full_height}`}
@@ -143,6 +168,7 @@ export const Home = () => {
                   setModalActive(true);
                 }}
                 style={{ padding: "0 8px" }}
+                className={styles.home_filter_choose}
               >
                 Выбрать город
               </button>
@@ -166,6 +192,7 @@ export const Home = () => {
             </div>
           </div>
           <div className={styles.home_recommends}>
+            <HeaderMobile className={styles.header_mobile} />
             <h2 className={`section-title ${styles.title}`}>
               Рекомендации <span>для вас</span>
             </h2>

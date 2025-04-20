@@ -2,32 +2,17 @@ import { Route, Routes } from "react-router-dom";
 import "./App.scss";
 import { Layout } from "./Layout";
 import { Modal } from "./ui-components/Modal/Modal";
-import { useContext } from "react";
-import { ModalContext } from "./HOC/ModalProvider";
 import { Home } from "./pages/Home/Home";
+import { RegistrationModal } from "./components/modals/RegistrationModal";
 
 function App() {
-  const {
-    isModalActive,
-    setModalActive,
-    modalContent,
-    setModalContent,
-    crossSize,
-    setCrossSize,
-  } = useContext(ModalContext);
   return (
     <>
-      <Modal
-        isModalActive={isModalActive}
-        setModalActive={setModalActive}
-        modalContent={modalContent}
-        setModalContent={setModalContent}
-        crossSize={crossSize}
-        setCrossSize={setCrossSize}
-      />
+      <Modal />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path="/reg" element={<RegistrationModal />} />
         </Route>
       </Routes>
     </>

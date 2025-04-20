@@ -5,6 +5,7 @@ import { ReactComponent as Youtube } from "../../assets/youtube.svg";
 import { ReactComponent as Tg } from "../../assets/telegram.svg";
 import { ReactComponent as Ok } from "../../assets/ok.svg";
 import logo from "../../assets/logo-1.png";
+import logoMobile from "../../assets/logo-mobile.png";
 import { Link } from "react-router-dom";
 
 export const Footer = () => {
@@ -13,7 +14,10 @@ export const Footer = () => {
       <div className={`container ${styles.container}`}>
         <div className={styles.footer_left}>
           <Link to="/" className={styles.footer_logo}>
-            <img src={logo} alt="Logo" />
+            <picture>
+              <source media="(max-width: 767px)" srcSet={logoMobile} />
+              <img src={logo} alt="Логотип" />
+            </picture>
           </Link>
           <div className={styles.footer_itemsWrap}>
             <div className={styles.footer_items}>
@@ -63,7 +67,10 @@ export const Footer = () => {
             </li>
           </ul>
         </div>
-      </div>
+      </div>{" "}
+      <a href="#" className={styles.privacy}>
+        Политика конфиденциальности
+      </a>
     </footer>
   );
 };

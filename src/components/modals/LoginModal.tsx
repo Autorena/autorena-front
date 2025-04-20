@@ -52,12 +52,19 @@ export const LoginModal = () => {
           <span className={styles.checkboxCustom} />
           <span className={styles.checkboxLabel}>Запомнить пароль</span>
         </label>
-        <button className={styles.forgotBtn} type="button">
+        <button
+          className={`${styles.forgotBtn} ${styles.desktop}`}
+          type="button"
+        >
           Забыли пароль?
         </button>
       </div>
+
       <button className={`red-btn ${styles.loginBtn}`} type="submit">
         Войти
+      </button>
+      <button className={`${styles.forgotBtn} ${styles.mobile}`} type="button">
+        Забыли пароль?
       </button>
       <div className={styles.loginWays}>
         <p className={styles.login_text}>Или продолжить через:</p>

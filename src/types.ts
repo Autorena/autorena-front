@@ -16,9 +16,10 @@ export type modalContextProps = {
     content: React.ReactNode,
     options?: { modalClass: string }
   ) => void;
-  crossSize?: number;
+  crossSize: number;
   setCrossSize: (size: number) => void;
   modalClass?: string;
+  goBack?: () => void;
 };
 
 export type StoryType = {
@@ -51,7 +52,7 @@ export type CarCardType = {
     discount?: number;
     min_rental_period_days?: number;
   };
-  search_auto: {
+  search_auto?: {
     car_class: string;
   };
 };
