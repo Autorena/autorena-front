@@ -268,8 +268,13 @@
     &.auth,
     &.registr,
     &.phone,
-    &.login {
+    &.login,
+    &.location {
       width: 100%;
+    }
+    &.location {
+      padding: 82px 20px 20px;
+      justify-content: center;
     }
 
     &_title {
@@ -290,6 +295,21 @@
 
     input {
       width: 100% !important;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .modal {
+    &.location {
+      .cities {
+        grid-template-columns: repeat(2, max-content);
+        justify-content: space-between;
+        gap: 6px 45px;
+      }
+      .city {
+        font-size: 14px;
+      }
     }
   }
 }
