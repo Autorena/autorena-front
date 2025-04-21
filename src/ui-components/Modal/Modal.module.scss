@@ -10,6 +10,7 @@
     flex-direction: column;
     align-items: center;
     z-index: 1100;
+    overflow-y: scroll;
     &.active {
       display: flex;
     }
@@ -19,7 +20,6 @@
     background: #fff;
     position: relative;
     top: 80px;
-    overflow-y: scroll;
   }
   &_btnClose {
     position: absolute;
