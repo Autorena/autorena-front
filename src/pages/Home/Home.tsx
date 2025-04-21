@@ -28,10 +28,10 @@ export const Home = () => {
   const [activeFilter, setActiveFilter] = useState<{ [key: string]: any }>({});
 
   useEffect(() => {
-    dispatch(fetchCars());
+    dispatch(fetchCars()).catch((error) => {
+      console.error("Error fetching cars:", error);
+    });
   }, []);
-
-  console.log(activeFilter);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -74,6 +74,7 @@ export const Home = () => {
 
   return (
     <div className={`container ${styles.homeWrap}`}>
+      <HeaderMobile className={styles.header_mobile} />
       <div className={styles.home}>
         <div className={styles.home_main}>
           <div className={styles.home_options}>
@@ -192,7 +193,6 @@ export const Home = () => {
             </div>
           </div>
           <div className={styles.home_recommends}>
-            <HeaderMobile className={styles.header_mobile} />
             <h2 className={`section-title ${styles.title}`}>
               Рекомендации <span>для вас</span>
             </h2>

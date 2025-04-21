@@ -86,7 +86,9 @@ export const LoginModal = () => {
       <p className={styles.login_text}>Нет аккаунта?</p>
       <button
         className={`white-btn ${styles.regLink}`}
-        onClick={() => setModalContent(<RegistrationModal />)}
+        onClick={() => {
+          setModalContent(<RegistrationModal />);
+        }}
       >
         Зарегистрироваться
       </button>
