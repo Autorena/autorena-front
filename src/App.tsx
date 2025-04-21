@@ -5,7 +5,7 @@ import { Modal } from "./ui-components/Modal/Modal";
 import { Home } from "./pages/Home/Home";
 import { RegistrationModal } from "./components/modals/RegistrationModal";
 
-function App() {
+export const App = () => {
   return (
     <>
       <Modal />
@@ -17,6 +17,6 @@ function App() {
       </Routes>
     </>
   );
-}
+};
 
 export default App;

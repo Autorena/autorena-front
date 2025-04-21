@@ -16,5 +16,5 @@ export default defineConfig({
       include: "**/*.svg",
     }),
   ],
-  base: "/autorena-front",
+  base: "./",
 });

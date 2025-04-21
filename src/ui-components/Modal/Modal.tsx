@@ -21,16 +21,16 @@ export const Modal = () => {
       className={`${styles.modal_overlay} ${isModalActive && styles.active}`}
     >
       <div className={`${styles.modal_content} ${modalClass}`}>
-        <button className={`${styles.modal_btnClose}`} onClick={goBack}>
-          <Cross width={crossSize} height={crossSize} />
-        </button>
         <button
-          className={styles.modal_btnBack}
+          className={`${styles.modal_btnClose}`}
           onClick={() => {
             setModalActive(false);
             setModalContent(null);
           }}
         >
+          <Cross width={crossSize} height={crossSize} />
+        </button>
+        <button className={styles.modal_btnBack} onClick={goBack}>
           <Back />
         </button>
         {modalContent}

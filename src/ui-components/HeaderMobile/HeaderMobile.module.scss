@@ -1,7 +1,7 @@
 @use "../../styles/colors" as *;
 
 .header_mobile {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
@@ -22,6 +22,12 @@
     font-size: 12px;
     line-height: 15px;
     color: $primary-black;
+  }
+}
+
+@media (max-width: 900px) {
+  .header_mobile {
+    display: flex;
   }
 }
 

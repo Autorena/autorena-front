@@ -515,7 +515,7 @@ export const cars = [
   {
     common: {
       id: "28",
-      photos: ["/car.png"],
+      photos: ["../../"],
       title: "Аренда Li L7 2024",
       description: "",
     },
