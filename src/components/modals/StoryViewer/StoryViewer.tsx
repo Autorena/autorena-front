@@ -29,16 +29,14 @@ export const StoryViewer = ({
     <div className="story-viewer">
       <div className={styles.story_slider} onClick={(e) => e.stopPropagation()}>
         <Swiper
-          // spaceBetween={184}
-          // slidesPerView={"auto"}
           initialSlide={currentIndex}
           onSlideChange={(swiper) => setCurrentIndex(swiper.realIndex)}
-          modules={[Navigation]}
+          modules={[Navigation, Autoplay]}
           navigation={{
             nextEl: ".story-button-next",
             prevEl: ".story-button-prev",
           }}
-          // autoplay={{ delay: 7000, stopOnLastSlide: true }}
+          autoplay={{ delay: 7000, stopOnLastSlide: true }}
           // centeredSlides={true}
           loop={false}
           breakpoints={{

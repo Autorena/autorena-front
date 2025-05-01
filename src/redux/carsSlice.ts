@@ -7,7 +7,34 @@ export const fetchCars = createAsyncThunk<CarCardType[]>(
   async () => {
     return new Promise<CarCardType[]>((resolve) => {
       setTimeout(() => {
-        resolve(cars);
+        const validatedCars = cars.map((car) => {
+          const defaultCar: Partial<CarCardType> = {
+            rent_auto: {
+              cost_per_day: 0,
+              taxi_possible: false,
+              buy_option: false,
+              year: new Date().getFullYear(),
+              min_rental_period_days: 1,
+              deposit_required: false,
+            },
+            daily_rent: {
+              cost_per_day: 0,
+              delivery_possible: false,
+              deposit_required: false,
+              buy_option: false,
+            },
+          };
+
+          return {
+            ...defaultCar,
+            ...car,
+            common: {
+              ...car.common,
+            },
+          } as CarCardType;
+        });
+
+        resolve(validatedCars);
       }, 500);
     });
   }
@@ -20,7 +47,7 @@ export const fetchCarById = createAsyncThunk<CarCardType, string>(
       setTimeout(() => {
         const foundCar = cars.find((car) => car.common.id === id);
         if (foundCar) {
-          resolve(foundCar);
+          resolve(foundCar as CarCardType);
         } else {
           reject(new Error("Car not found"));
         }
@@ -41,7 +68,7 @@ const carsSlice = createSlice({
     filterCars: (state, action) => {
       const filters = action.payload;
 
-      state.cars = cars.filter((car) => {
+      state.cars = (cars as CarCardType[]).filter((car) => {
         if (
           filters.city &&
           !car.common.city.toLowerCase().includes(filters.city.toLowerCase())

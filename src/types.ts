@@ -40,7 +40,7 @@ export type CarCardType = {
     id: string;
     photos: string[];
     title: string;
-    description?: string;
+    description: string;
     city: string;
     district: string;
     address: string;
@@ -69,11 +69,11 @@ export type CarCardType = {
     deposit_required: boolean;
     buy_option: boolean;
   };
-  driver_job: {
+  driver_job?: {
     cost_per_day: number;
     buy_option: boolean;
   };
-  auto_services: {
+  auto_services?: {
     cost_per_day: number;
     buy_option: boolean;
   };
