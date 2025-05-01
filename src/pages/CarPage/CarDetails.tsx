@@ -4,6 +4,7 @@ import { CarCard } from "../../ui-components/CarCard/CarCard";
 import { Review } from "../../ui-components/Review/Review";
 import { StarRating } from "../../ui-components/StarRating/StarRating";
 import styles from "./CarPage.module.scss";
+import modalStyles from "../../ui-components/Modal/Modal.module.scss";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { CarPhoneModal } from "../../components/modals/CarPhoneModal";
 import { useNavigate } from "react-router-dom";
@@ -71,7 +72,7 @@ export const CarDetails = ({
                     mobile_phone: "+7 (999) 999 99 99",
                   }}
                 />,
-                { modalClass: `${styles.carPhoneModal}` }
+                { modalClass: `${modalStyles.other}` }
               );
             }}
           >

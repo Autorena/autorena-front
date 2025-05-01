@@ -1,5 +1,6 @@
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import styles from "./CarPage.module.scss";
+import modalStyles from "../../ui-components/Modal/Modal.module.scss";
 import { ReactComponent as Heart } from "../../assets/favorite.svg";
 import { ReactComponent as ArrowBack } from "../../assets/car-arrowBack.svg";
 import { ReactComponent as Share } from "../../assets/share.svg";
@@ -153,7 +154,7 @@ export const CarPage = () => {
                       mobile_phone: "+7 (999) 999 99 99",
                     }}
                   />,
-                  { modalClass: `${styles.carPhoneModal}` }
+                  { modalClass: `${modalStyles.other}` }
                 );
               }}
             >

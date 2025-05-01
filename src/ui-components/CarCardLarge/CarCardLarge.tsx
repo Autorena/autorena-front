@@ -1,12 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { CarCardProps } from "../../types";
 import styles from "./CarCardLarge.module.scss";
+import modalStyles from "../../ui-components/Modal/Modal.module.scss";
 import { ReactComponent as Like } from "../../assets/favorite.svg";
 import { useAppSelector } from "../../redux/hooks";
 import { useContext } from "react";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { LoginModal } from "../../components/modals/LoginModal";
 import { timeAgo } from "../../utils/timeAgo";
+import { CarPhoneModal } from "../../components/modals/CarPhoneModal";
 
 export const CarCardLarge = ({ carData }: CarCardProps) => {
   const {
@@ -77,10 +79,11 @@ export const CarCardLarge = ({ carData }: CarCardProps) => {
           <button
             type="button"
             className={`red-btn ${styles.writeBtn}`}
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.preventDefault();
               e.stopPropagation();
-              navigate("/chat");
+              if (isPhoneConfirmed) navigate("/chat");
+              else setModalContent(<LoginModal />);
             }}
           >
             Написать
@@ -91,6 +94,18 @@ export const CarCardLarge = ({ carData }: CarCardProps) => {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
+              setModalActive(true);
+              setModalContent(
+                <CarPhoneModal
+                  data={{
+                    name: "Сергей",
+                    rating: 4.6,
+                    rating_count: 12,
+                    mobile_phone: "+7 (999) 999 99 99",
+                  }}
+                />,
+                { modalClass: `${modalStyles.other}` }
+              );
             }}
           >
             {window.innerWidth <= 550 ? "Позвонить" : " Показать номер"}

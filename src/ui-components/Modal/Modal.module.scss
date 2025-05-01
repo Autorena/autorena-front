@@ -1,4 +1,5 @@
 .modal {
+  overflow-y: auto;
   &_overlay {
     display: none;
     position: fixed;
@@ -43,29 +44,26 @@
 @media (max-width: 768px) {
   .modal {
     &_content {
-      width: 100%;
-      height: 100%;
-      border-radius: 0;
-      top: 0;
-      transform: none;
-    }
-    &_btnClose {
-      display: none;
-    }
-    &_btnBack {
-      display: block;
-      top: 24px;
-      left: 20px;
-      position: absolute;
-    }
-    &.carPhoneModal {
-      .modal_btnClose {
-        display: block;
+      overflow-y: auto;
+      &:not(.other) {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        top: 0;
+        transform: none;
+        .modal_btnClose {
+          display: none;
+        }
+        .modal_btnBack {
+          display: block;
+          top: 24px;
+          left: 20px;
+          position: absolute;
+        }
       }
-
-      .modal_btnBack {
-        display: none;
-      }
+    }
+    &_content.other {
+      width: 90%;
     }
   }
 }
