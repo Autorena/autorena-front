@@ -4,6 +4,8 @@ import { Layout } from "./Layout";
 import { Modal } from "./ui-components/Modal/Modal";
 import { Home } from "./pages/Home/Home";
 import { RegistrationModal } from "./components/modals/RegistrationModal";
+import { FilterPage } from "./pages/FilterPage/FilterPage";
+import { CarPage } from "./pages/CarPage/CarPage";
 
 export const App = () => {
   return (
@@ -13,6 +15,8 @@ export const App = () => {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/reg" element={<RegistrationModal />} />
+          <Route path="/filter/:filter" element={<FilterPage />} />
+          <Route path="/:id" element={<CarPage />} />
         </Route>
       </Routes>
     </>

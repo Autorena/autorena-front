@@ -4,9 +4,26 @@
   display: flex;
   flex-direction: column;
   padding: 12px;
+  max-height: 310px;
+  height: 100%;
+  &_bottom {
+    margin-top: auto;
+  }
+  &.fullWidth {
+    grid-column: span 4;
+  }
   &_imgWrap {
     position: relative;
     margin-bottom: 12px;
+    max-width: 190px;
+    max-height: 147px;
+    border-radius: 16px;
+    aspect-ratio: 1 / 1;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
   &.ads &_imgWrap::before {
     content: "Реклама";
@@ -39,6 +56,12 @@
   }
   &_title {
     position: relative;
+    p {
+      width: 90%;
+      overflow: hidden;
+      text-wrap: nowrap;
+      text-overflow: ellipsis;
+    }
   }
   &_likeBtn {
     width: 20px;
@@ -93,6 +116,9 @@
 @media (max-width: 550px) {
   .carCard {
     &_imgWrap {
+      max-width: 100%;
+      // max-height: 100%;
+      // aspect-ratio: auto;
       margin-bottom: 8px;
     }
     &_title,
@@ -113,11 +139,12 @@
   }
 }
 
-@media (max-width: 390px) {
+@media (max-width: 391px) {
   .carCard {
     padding: 4px 4px 12px;
     &_imgWrap {
-      max-width: 155px;
+      max-width: 100%;
+      max-height: 122px;
       width: 100%;
     }
   }

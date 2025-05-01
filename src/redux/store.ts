@@ -1,4 +1,3 @@
-// store.ts
 import { configureStore } from "@reduxjs/toolkit";
 import carsReducer from "./carsSlice";
 import loaderReducer from "./loaderSlice";

@@ -29,18 +29,30 @@ export const StoryViewer = ({
     <div className="story-viewer">
       <div className={styles.story_slider} onClick={(e) => e.stopPropagation()}>
         <Swiper
-          spaceBetween={184}
-          slidesPerView={"auto"}
+          // spaceBetween={184}
+          // slidesPerView={"auto"}
           initialSlide={currentIndex}
           onSlideChange={(swiper) => setCurrentIndex(swiper.realIndex)}
-          modules={[Navigation, Autoplay]}
+          modules={[Navigation]}
           navigation={{
             nextEl: ".story-button-next",
             prevEl: ".story-button-prev",
           }}
-          autoplay={{ delay: 7000, stopOnLastSlide: true }}
-          centeredSlides={true}
+          // autoplay={{ delay: 7000, stopOnLastSlide: true }}
+          // centeredSlides={true}
           loop={false}
+          breakpoints={{
+            320: {
+              spaceBetween: 40,
+              slidesPerView: 1,
+              centeredSlides: true,
+            },
+            768: {
+              spaceBetween: 184,
+              slidesPerView: "auto",
+              centeredSlides: true,
+            },
+          }}
         >
           {storiesData.map((story, index) => (
             <SwiperSlide key={index}>

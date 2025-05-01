@@ -92,14 +92,12 @@ export const Stories = () => {
   };
 
   return (
-    <div className={styles.stories}>
+    <div className={`stories ${styles.stories}`}>
       <div className="swiper-wrap">
         <div className="swiper-arrow custom-button-prev">
           <Arrow />
         </div>
         <Swiper
-          // spaceBetween={24}
-          // slidesPerView={5}
           onSlideChange={() => console.log("slide change")}
           onSwiper={(swiper) => console.log(swiper)}
           modules={[Navigation]}

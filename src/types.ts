@@ -41,7 +41,13 @@ export type CarCardType = {
     photos: string[];
     title: string;
     description?: string;
+    city: string;
+    district: string;
+    address: string;
+    category: string;
+    created_at: string;
     ads?: boolean;
+    size?: string;
   };
   rent_auto: {
     cost_per_day: number;
@@ -50,12 +56,32 @@ export type CarCardType = {
     year: number;
     color?: string;
     discount?: number;
-    min_rental_period_days?: number;
+    min_rental_period_days: number;
+    deposit_required: boolean;
   };
   search_auto?: {
     car_class: string;
+    experience_years: number;
+  };
+  daily_rent: {
+    cost_per_day: number;
+    delivery_possible: boolean;
+    deposit_required: boolean;
+    buy_option: boolean;
+  };
+  driver_job: {
+    cost_per_day: number;
+    buy_option: boolean;
+  };
+  auto_services: {
+    cost_per_day: number;
+    buy_option: boolean;
   };
 };
+
+export interface CarCardProps {
+  carData: CarCardType;
+}
 
 export type PaginationProps = {
   currentPage: number;

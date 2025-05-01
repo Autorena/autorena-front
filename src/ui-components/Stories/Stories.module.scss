@@ -2,8 +2,12 @@
 
 .stories {
   max-width: 864px;
-  margin: 40px 0 22px;
+  margin: 40px 0 50px;
   overflow-x: scroll;
+  &::-webkit-scrollbar {
+    width: 0;
+    display: none;
+  }
 }
 .story {
   &_title {
@@ -59,7 +63,7 @@
 
 @media (max-width: 768px) {
   .stories {
-    padding-left: 20px;
+    padding: 0;
     margin: 41px 0 55px;
   }
   .story {

@@ -2,44 +2,70 @@ export const cars = [
   {
     common: {
       id: "1",
-      photos: ["/car.png"],
+      photos: ["car.svg", "car.svg", "car.svg", "car.svg", "car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
       ads: true,
+      city: "Москва",
+      district: "Центральный",
+      category: "RENT_AUTO",
+      created_at: "2025-04-11T12:34:56Z",
     },
     rent_auto: {
-      cost_per_day: 12000,
+      cost_per_day: 11000,
       taxi_possible: false,
       buy_option: true,
       year: 2024,
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: true,
     },
   },
   {
     common: {
       id: "2",
-      photos: ["/car.png"],
-      title: "Аренда Li L7 2024",
-      description: "",
+      photos: [
+        "car-large.svg",
+        "car-large.svg",
+        "car-large.svg",
+        "car-large.svg",
+        "car-large.svg",
+      ],
+      title: "Аренда TOYOTA Land Cruiser 200",
+      description:
+        "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д ",
+      city: "Санкт-Петербург",
+      district: "Адмиралтейский",
+      address: "г. Москва, Ярославское шоссе, д 6",
+      category: "RENT_AUTO",
+      created_at: "2025-04-20T12:34:56Z",
     },
     rent_auto: {
-      cost_per_day: 12000,
+      cost_per_day: 10000,
       taxi_possible: false,
       buy_option: true,
       year: 2024,
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: true,
     },
   },
   {
     common: {
       id: "3",
-      photos: ["/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
+      city: "Новосибирск",
+      district: "Центральный",
+      category: "RENT_AUTO",
+      created_at: "2025-04-08T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -49,15 +75,22 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: false,
     },
   },
   {
     common: {
       id: "4",
-      photos: ["/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
       ads: true,
+      city: "Екатеринбург",
+      district: "Ленинский",
+      category: "DAILY_RENT",
+      created_at: "2025-04-10T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -67,14 +100,23 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: false,
+      cost_per_day: 12000,
+      buy_option: true,
     },
   },
   {
     common: {
       id: "5",
-      photos: ["/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
+      city: "Казань",
+      district: "Вахитовский",
+      category: "RENT_AUTO",
+      created_at: "2025-03-20T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -84,14 +126,24 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: false,
     },
   },
   {
     common: {
       id: "6",
-      photos: ["/car.png"],
-      title: "Аренда Li L7 2024",
-      description: "",
+      photos: ["car-large.svg", "car-large.svg", "car-large.svg"],
+      title: "Аренда TOYOTA Land Cruiser 200",
+      description:
+        "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д ",
+      city: "Нижний Новгород",
+      district: "Нижегородский",
+      address: "г. Москва, Ярославское шоссе, д 6",
+      category: "RENT_AUTO",
+      created_at: "2025-04-13T12:34:56Z",
+      size: "large",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -101,14 +153,21 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: false,
     },
   },
   {
     common: {
       id: "7",
-      photos: ["/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
+      city: "Челябинск",
+      district: "Центральный",
+      category: "DAILY_RENT",
+      created_at: "2025-03-21T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -118,14 +177,23 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: true,
+      cost_per_day: 11000,
+      buy_option: true,
     },
   },
   {
     common: {
       id: "8",
-      photos: ["/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
+      city: "Самара",
+      district: "Самарский",
+      category: "RENT_AUTO",
+      created_at: "2025-01-20T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -135,14 +203,21 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: true,
     },
   },
   {
     common: {
       id: "9",
-      photos: ["/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
+      city: "Омск",
+      district: "Центральный",
+      category: "DAILY_RENT",
+      created_at: "2025-03-27T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -152,14 +227,23 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: false,
+      cost_per_day: 12000,
+      buy_option: true,
     },
   },
   {
     common: {
       id: "10",
-      photos: ["/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
+      city: "Ростов-на-Дону",
+      district: "Ленинский",
+      category: "RENT_AUTO",
+      created_at: "2025-04-15T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -169,14 +253,24 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: true,
     },
   },
   {
     common: {
       id: "11",
-      photos: ["/car.png"],
-      title: "Аренда Li L7 2024",
-      description: "",
+      photos: ["car-large.svg", "car-large.svg", "car-large.svg"],
+      title: "Аренда TOYOTA Land Cruiser 200",
+      description:
+        "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д ",
+      city: "Уфа",
+      district: "Советский",
+      address: "г. Москва, Ярославское шоссе, д 6",
+      category: "RENT_AUTO",
+      created_at: "2024-07-20T12:34:56Z",
+      size: "large",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -187,16 +281,23 @@ export const cars = [
       discount: 0,
       min_rental_period_days: 1,
     },
+    daily_rent: {
+      delivery_possible: false,
+    },
   },
   {
     common: {
       id: "12",
-      photos: ["/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
+      city: "Красноярск",
+      district: "Центральный",
+      category: "DAILY_RENT",
+      created_at: "2025-02-20T12:34:56Z",
     },
     rent_auto: {
-      cost_per_day: 12000,
+      cost_per_day: 13000,
       taxi_possible: false,
       buy_option: true,
       year: 2024,
@@ -206,14 +307,26 @@ export const cars = [
     },
     search_auto: {
       car_class: "comfort_plus",
+    },
+    daily_rent: {
+      delivery_possible: true,
+      cost_per_day: 13000,
+      buy_option: true,
     },
   },
   {
     common: {
       id: "13",
-      photos: ["/car.png"],
-      title: "Аренда Li L7 2024",
-      description: "",
+      photos: ["car-large.svg", "car-large.svg", "car-large.svg"],
+      title: "Аренда TOYOTA Land Cruiser 200",
+      description:
+        "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д ",
+      city: "Пермь",
+      district: "Дзержинский",
+      address: "г. Москва, Ярославское шоссе, д 6",
+      category: "BUY_AUTO",
+      created_at: "2024-01-10T12:34:56Z",
+      size: "large",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -226,14 +339,24 @@ export const cars = [
     },
     search_auto: {
       car_class: "comfort_plus",
+    },
+    daily_rent: {
+      delivery_possible: false,
     },
   },
   {
     common: {
       id: "14",
-      photos: ["/car.png"],
+      photos: ["car-large-2.svg", "car-large-2.svg", "car-large-2.svg"],
       title: "Аренда Li L7 2024",
-      description: "",
+      description:
+        "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д ",
+      city: "Воронеж",
+      district: "Левобережный",
+      address: "г. Москва, Ярославское шоссе, д 6",
+      category: "BUY_AUTO",
+      created_at: "2025-04-22T12:34:56Z",
+      size: "large",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -243,17 +366,24 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: false,
     },
   },
   {
     common: {
       id: "15",
-      photos: ["/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
+      city: "Волгоград",
+      district: "Центральный",
+      category: "BUY_AUTO",
+      created_at: "2025-03-01T12:34:56Z",
     },
     rent_auto: {
-      cost_per_day: 12000,
+      cost_per_day: 11000,
       taxi_possible: false,
       buy_option: true,
       year: 2024,
@@ -263,14 +393,21 @@ export const cars = [
     },
     search_auto: {
       car_class: "comfort_plus",
+    },
+    daily_rent: {
+      delivery_possible: false,
     },
   },
   {
     common: {
       id: "16",
-      photos: ["/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
+      city: "Краснодар",
+      district: "Центральный",
+      category: "BUY_AUTO",
+      created_at: "2025-04-18T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -280,14 +417,23 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: false,
     },
   },
   {
     common: {
       id: "17",
-      photos: ["/car.png"],
+      photos: ["car-large-2.svg", "car-large-2.svg", "car-large-2.svg"],
       title: "Аренда Li L7 2024",
-      description: "",
+      description:
+        "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д ",
+      city: "Саратов",
+      district: "Фрунзенский",
+      address: "г. Москва, Ярославское шоссе, д 6",
+      category: "BUY_AUTO",
+      created_at: "2025-04-17T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -297,14 +443,21 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: false,
     },
   },
   {
     common: {
       id: "18",
-      photos: ["/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
+      city: "Тюмень",
+      district: "Центральный",
+      category: "DRIVER_JOBS",
+      created_at: "2025-04-16T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -314,32 +467,59 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: true,
+    },
+    driver_job: {
+      cost_per_day: 13000,
+      buy_option: true,
     },
   },
   {
     common: {
       id: "19",
-      photos: ["/car.png"],
-      title: "Аренда Li L7 2024",
-      description: "",
+      photos: ["car-large.svg", "car-large.svg", "car-large.svg"],
+      title: "Аренда TOYOTA Land Cruiser 200",
+      description:
+        "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д ",
       ads: true,
+      city: "Ижевск",
+      district: "Октябрьский",
+      address: "г. Москва, Ярославское шоссе, д 6",
+      category: "DRIVER_JOBS",
+      created_at: "2025-04-14T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
-      taxi_possible: false,
       buy_option: true,
+      taxi_possible: false,
       year: 2024,
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: true,
+    },
+    driver_job: {
+      cost_per_day: 12000,
+      buy_option: true,
     },
   },
   {
     common: {
       id: "20",
-      photos: ["/public/car.png"],
+      photos: ["car-large-2.svg", "car-large-2.svg", "car-large-2.svg"],
       title: "Аренда Li L7 2024",
-      description: "",
+      description:
+        "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д ",
+      city: "Москва",
+      district: "Северный",
+      address: "г. Москва, Ярославское шоссе, д 6",
+      category: "DRIVER_JOBS",
+      created_at: "2025-04-12T12:34:56Z",
+      size: "large",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -352,15 +532,26 @@ export const cars = [
     },
     search_auto: {
       car_class: "comfort_plus",
+    },
+    daily_rent: {
+      delivery_possible: true,
+    },
+    driver_job: {
+      cost_per_day: 13000,
+      buy_option: true,
     },
   },
   {
     common: {
       id: "21",
-      photos: ["/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
       ads: true,
+      city: "Ульяновск",
+      district: "Ленинский",
+      category: "DRIVER_JOBS",
+      created_at: "2025-04-09T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -370,14 +561,25 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: false,
+    },
+    driver_job: {
+      cost_per_day: 12000,
+      buy_option: true,
     },
   },
   {
     common: {
       id: "22",
-      photos: ["/public/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
+      city: "Иркутск",
+      district: "Правобережный",
+      category: "DRIVER_JOBS",
+      created_at: "2025-04-07T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -387,15 +589,29 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: false,
+    },
+    driver_job: {
+      cost_per_day: 12000,
+      buy_option: true,
     },
   },
   {
     common: {
       id: "23",
-      photos: ["/car.png"],
-      title: "Аренда Li L7 2024",
-      description: "",
+      photos: ["car-large.svg", "car-large.svg", "car-large.svg"],
+      title: "Аренда TOYOTA Land Cruiser 200",
+      description:
+        "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д ",
       ads: true,
+      city: "Москва",
+      district: "Западный",
+      address: "г. Москва, Ярославское шоссе, д 6",
+      category: "DRIVER_JOBS",
+      created_at: "2025-04-05T12:34:56Z",
+      size: "large",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -405,14 +621,28 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: false,
+    },
+    driver_job: {
+      cost_per_day: 11000,
+      buy_option: true,
     },
   },
   {
     common: {
       id: "24",
-      photos: ["/public/car.png"],
-      title: "Аренда Li L7 2024",
-      description: "",
+      photos: ["car-large.svg", "car-large.svg", "car-large.svg"],
+      title: "Аренда TOYOTA Land Cruiser 200",
+      description:
+        "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д ",
+      city: "Ярославль",
+      district: "Кировский",
+      address: "г. Москва, Ярославское шоссе, д 6",
+      category: "AUTO_SERVICES",
+      created_at: "2025-04-03T12:34:56Z",
+      size: "large",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -425,14 +655,24 @@ export const cars = [
     },
     search_auto: {
       car_class: "comfort_plus",
+    },
+    daily_rent: {
+      delivery_possible: false,
     },
   },
   {
     common: {
       id: "25",
-      photos: ["/car.png"],
-      title: "Аренда Li L7 2024",
-      description: "",
+      photos: ["car-large.svg", "car-large.svg", "car-large.svg"],
+      title: "Аренда TOYOTA Land Cruiser 200",
+      description:
+        "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д ",
+      city: "Владивосток",
+      district: "Ленинский",
+      address: "г. Москва, Ярославское шоссе, д 6",
+      category: "AUTO_SERVICES",
+      created_at: "2025-04-01T12:34:56Z",
+      size: "large",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -442,14 +682,21 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: false,
     },
   },
   {
     common: {
       id: "26",
-      photos: ["/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
+      city: "Махачкала",
+      district: "Советский",
+      category: "AUTO_SERVICES",
+      created_at: "2025-03-28T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -459,14 +706,21 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: true,
     },
   },
   {
     common: {
       id: "27",
-      photos: ["/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
+      city: "Томск",
+      district: "Кировский",
+      category: "AUTO_SERVICES",
+      created_at: "2025-03-25T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -476,14 +730,21 @@ export const cars = [
       color: "black",
       discount: 0,
       min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: true,
     },
   },
   {
     common: {
       id: "28",
-      photos: ["/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
+      city: "Оренбург",
+      district: "Центральный",
+      category: "AUTO_SERVICES",
+      created_at: "2025-03-22T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -494,47 +755,20 @@ export const cars = [
       discount: 0,
       min_rental_period_days: 1,
     },
-  },
-  {
-    common: {
-      id: "28",
-      photos: ["/car.png"],
-      title: "Аренда Li L7 2024",
-      description: "",
-    },
-    rent_auto: {
-      cost_per_day: 12000,
-      taxi_possible: false,
-      buy_option: true,
-      year: 2024,
-      color: "black",
-      discount: 0,
-      min_rental_period_days: 1,
-    },
-  },
-  {
-    common: {
-      id: "28",
-      photos: ["../../"],
-      title: "Аренда Li L7 2024",
-      description: "",
-    },
-    rent_auto: {
-      cost_per_day: 12000,
-      taxi_possible: false,
-      buy_option: true,
-      year: 2024,
-      color: "black",
-      discount: 0,
-      min_rental_period_days: 1,
+    daily_rent: {
+      delivery_possible: false,
     },
   },
   {
     common: {
       id: "29",
-      photos: ["/car.png"],
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
+      city: "Кемерово",
+      district: "Центральный",
+      category: "AUTO_SERVICES",
+      created_at: "2025-03-18T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -545,36 +779,52 @@ export const cars = [
       discount: 0,
       min_rental_period_days: 1,
     },
-    search_auto: {
-      car_class: "comfort_plus",
-    },
-  },
-  {
-    common: {
-      id: "12",
-      photos: ["/car.png"],
-      title: "Аренда Li L7 2024",
-      description: "",
-    },
-    rent_auto: {
-      cost_per_day: 12000,
-      taxi_possible: false,
-      buy_option: true,
-      year: 2024,
-      color: "black",
-      discount: 0,
-      min_rental_period_days: 1,
-    },
-    search_auto: {
-      car_class: "comfort_plus",
+    daily_rent: {
+      delivery_possible: true,
     },
   },
   {
     common: {
       id: "30",
-      photos: ["/car.png"],
+      photos: [
+        "car-large.svg",
+        "car-large.svg",
+        "car-large.svg",
+        "car-large.svg",
+        "car-large.svg",
+      ],
+      title: "Аренда TOYOTA Land Cruiser 200",
+      description:
+        "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д ",
+      city: "Новокузнецк",
+      district: "Центральный",
+      address: "г. Москва, Ярославское шоссе, д 6",
+      category: "AUTO_SERVICES",
+      created_at: "2025-03-15T12:34:56Z",
+    },
+    rent_auto: {
+      cost_per_day: 12000,
+      taxi_possible: false,
+      buy_option: true,
+      year: 2024,
+      color: "black",
+      discount: 0,
+      min_rental_period_days: 1,
+    },
+    daily_rent: {
+      delivery_possible: true,
+    },
+  },
+  {
+    common: {
+      id: "31",
+      photos: ["car.svg"],
       title: "Аренда Li L7 2024",
       description: "",
+      city: "Рязань",
+      district: "Советский",
+      category: "AUTO_SERVICES",
+      created_at: "2025-03-12T12:34:56Z",
     },
     rent_auto: {
       cost_per_day: 12000,
@@ -587,6 +837,77 @@ export const cars = [
     },
     search_auto: {
       car_class: "comfort_plus",
+    },
+    daily_rent: {
+      delivery_possible: false,
+    },
+  },
+  {
+    common: {
+      id: "32",
+      photos: ["car.svg"],
+      title: "Аренда Li L7 2024",
+      description: "",
+      city: "Пенза",
+      district: "Ленинский",
+      category: "AUTO_SERVICES",
+      created_at: "2025-03-10T12:34:56Z",
+    },
+    rent_auto: {
+      cost_per_day: 12000,
+      taxi_possible: false,
+      buy_option: true,
+      year: 2024,
+      color: "black",
+      discount: 0,
+      min_rental_period_days: 1,
+    },
+    search_auto: {
+      car_class: "comfort_plus",
+    },
+    daily_rent: {
+      delivery_possible: false,
+    },
+  },
+  {
+    common: {
+      id: "33",
+      photos: [
+        "car-large-2.svg",
+        "car-large-2.svg",
+        "car-large-2.svg",
+        "car-large-2.svg",
+        "car-large-2.svg",
+      ],
+      title: "Аренда Li L7 2024",
+      description:
+        "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д. Машина на гарантии, русификация, полный пакет документов и.т. д  ",
+      city: "Пенза",
+      district: "Октябрьский",
+      address: "г. Москва, Ярославское шоссе, д 6",
+      category: "AUTO_SERVICES",
+      created_at: "2025-03-05T12:34:56Z",
+      size: "large",
+      ads: true,
+    },
+    rent_auto: {
+      cost_per_day: 14000,
+      taxi_possible: false,
+      buy_option: true,
+      year: 2024,
+      color: "black",
+      discount: 0,
+      min_rental_period_days: 1,
+    },
+    search_auto: {
+      car_class: "comfort_plus",
+    },
+    daily_rent: {
+      delivery_possible: false,
+    },
+    auto_services: {
+      cost_per_day: 14000,
+      buy_option: true,
     },
   },
 ];

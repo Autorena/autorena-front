@@ -1,0 +1,54 @@
+@use "../../styles/colors" as *;
+
+.dropdownList {
+  position: relative;
+  &_title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: $light-gray;
+    font-weight: 500;
+    line-height: 20px;
+    border-radius: 12px;
+    & .arrow {
+      transition: transform 0.2s ease;
+    }
+    & .arrow.open {
+      transform: rotate(180deg);
+    }
+  }
+
+  &_items {
+    width: 282px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 24px;
+    position: absolute;
+    bottom: -166px;
+    border-radius: 12px;
+    background: $light-gray;
+    z-index: 500;
+  }
+
+  &_item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 20px;
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 768px) {
+  .dropdownList {
+    .arrow {
+      width: 16px;
+      height: 16px;
+    }
+    &_title {
+      gap: 4px;
+    }
+  }
+}

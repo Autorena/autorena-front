@@ -36,6 +36,11 @@
     border: 1px solid #dedede;
     box-shadow: 1px 2px 32px 0px rgba(17, 17, 17, 0.08);
     overflow: hidden;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background: #c2c2c22b;
+    }
 
     &.full_height {
       max-width: 253px;
@@ -50,8 +55,6 @@
     &Visible {
       display: none;
     }
-
-    & img,
     & svg {
       position: absolute;
       bottom: 0;
@@ -79,8 +82,9 @@
   &_info_points {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 16px;
-    max-width: 450px;
+    max-width: 580px;
     margin: 24px 0 40px;
   }
   &_filter {
@@ -114,10 +118,11 @@
     }
     &_grid {
       position: relative;
-      margin: 28px 0 52px;
-      max-width: 856px;
+      margin: 28px 0 0;
+      max-width: 868px;
       display: grid;
       grid-template-columns: repeat(4, minmax(165px, 214px));
+      grid-auto-flow: dense;
       justify-content: space-between;
       gap: 8px 4px;
     }
@@ -159,6 +164,50 @@
   }
   &_swiper {
     display: none;
+  }
+  .option_img {
+    position: absolute;
+    bottom: 0;
+    z-index: -1;
+  }
+}
+
+.filterPage {
+  .filterBtn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    padding: 10px 20px;
+  }
+  .home_main {
+    max-width: unset;
+    width: 100%;
+  }
+  .home_info_points {
+    margin-bottom: 0;
+  }
+  .home_recommends {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 64px;
+    padding-top: 16px;
+  }
+  .home_recommends_grid {
+    margin-top: 0;
+  }
+  .footer_list {
+    margin-bottom: 96px;
+    width: 70.5%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    justify-content: space-between;
+    gap: 16px 64px;
+    li {
+      width: fit-content;
+      line-height: 20px;
+    }
   }
 }
 
@@ -207,12 +256,33 @@
       max-width: 100%;
     }
   }
+  .filterPage {
+    .home_recommends {
+      display: block;
+      width: 100%;
+    }
+    .footer_list {
+      width: 100%;
+    }
+  }
 }
 
 @media (max-width: 768px) {
   .home {
     &Wrap {
       padding: 0;
+      &.filterPage {
+        .home_info_points {
+          margin: 16px 0;
+        }
+        .home_recommends,
+        .home_recommends_grid {
+          margin-top: 0;
+        }
+        .filterBtn {
+          padding: 10px 16px;
+        }
+      }
     }
     &_info,
     &_recommends .title {
@@ -252,7 +322,7 @@
 
     &_recommends {
       &_grid {
-        margin: 28px 0 52px;
+        margin: 28px 0 0;
         padding: 0 20px;
         max-width: 856px;
         display: grid;
@@ -269,6 +339,28 @@
     &_info_points {
       margin: 24px 0;
     }
+    &Wrap.filterPage {
+      .footer_list {
+        padding: 0 20px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px 40px;
+        margin-bottom: 72px;
+        li {
+          font-size: 12px;
+          line-height: 15px;
+        }
+      }
+      .footer_list li:nth-child(3),
+      .footer_list li:nth-child(4),
+      .footer_list li:nth-child(7),
+      .footer_list li:nth-child(8),
+      .footer_list li:nth-child(11),
+      .footer_list li:nth-child(12),
+      .footer_list li:nth-child(15),
+      .footer_list li:nth-child(16) {
+        display: none;
+      }
+    }
   }
 }
 
@@ -276,6 +368,7 @@
   .home {
     &_recommends {
       &_grid {
+        overflow: hidden;
         grid-template-columns: repeat(2, minmax(155px, 1fr));
         gap: 16px;
       }
@@ -294,7 +387,6 @@
       & .title {
         margin-left: 13px;
       }
-      & img,
       & svg {
         position: static;
         height: 88px;
@@ -341,6 +433,11 @@
       margin: 24px 0 0;
       & .title {
         margin-top: 29px;
+      }
+    }
+    &Wrap.filterPage {
+      .home_recommends {
+        padding-top: 0;
       }
     }
   }

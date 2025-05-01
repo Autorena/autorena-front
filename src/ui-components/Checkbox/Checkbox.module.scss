@@ -1,0 +1,33 @@
+@use "../../styles/colors" as *;
+
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkboxInput {
+  display: none;
+}
+
+.checkboxCustom {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #dedede;
+  background: $light-gray;
+  border-radius: 4px;
+  margin-right: 16px;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.checkboxInput:checked + .checkboxCustom {
+  background: url(../../assets/checkbox-checked.svg);
+  background-size: 100%;
+}
+
+.checkboxLabel {
+  font-size: 18px;
+  line-height: 22px;
+}

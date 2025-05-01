@@ -17,10 +17,11 @@
 .story_slider {
   width: 100%;
   display: flex;
-  justify-content: center;
+  // justify-content: center;
   align-items: center;
   transition: transform 0.6s ease-in-out;
   will-change: transform;
+  overflow: hidden;
 }
 
 .closeBtn {
@@ -39,7 +40,8 @@
 }
 .storyCard {
   position: relative;
-  width: 280px;
+  // width: 280px;
+  width: auto;
   height: 501px;
   padding: 24px;
   background-color: #eee;
@@ -64,7 +66,10 @@
 
 .storyCard.center {
   width: 400px;
-  height: 783px;
+  max-height: 783px;
+  min-height: 500px;
+  height: 85vh;
+  justify-self: center;
   background-color: #fff;
   position: relative;
   & .arrowPrev,
@@ -184,6 +189,49 @@
     &.center .arrowPrev svg {
       width: 30px;
       height: 30px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .story_slider {
+    margin-top: 40px;
+  }
+  .storyCard {
+    &.center .arrowNext,
+    &.center .arrowPrev {
+      display: none;
+    }
+    &.center {
+      height: 70vh;
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  .storyCard {
+    &.center {
+      max-width: 330px;
+      width: 100%;
+    }
+    .closeBtn {
+      width: 24px;
+      height: 24px;
+      right: -30px;
+    }
+  }
+}
+
+@media (max-width: 370px) {
+  .storyCard {
+    &.center {
+      max-width: 85%;
+    }
+
+    .closeBtn {
+      width: 20px;
+      height: 20px;
+      right: -20px;
     }
   }
 }

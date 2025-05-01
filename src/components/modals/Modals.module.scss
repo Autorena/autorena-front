@@ -1,6 +1,7 @@
 @use "../../styles/colors" as *;
 
 .modal {
+  overflow: hidden;
   &_title {
     font-size: 32px;
     line-height: 39px;
@@ -28,19 +29,32 @@
 
   &.location {
     max-height: 675px;
+    height: 85vh;
     width: 624px;
     padding: 42px 24px 24px;
+
     & .cities {
       display: grid;
       grid-template-columns: repeat(3, max-content);
       gap: 8px 48px;
+      max-height: 536px;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 15px;
+      &::-webkit-scrollbar {
+        width: 3px;
+        background: rgba(17, 17, 17, 0.14);
+        border-radius: 3px;
+        opacity: 0.4;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(17, 17, 17, 0.18);
+      }
     }
     & .city {
       display: block;
       text-align: left;
-    }
-    & .inputWrap {
-      position: relative;
     }
     & .inputWrap input {
       font-size: 14px;
@@ -84,7 +98,8 @@
   &.auth,
   &.phone,
   &.registr,
-  &.login {
+  &.login,
+  &.carPhone {
     width: 587px;
     padding: 40px;
   }
@@ -229,6 +244,37 @@
       display: none;
     }
   }
+
+  &.carPhone {
+    width: 467px;
+  }
+  .carPhone {
+    &_top {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    &_img {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #dedede;
+    }
+    &_info h3 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    &_ratingInfo {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    &_phone {
+      font-size: 28px;
+      font-weight: 600;
+    }
+  }
 }
 
 .checkboxWrapper {
@@ -275,6 +321,11 @@
     &.location {
       padding: 82px 20px 20px;
       justify-content: center;
+      height: 100%;
+      max-height: 100%;
+      .cities {
+        max-height: 100%;
+      }
     }
 
     &_title {

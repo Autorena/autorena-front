@@ -1,12 +1,12 @@
 import styles from "./Home.module.scss";
-import option1 from "../../assets/option_1.png";
+import { ReactComponent as Option1 } from "../../assets/filter_1.svg";
 import option2 from "../../assets/option_2.png";
-import option3 from "../../assets/option_3.png";
-import option4 from "../../assets/option_4.png";
-import option5 from "../../assets/option_5.png";
+import { ReactComponent as Option3 } from "../../assets/filter_3.svg";
+import { ReactComponent as Option4 } from "../../assets/filter_4.svg";
+import { ReactComponent as Option5 } from "../../assets/filter_5.svg";
 import { ReactComponent as Option6 } from "../../assets/option_6.svg";
 import { Stories } from "../../ui-components/Stories/Stories";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { LocationContext } from "../../HOC/LocationProvider";
 import { ReactComponent as Location } from "../../assets/location-icon.svg";
 import { ModalContext } from "../../HOC/ModalProvider";
@@ -16,16 +16,21 @@ import { fetchCars } from "../../redux/carsSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { Loader } from "../../ui-components/Loader/Loader";
 import { HeaderMobile } from "../../ui-components/HeaderMobile/HeaderMobile";
+import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
+import { sortCars } from "../../utils/sortCars";
+import { Link } from "react-router-dom";
+import { sortOptions } from "../../constants/sortOptions";
+import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 
 export const Home = () => {
   const { location } = useContext(LocationContext);
   const { setModalActive, setModalContent } = useContext(ModalContext);
   const { cars, loading } = useAppSelector((state) => state.cars);
-
   const dispatch = useAppDispatch();
 
   const [visibleCount, setVisibleCount] = useState(20);
   const [activeFilter, setActiveFilter] = useState<{ [key: string]: any }>({});
+  const [sortOption, setSortOption] = useState<string>("default");
 
   useEffect(() => {
     dispatch(fetchCars()).catch((error) => {
@@ -33,19 +38,9 @@ export const Home = () => {
     });
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const bottomReached =
-        window.innerHeight + window.scrollY >= document.body.offsetHeight - 420;
-
-      if (bottomReached && visibleCount < cars.length) {
-        setVisibleCount((prev) => prev + 20);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [visibleCount, cars.length]);
+  useInfiniteScroll(() => {
+    setVisibleCount((prev) => prev + 20);
+  }, visibleCount < cars.length);
 
   const filterCars = (type: string, value: any) => {
     setActiveFilter((prev) =>
@@ -70,7 +65,16 @@ export const Home = () => {
     return true;
   });
 
-  const visibleCars = filteredCars.slice(0, visibleCount);
+  const handleSortChange = (value: string) => {
+    console.log("Selected sort option:", value);
+    setSortOption(value);
+  };
+
+  const sortedFilteredCars = useMemo(() => {
+    return sortCars(filteredCars, sortOption);
+  }, [filteredCars, sortOption]);
+
+  const visibleCars = sortedFilteredCars.slice(0, visibleCount);
 
   return (
     <div className={`container ${styles.homeWrap}`}>
@@ -80,15 +84,18 @@ export const Home = () => {
           <div className={styles.home_options}>
             <div className={styles.home_optionsWrap}>
               <div className={styles.top_row}>
-                <a href="#" className={`${styles.home_option} ${styles.big}`}>
+                <Link
+                  to="/filter/RENT_AUTO"
+                  className={`${styles.home_option} ${styles.big}`}
+                >
                   <h3 className={styles.title}>
                     Долгосрочная
                     <br /> аренда
                   </h3>
-                  <img src={option1} alt="Service image" />
-                </a>
-                <a
-                  href="#"
+                  <Option1 />
+                </Link>
+                <Link
+                  to="/filter/DAILY_RENT"
                   className={`${styles.home_option} ${styles.home_optionHide}`}
                 >
                   {" "}
@@ -96,13 +103,13 @@ export const Home = () => {
                     Аренда от
                     <br /> суток
                   </h3>
-                  <img src={option2} alt="Service image" />
-                </a>
-                <a href="#" className={styles.home_option}>
+                  <img src={option2} alt="" className={styles.option_img} />
+                </Link>
+                <Link to="/filter/AUTO_SERVICES" className={styles.home_option}>
                   {" "}
                   <h3 className={styles.title}>Автосервисы</h3>
-                  <img src={option3} alt="Service image" />
-                </a>
+                  <Option3 />
+                </Link>
                 <a
                   href="#"
                   className={`${styles.home_option} ${styles.mobile}`}
@@ -113,8 +120,8 @@ export const Home = () => {
                 </a>
               </div>
               <div className={styles.bottom_row}>
-                <a
-                  href="#"
+                <Link
+                  to="/filter/DAILY_RENT"
                   className={`${styles.home_option} ${styles.home_optionVisible}`}
                 >
                   {" "}
@@ -122,18 +129,21 @@ export const Home = () => {
                     Аренда от
                     <br /> суток
                   </h3>
-                  <img src={option2} alt="Service image" />
-                </a>
-                <a href="#" className={`${styles.home_option} ${styles.big}`}>
+                  <img src={option2} alt="" className={styles.option_img} />
+                </Link>
+                <Link
+                  to="/filter/BUY_AUTO"
+                  className={`${styles.home_option} ${styles.big}`}
+                >
                   {" "}
                   <h3 className={styles.title}>
                     Выкуп <br />
                     автомобилей
                   </h3>
-                  <img src={option4} alt="Service image" />
-                </a>
-                <a
-                  href="#"
+                  <Option4 />
+                </Link>
+                <Link
+                  to="/filter/DRIVER_JOBS"
                   className={`${styles.home_option} ${styles.big} ${styles.resize}`}
                 >
                   {" "}
@@ -141,8 +151,8 @@ export const Home = () => {
                     Работа
                     <br /> водителям
                   </h3>
-                  <img src={option5} alt="Service image" />
-                </a>
+                  <Option5 />
+                </Link>
               </div>
             </div>
             <a
@@ -156,17 +166,14 @@ export const Home = () => {
           </div>
           <Stories />
           <div className={styles.home_info}>
-            <h2 className="section-title">
-              Посмотрите объявления в Москве и МО
-            </h2>
             <div className={styles.home_info_points}>
               <button className={`${styles.home_filter} ${styles.large}`}>
                 <Location /> {location} и область
               </button>
               <button
                 onClick={() => {
-                  setModalContent(<LocationModal />);
                   setModalActive(true);
+                  setModalContent(<LocationModal />);
                 }}
                 style={{ padding: "0 8px" }}
                 className={styles.home_filter_choose}
@@ -190,6 +197,10 @@ export const Home = () => {
               >
                 Аренда комфорт +
               </button>
+              <DropdownList
+                options={sortOptions.default}
+                onSelect={handleSortChange}
+              />
             </div>
           </div>
           <div className={styles.home_recommends}>

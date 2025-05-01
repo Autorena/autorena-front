@@ -171,9 +171,88 @@ input {
   display: none;
 }
 
+.checkboxWrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkboxInput {
+  display: none;
+}
+
+.checkboxCustom {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #dedede;
+  background: $light-gray;
+  border-radius: 4px;
+  margin-right: 16px;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.checkboxInput:checked + .checkboxCustom {
+  background: url(./assets/checkbox-checked.svg);
+  background-size: 100%;
+}
+
+.checkboxLabel {
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.SwiperThumbs {
+  max-width: 786px;
+  width: 100%;
+  margin: 0;
+  .swiper-slide img {
+    border-radius: 8px;
+  }
+  .swiper-slide-active img {
+    width: 786px;
+    height: 532px;
+    object-fit: cover;
+  }
+}
+
+.swiper.SwiperThumbs_min {
+  width: 100%;
+  img {
+    width: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  .swiper-slide {
+    width: 151px !important;
+  }
+}
+
+.SwiperThumbs .swiper-slide,
+.SwiperThumbs_min .swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+}
+
+.SwiperThumbs .swiper-slide img,
+.SwiperThumbs_min .swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 @media (max-width: 1000px) {
   .swiper.home_swiper {
     display: block;
+  }
+
+  .SwiperThumbs {
+    max-width: 100%;
   }
 }
 
@@ -196,17 +275,33 @@ input {
 }
 
 @media (max-width: 768px) {
+  .stories .swiper-horizontal {
+    padding: 0 20px;
+  }
   .swiper-wrap {
-    padding: 0;
+    padding: 0 20px;
+    margin: 0 -20px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
     & .custom-button-next,
     & .custom-button-prev {
       display: none;
     }
+  }
+  .swiper.SwiperThumbs_min {
+    display: none;
   }
 }
 
 @media (max-width: 550px) {
   .section-title {
     font-size: 24px;
+  }
+
+  .SwiperThumbs {
+    .swiper-slide img {
+      max-height: 250px;
+    }
   }
 }
