@@ -15,6 +15,7 @@ import { CarGallery } from "./CarGallery";
 import { StarRating } from "../../ui-components/StarRating/StarRating";
 import { CarDetails } from "./CarDetails";
 import { CarPhoneModal } from "../../components/modals/CarPhoneModal";
+import { useModalWithHistory } from "../../hooks/useModalWithHistory";
 
 export type ReviewType = {
   title: string;
@@ -26,6 +27,7 @@ export type ReviewType = {
 
 export const CarPage = () => {
   const { setModalActive, setModalContent } = useContext(ModalContext);
+  const { openModal } = useModalWithHistory();
   const isAuth = useAppSelector((state) => state.user.isPhoneConfirmed);
   const { id } = useParams();
   const cars = useAppSelector((state) => state.cars.cars);
@@ -46,8 +48,9 @@ export const CarPage = () => {
   }, []);
 
   useEffect(() => {
+    console.log("ID changed to:", id);
     dispatch(fetchCarById(id!));
-  }, []);
+  }, [id]);
 
   if (
     !car ||
@@ -93,7 +96,13 @@ export const CarPage = () => {
       <div className={styles.car_info}>
         <div className={styles.car_left}>
           <div className={styles.car_header}>
-            <button className={styles.backBtn} onClick={() => navigate(-1)}>
+            <button
+              className={styles.backBtn}
+              onClick={() => {
+                navigate(-1);
+                window.scrollTo(0, 0);
+              }}
+            >
               <ArrowBack />
             </button>
             <h2>{car.common.title}</h2>
@@ -105,8 +114,7 @@ export const CarPage = () => {
                 onClick={() => {
                   if (isPhoneConfirmed) navigate("/profile");
                   else {
-                    setModalActive(true);
-                    setModalContent(<LoginModal />);
+                    openModal(<LoginModal />);
                   }
                 }}
                 className={styles.likeBtn}

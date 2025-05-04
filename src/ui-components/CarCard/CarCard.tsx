@@ -25,7 +25,6 @@ export const CarCard = ({ carData }: CarCardProps) => {
 
   const { isPhoneConfirmed } = useAppSelector((state) => state.user);
   const { setModalContent, setModalActive } = useContext(ModalContext);
-  console.log(pathname);
 
   const getCurrentFilter = () => {
     if (pathname.startsWith("/filter/")) {

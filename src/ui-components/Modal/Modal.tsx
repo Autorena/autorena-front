@@ -3,7 +3,7 @@ import styles from "./Modal.module.scss";
 import { ReactComponent as Cross } from "../../assets/cross.svg";
 import { ReactComponent as Back } from "../../assets/arrowBack.svg";
 import { ModalContext } from "../../HOC/ModalProvider";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 export const Modal = () => {
   const {
@@ -16,6 +16,18 @@ export const Modal = () => {
     goBack,
   } = useContext(ModalContext);
 
+  useEffect(() => {
+    const handlePopState = () => {
+      if (isModalActive) {
+        setModalActive(false);
+        setModalContent(null);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [isModalActive]);
+
   return ReactDOM.createPortal(
     <div
       className={`${styles.modal_overlay} ${isModalActive && styles.active}`}
@@ -26,6 +38,7 @@ export const Modal = () => {
           onClick={() => {
             setModalActive(false);
             setModalContent(null);
+            window.history.back();
           }}
         >
           <Cross width={crossSize} height={crossSize} />

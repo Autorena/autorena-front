@@ -9,6 +9,7 @@ import { ModalContext } from "../../HOC/ModalProvider";
 import { CarPhoneModal } from "../../components/modals/CarPhoneModal";
 import { useNavigate } from "react-router-dom";
 import { LoginModal } from "../../components/modals/LoginModal";
+import { useModalWithHistory } from "../../hooks/useModalWithHistory";
 
 export const CarDetails = ({
   car,
@@ -23,6 +24,7 @@ export const CarDetails = ({
   setShowAllReviews: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { setModalActive, setModalContent } = useContext(ModalContext);
+  const { openModal } = useModalWithHistory();
   const isAuth = useAppSelector((state) => state.user.isPhoneConfirmed);
   const cars = useAppSelector((state) => state.cars.cars);
   const navigate = useNavigate();
@@ -82,7 +84,7 @@ export const CarDetails = ({
             className={`red-btn ${styles.writeBtn}`}
             onClick={() => {
               if (isAuth) navigate("/chat");
-              else setModalContent(<LoginModal />);
+              else openModal(<LoginModal />);
             }}
           >
             Написать

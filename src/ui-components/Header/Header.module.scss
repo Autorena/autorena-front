@@ -167,7 +167,7 @@
     &_search {
       width: 70%;
       max-width: unset;
-      margin: 0 12px 0 8px;
+      margin: 0 10px 0 8px;
       input {
         padding-left: 50px;
         padding-right: 34px;
@@ -204,6 +204,14 @@
       max-width: 330px;
       width: 100%;
       min-width: 310px;
+    }
+    .arrowBack svg {
+      width: 23px;
+      height: 23px;
+    }
+    .locationBtn_mob svg {
+      width: 24px;
+      height: 24px;
     }
   }
 }

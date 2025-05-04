@@ -9,8 +9,10 @@ import { ModalContext } from "../../HOC/ModalProvider";
 import { LoginModal } from "../../components/modals/LoginModal";
 import { timeAgo } from "../../utils/timeAgo";
 import { CarPhoneModal } from "../../components/modals/CarPhoneModal";
+import { useModalWithHistory } from "../../hooks/useModalWithHistory";
 
 export const CarCardLarge = ({ carData }: CarCardProps) => {
+  const { openModal } = useModalWithHistory();
   const {
     common: { id, photos, title, description, address, created_at, ads },
     rent_auto: { cost_per_day },
@@ -83,7 +85,7 @@ export const CarCardLarge = ({ carData }: CarCardProps) => {
               e.preventDefault();
               e.stopPropagation();
               if (isPhoneConfirmed) navigate("/chat");
-              else setModalContent(<LoginModal />);
+              else openModal(<LoginModal />);
             }}
           >
             Написать
