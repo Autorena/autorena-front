@@ -36,11 +36,10 @@ export const StoryViewer = ({
             nextEl: ".story-button-next",
             prevEl: ".story-button-prev",
           }}
-          autoplay={{ delay: 7000, stopOnLastSlide: true }}
-          // centeredSlides={true}
+          // autoplay={{ delay: 7000, stopOnLastSlide: true }}
           loop={false}
           breakpoints={{
-            320: {
+            0: {
               spaceBetween: 40,
               slidesPerView: 1,
               centeredSlides: true,
