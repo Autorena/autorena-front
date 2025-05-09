@@ -7,6 +7,8 @@ import { RegistrationModal } from "./components/modals/RegistrationModal";
 import { FilterPage } from "./pages/FilterPage/FilterPage";
 import { CarPage } from "./pages/CarPage/CarPage";
 import { ScrollToTop } from "./components/ScrollToTop";
+import { ChooseCategory } from "./pages/ChooseCategory/ChooseCategory";
+import { CreateListing } from "./pages/CreateListing/CreateListing";
 
 export const App = () => {
   if ("scrollRestoration" in window.history) {
@@ -23,6 +25,8 @@ export const App = () => {
           <Route path="/reg" element={<RegistrationModal />} />
           <Route path="/filter/:filter" element={<FilterPage />} />
           <Route path="/:id" element={<CarPage />} />
+          <Route path="/choose-category" element={<ChooseCategory />} />
+          <Route path="/create-listing" element={<CreateListing />} />
         </Route>
       </Routes>
     </>

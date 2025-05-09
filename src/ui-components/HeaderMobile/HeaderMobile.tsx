@@ -30,34 +30,34 @@ export const HeaderMobile = ({ className }: HeaderMobProps) => {
   return (
     <div className={`${styles.header_mobile} ${className}`}>
       <Link to="/" className={styles.header_mobile_item}>
-        <Logo style={{ width: "40px", height: "37px" }} />
+        <Logo style={{ width: "35px", height: "35px" }} />
         <p>Поиск</p>
       </Link>
       <button
         onClick={() => {
           handleClick("favorites");
         }}
-        className={styles.header_mobile_item}
+        className={`${styles.header_mobile_item} ${styles.like}`}
       >
-        <Like style={{ width: "34px", height: "32px" }} />
+        <Like />
         <p>Избранное</p>
       </button>
       <Link to="" className={styles.header_mobile_item}>
-        <Listing style={{ width: "35px", height: "35px" }} />
+        <Listing />
         <p>Объявления</p>
       </Link>
       <button
         onClick={() => handleClick("messages")}
         className={styles.header_mobile_item}
       >
-        <Message style={{ width: "32px", height: "32px" }} />
+        <Message />
         <p>Сообщения</p>
       </button>
       <button
         onClick={() => handleClick("profile")}
         className={styles.header_mobile_item}
       >
-        <Profile style={{ width: "32px", height: "32px" }} />
+        <Profile />
         <p>Профиль</p>
       </button>
     </div>

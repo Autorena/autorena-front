@@ -11,6 +11,10 @@ const filterTitles: Record<string, string> = {
   DRIVER_JOBS: "Работа водителям",
 };
 
+const pathTitles: Record<string, string> = {
+  "choose-category": "Выбор категории",
+};
+
 export const Breadcrumbs = ({ className }: { className?: string }) => {
   const location = useLocation();
   const car = useAppSelector((state) => state.cars.car);
@@ -53,11 +57,13 @@ export const Breadcrumbs = ({ className }: { className?: string }) => {
       accumulatedPath += `/${segment}`;
       const isLast = index === pathSegments.length - 1;
 
+      const label = pathTitles[segment] || filterTitles[segment] || segment;
+
       breadcrumbs.push(
         <Arrow key={`arrow-${index}`} />,
         isLast ? (
           <span key={`segment-${index}`} className={styles.link}>
-            {filterTitles[segment] || segment}
+            {label}
           </span>
         ) : (
           <Link
@@ -65,7 +71,7 @@ export const Breadcrumbs = ({ className }: { className?: string }) => {
             key={`segment-${index}`}
             className={styles.link}
           >
-            {filterTitles[segment] || segment}
+            {label}
           </Link>
         )
       );

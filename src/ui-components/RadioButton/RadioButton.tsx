@@ -6,7 +6,7 @@ type RadioButtonType = {
   value: string;
   checked?: boolean;
   labelStyle?: React.CSSProperties;
-  onClick?: () => void;
+  onChange?: () => void;
 };
 
 export const RadioButton = ({
@@ -15,7 +15,7 @@ export const RadioButton = ({
   value,
   checked,
   labelStyle,
-  onClick,
+  onChange,
 }: RadioButtonType) => {
   return (
     <div className={styles.checkboxWrapper}>
@@ -27,7 +27,7 @@ export const RadioButton = ({
           value={value}
           name={name}
           checked={checked}
-          onClick={onClick}
+          onChange={onChange}
         />
         <span></span>
       </label>

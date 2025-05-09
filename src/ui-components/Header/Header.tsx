@@ -100,7 +100,11 @@ export const Header = () => {
             )}
           </div>
         </div>
-        <div className={`container ${styles.container}`}>
+        <div
+          className={`container ${styles.container} ${
+            pathname === "/create-listing" ? styles.hide : ""
+          }`}
+        >
           <div className={styles.header_bottom}>
             <Link
               to="/"
@@ -142,9 +146,12 @@ export const Header = () => {
               >
                 <Location />
               </button>
-              <button className={`red-btn ${styles.header_adBtn}`}>
+              <Link
+                to="/choose-category"
+                className={`red-btn ${styles.header_adBtn}`}
+              >
                 Разместить объявление
-              </button>
+              </Link>
             </div>
             <button
               className={styles.locationBtn}

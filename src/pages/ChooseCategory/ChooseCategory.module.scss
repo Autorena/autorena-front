@@ -1,0 +1,27 @@
+@use "../../styles/colors" as *;
+
+.categories {
+  height: 100%;
+  &_bottom {
+    padding: 40px 0;
+    h2 {
+      margin-bottom: 32px;
+      font-size: 48px;
+      font-weight: 600;
+    }
+  }
+  &_wrap {
+    max-width: 816px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .category {
+    padding: 15px 30px;
+    font-size: 24px;
+    font-weight: 600;
+    background: $light-gray;
+    border-radius: 16px;
+    border: 1px solid #dedede;
+  }
+}

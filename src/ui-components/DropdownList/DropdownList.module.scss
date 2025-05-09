@@ -50,5 +50,15 @@
     &_title {
       gap: 4px;
     }
+    &_items {
+      width: 210px;
+    }
+  }
+}
+@media (max-width: 550px) {
+  .dropdownList {
+    &_items {
+      width: 190px;
+    }
   }
 }

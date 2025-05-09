@@ -1,0 +1,84 @@
+@use "../../styles/colors" as *;
+
+.new_listing {
+  padding: 48px 0 96px;
+  &_top {
+    display: flex;
+    align-items: center;
+    gap: 21px;
+    margin-bottom: 40px;
+  }
+  h2 {
+    font-family: Commissioner;
+    font-size: 40px;
+    font-weight: 600;
+  }
+  .arrow {
+    width: 26px;
+    height: 26px;
+  }
+  .photosWrap {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+    &_previews {
+      display: flex;
+      gap: 8px;
+    }
+  }
+  .upload_file {
+    width: 130px;
+    height: 110px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border-radius: 16px;
+    background: $light-gray;
+    color: rgba(17, 17, 17, 0.4);
+    font-size: 20px;
+  }
+  .preview_img {
+    width: 130px;
+    height: 110px;
+    border-radius: 16px;
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    font-size: 20px;
+  }
+
+  .inputWrap {
+    margin-bottom: 32px;
+    h3 {
+      margin-bottom: 24px;
+      font-size: 24px;
+      font-weight: 500;
+    }
+    input,
+    textarea {
+      max-width: 606px;
+      width: 100%;
+    }
+    input[type="number"] {
+      max-width: 150px;
+    }
+    textarea {
+      padding: 16px;
+      border-radius: 8px;
+      background: $light-gray;
+      outline: none;
+      resize: none;
+    }
+    &_descr {
+      color: rgba(17, 17, 17, 0.4);
+    }
+    &.title input {
+      margin-bottom: 16px;
+    }
+  }
+}

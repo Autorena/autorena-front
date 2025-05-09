@@ -22,15 +22,28 @@ export type modalContextProps = {
   goBack?: () => void;
 };
 
-export type StoryType = {
+// export interface StorySlide {
+//   id: number | string;
+//   background: string;
+//   previewImage?: string;
+//   content?: ReactNode;
+//   slides?: [];
+// }
+
+export type StorySlide = {
+  background?: string;
+  content: React.ReactNode;
+};
+
+export type StoryGroup = {
   id: number;
-  title: string;
   img: string;
-  content?: ReactNode;
+  title: string;
+  slides: StorySlide[];
 };
 
 export type StoryModalProps = {
-  storiesData: Array<StoryType>;
+  storiesData: Array<StoryGroup>;
   initialIndex: number;
   onClose: () => void;
 };

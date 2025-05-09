@@ -11,10 +11,21 @@ type DropdownOption = {
 type DropdownListProps = {
   options: DropdownOption[];
   onSelect: (value: string) => void;
+  value?: string;
+  buttonStyles?: {};
+  listStyles?: {};
 };
 
-export const DropdownList = ({ options, onSelect }: DropdownListProps) => {
-  const [selected, setSelected] = useState(options[0]);
+export const DropdownList = ({
+  options,
+  onSelect,
+  value,
+  buttonStyles,
+  listStyles,
+}: DropdownListProps) => {
+  const initialSelected =
+    options.find((opt) => opt.value === value) || options[0];
+  const [selected, setSelected] = useState(initialSelected);
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSelect = (option: DropdownOption) => {
@@ -26,14 +37,16 @@ export const DropdownList = ({ options, onSelect }: DropdownListProps) => {
   return (
     <div className={styles.dropdownList}>
       <button
+        type="button"
         className={styles.dropdownList_title}
         onClick={() => setIsOpen((prev) => !prev)}
+        style={buttonStyles}
       >
         {selected.label}{" "}
         <Arrow className={`${styles.arrow} ${isOpen ? styles.open : ""}`} />
       </button>
       {isOpen && (
-        <ul className={styles.dropdownList_items}>
+        <ul className={styles.dropdownList_items} style={listStyles}>
           {[
             selected,
             ...options.filter((opt) => opt.value !== selected.value),

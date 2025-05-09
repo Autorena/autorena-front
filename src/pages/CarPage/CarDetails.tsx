@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useAppSelector } from "../../redux/hooks";
 import { CarCard } from "../../ui-components/CarCard/CarCard";
 import { Review } from "../../ui-components/Review/Review";
@@ -25,9 +25,31 @@ export const CarDetails = ({
 }) => {
   const { setModalActive, setModalContent } = useContext(ModalContext);
   const { openModal } = useModalWithHistory();
+  const [showButtons, setShowButtons] = useState(true);
   const isAuth = useAppSelector((state) => state.user.isPhoneConfirmed);
   const cars = useAppSelector((state) => state.cars.cars);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let lastScroll = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+
+      // если скроллим вверх — показать
+      if (currentScroll < lastScroll) {
+        setShowButtons(true);
+      } else if (currentScroll > lastScroll) {
+        setShowButtons(false);
+      }
+
+      lastScroll = currentScroll;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <div className={styles.car_left_bottom}>
@@ -60,7 +82,11 @@ export const CarDetails = ({
       </div>
       <div className={styles.car_info_term}>
         <h3 className={styles.car_subtitle}>Об автомобиле</h3>
-        <div className={`${styles.car_buttons}`}>
+        <div
+          className={`${styles.car_buttons} ${
+            !showButtons ? styles.hidden : ""
+          }`}
+        >
           <button
             className={styles.phoneBtn}
             onClick={() => {

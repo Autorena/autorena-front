@@ -4,78 +4,113 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-
-import story_1 from "../../assets/story_1.png";
-import story_2 from "../../assets/story_2.png";
+import story1 from "../../assets/story-1.png";
+import story1_1 from "../../assets/story-1-1.png";
+import story_2 from "../../assets/story-2.png";
+import story_3 from "../../assets/story-3.png";
+import story_4 from "../../assets/story-4.png";
+import stylesStory from "../../components/modals/StoryViewer/StoryViewer.module.scss";
 import { useContext } from "react";
 import { StoryViewer } from "../../components/modals/StoryViewer/StoryViewer";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../redux/hooks";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { RegistrationModal } from "../../components/modals/RegistrationModal";
+import { StoryGroup } from "../../types";
 
 export const Stories = () => {
   const { setModalContent, setModalActive } = useContext(ModalContext);
   const { isPhoneConfirmed } = useAppSelector((state) => state.user);
   const navigate = useNavigate();
 
-  const stories = [
+  const stories: StoryGroup[] = [
     {
       id: 1,
-      img: story_1,
-      title: "Правильная аренда авто",
-      content: (
-        <button
-          onClick={() => {
-            if (isPhoneConfirmed) {
-              setModalContent(null);
-              setModalActive(false);
-              navigate("/profile");
-            } else {
-              setModalContent(<RegistrationModal />);
-            }
-          }}
-          className="red-btn"
-        >
-          Подробнее
-        </button>
-      ),
+      img: story1_1,
+      title: "Розыгрыш IPhone 16 PRO",
+      slides: [
+        { background: story1, content: <button>Узнать подробнее</button> },
+        {
+          content: <p>Подробности акции</p>,
+        },
+      ],
     },
     {
       id: 2,
       img: story_2,
-      title: "Главное про аренду авто",
-      content: "",
+      title: "Быстро СНЯТЬ автомобиль",
+      slides: [
+        {
+          content: <p> слайд 2</p>,
+        },
+        {
+          content: <p> слайд 2 - подробности</p>,
+        },
+      ],
     },
     {
       id: 3,
-      img: story_1,
-      title: "Правильная аренда авто",
-      content: "",
+      img: story_3,
+      title: "Легко СДАТЬ автомобиль",
+      slides: [
+        {
+          content: <p> слайд 3</p>,
+        },
+      ],
     },
     {
       id: 4,
+      img: story_4,
+      title: "Важное про документы",
+      slides: [
+        {
+          content: <p> слайд 4</p>,
+        },
+      ],
+    },
+    {
+      id: 1,
+      img: story1_1,
+      title: "Розыгрыш IPhone 16 PRO",
+      slides: [
+        { background: story1, content: <button>Узнать подробнее</button> },
+        {
+          content: <p>Подробности акции</p>,
+        },
+      ],
+    },
+    {
+      id: 2,
       img: story_2,
-      title: "Главное про аренду авто",
-      content: "",
+      title: "Быстро СНЯТЬ автомобиль",
+      slides: [
+        {
+          content: <p> слайд 2</p>,
+        },
+        {
+          content: <p> слайд 2 - подробности</p>,
+        },
+      ],
     },
     {
-      id: 5,
-      img: story_1,
-      title: "Правильная аренда авто",
-      content: "",
+      id: 3,
+      img: story_3,
+      title: "Легко СДАТЬ автомобиль",
+      slides: [
+        {
+          content: <p> слайд 3</p>,
+        },
+      ],
     },
     {
-      id: 6,
-      img: story_2,
-      title: "Главное про аренду авто",
-      content: "",
-    },
-    {
-      id: 7,
-      img: story_1,
-      title: "Правильная аренда авто",
-      content: "",
+      id: 4,
+      img: story_4,
+      title: "Важное про документы",
+      slides: [
+        {
+          content: <p> слайд 4</p>,
+        },
+      ],
     },
   ];
 
