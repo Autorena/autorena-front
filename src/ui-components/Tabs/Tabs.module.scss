@@ -1,0 +1,12 @@
+@use "../../styles/colors" as *;
+
+.tabs {
+  &_header {
+    display: flex;
+    gap: 30px;
+    font-size: 24px;
+    &_item.active {
+      border-bottom: 1px solid $primary-black;
+    }
+  }
+}

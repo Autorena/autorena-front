@@ -4,6 +4,7 @@ import { ReactComponent as Arrow } from "../../assets/arrowBack.svg";
 import { CarRentListingForm } from "./CarRentListingForm";
 import { categories } from "../../utils/categories";
 import { WantedRentListingForm } from "./WantedRentListingForm";
+import { DriverVacancyForm } from "./DriverVacancyForm";
 
 export const CreateListing = () => {
   const location = useLocation();
@@ -11,16 +12,18 @@ export const CreateListing = () => {
   const category = searchParams.get("category");
   const buyout = searchParams.get("buyout") === "true";
   const minimumRentalPeriod = Number(searchParams.get("minimum_rental_period"));
-  console.log(minimumRentalPeriod);
+
   const navigate = useNavigate();
 
-  const matchedCategory = categories.find(
-    (c) =>
-      c.name === category &&
-      (c.extraOptions?.buyout_possible ?? false) === buyout &&
-      (c.extraOptions?.minimum_rental_period ?? minimumRentalPeriod) ===
-        minimumRentalPeriod
-  );
+  const matchedCategory = categories.find((c) => {
+    const isNameMatch = c.name === category;
+    const isBuyoutMatch = (c.extraOptions?.buyout_possible ?? false) === buyout;
+    const isMinPeriodMatch =
+      (c.extraOptions?.minimum_rental_period ?? null) ===
+      (minimumRentalPeriod || null);
+
+    return isNameMatch && isBuyoutMatch && isMinPeriodMatch;
+  });
 
   return (
     <div className="container">
@@ -40,6 +43,7 @@ export const CreateListing = () => {
           />
         )}
         {category === "wanted_car_rent_listing" && <WantedRentListingForm />}
+        {category === "driver_vacancy" && <DriverVacancyForm />}
       </div>
     </div>
   );

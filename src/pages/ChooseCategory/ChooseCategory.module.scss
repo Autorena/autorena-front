@@ -4,8 +4,15 @@
   height: 100%;
   &_bottom {
     padding: 40px 0;
-    h2 {
+    &_top {
+      display: flex;
+      align-items: center;
       margin-bottom: 32px;
+    }
+    &_top .btnBack {
+      display: none;
+    }
+    h2 {
       font-size: 48px;
       font-weight: 600;
     }
@@ -23,5 +30,53 @@
     background: $light-gray;
     border-radius: 16px;
     border: 1px solid #dedede;
+  }
+}
+
+@media (max-width: 768px) {
+  .categories {
+    padding: 32px 0 160px;
+    .category {
+      font-size: 20px;
+      padding: 12px 25px;
+    }
+    &_bottom {
+      padding: 0;
+      &_top {
+        gap: 29px;
+      }
+      &_top .btnBack {
+        display: block;
+        width: 26px;
+        height: 26px;
+        svg path {
+          stroke-opacity: 1;
+        }
+      }
+      h2 {
+        font-size: 38px;
+      }
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  .categories {
+    &_bottom_top {
+      margin-bottom: 56px;
+    }
+    &_bottom h2 {
+      font-size: 24px;
+    }
+    &_wrap {
+      justify-content: center;
+    }
+    .category {
+      width: 100%;
+      max-width: 235px;
+      font-size: 16px;
+      padding: 10px;
+      border-radius: 8px;
+    }
   }
 }

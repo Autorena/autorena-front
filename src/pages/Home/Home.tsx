@@ -199,7 +199,10 @@ export const Home = () => {
               </button>
               <DropdownList
                 options={sortOptions.default}
-                onSelect={handleSortChange}
+                onSelect={(value) => {
+                  if (typeof value === "string") handleSortChange(value);
+                }}
+                value={sortOption}
               />
             </div>
           </div>
@@ -209,7 +212,7 @@ export const Home = () => {
             </h2>
             <div className={styles.home_recommends_grid}>
               {visibleCars.map((car) => (
-                <CarCard carData={car} key={car.common.id} />
+                <CarCard carData={car} key={car.id} />
               ))}{" "}
               {loading && <Loader className={styles.load} />}
             </div>

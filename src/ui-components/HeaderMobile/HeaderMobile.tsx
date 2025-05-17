@@ -42,7 +42,7 @@ export const HeaderMobile = ({ className }: HeaderMobProps) => {
         <Like />
         <p>Избранное</p>
       </button>
-      <Link to="" className={styles.header_mobile_item}>
+      <Link to="/my-listings" className={styles.header_mobile_item}>
         <Listing />
         <p>Объявления</p>
       </Link>

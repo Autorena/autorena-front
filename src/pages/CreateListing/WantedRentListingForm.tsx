@@ -22,13 +22,28 @@ const categoryOptions = [
   { value: "CAR_CATEGORY_PREMIUM", label: "Премиум" },
 ];
 
+const driveExperiences = [
+  { value: "DRIVE_EXPERIENCE_NO_EXPERIENCE", label: "Без стажа" },
+  { value: "DRIVE_EXPERIENCE_LESS_THAN_1_YEAR", label: "Меньше года" },
+  { value: "DRIVE_EXPERIENCE_1_TO_3_YEARS", label: "От 1 года до 3 лет" },
+  { value: "DRIVE_EXPERIENCE_3_TO_5_YEARS", label: "От 3 до 5 лет" },
+  { value: "DRIVE_EXPERIENCE_MORE_THAN_5_YEARS", label: "Больше 5 лет" },
+];
+
 export const WantedRentListingForm = () => {
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, control } = useForm({
+    defaultValues: {
+      rent_types: [],
+      age: 0,
+      drive_experience: "",
+      deposit: undefined,
+      rent_durations: "",
+      is_russian_citizenship: undefined,
+      car_categories: [],
+      additional_info: "",
+      city: "",
+    },
+  });
 
   const onSubmit = (data: any) => {
     const payload = {
@@ -57,13 +72,15 @@ export const WantedRentListingForm = () => {
         <Controller
           name="rent_types"
           control={control}
+          defaultValue={[]}
           render={({ field }) => (
             <DropdownList
+              className={styles.dropdown}
               options={rentTypesOptions}
               value={field.value}
               onSelect={field.onChange}
-              buttonStyles={{ fontSize: "20px" }}
-              listStyles={{ bottom: "-90px", fontSize: "20px" }}
+              listStyles={{ bottom: "-90px" }}
+              isMulti={true}
             />
           )}
         />
@@ -76,7 +93,19 @@ export const WantedRentListingForm = () => {
 
       <div className={styles.inputWrap}>
         <h3>Стаж вождения</h3>
-        <input type="number" {...register("drive_experience")} />
+        <Controller
+          name="drive_experience"
+          control={control}
+          render={({ field }) => (
+            <DropdownList
+              className={styles.dropdown}
+              options={driveExperiences}
+              value={field.value}
+              onSelect={field.onChange}
+              listStyles={{ bottom: "-190px" }}
+            />
+          )}
+        />
       </div>
 
       <div className={styles.inputWrap}>
@@ -114,11 +143,11 @@ export const WantedRentListingForm = () => {
           control={control}
           render={({ field }) => (
             <DropdownList
+              className={styles.dropdown}
               options={rentDurationOptions}
               value={field.value}
-              onSelect={(selected: string) => field.onChange(selected)}
-              buttonStyles={{ fontSize: "20px" }}
-              listStyles={{ bottom: "-130px", fontSize: "20px" }}
+              onSelect={field.onChange}
+              listStyles={{ bottom: "-130px" }}
             />
           )}
         />
@@ -153,23 +182,36 @@ export const WantedRentListingForm = () => {
       </div>
 
       <div className={styles.inputWrap}>
-        <h3>Класс автомобиля</h3>
+        <h3>Классы автомобилей</h3>
         <Controller
           name="car_categories"
           control={control}
           render={({ field }) => (
             <DropdownList
+              className={styles.dropdown}
               options={categoryOptions}
               value={field.value}
               onSelect={field.onChange}
-              buttonStyles={{ fontSize: "20px" }}
-              listStyles={{ bottom: "-190px", fontSize: "20px" }}
+              listStyles={{ bottom: "-190px" }}
+              isMulti={true}
             />
           )}
         />
       </div>
 
-      <button className={`red-btn`}>Разместить объявление</button>
+      <div className={styles.inputWrap}>
+        <h3>Описание объявления</h3>
+        <textarea {...register("additional_info")} rows={5} />
+      </div>
+
+      <div className={styles.inputWrap}>
+        <h3>Город</h3>
+        <input type="text" {...register("city")} />
+      </div>
+
+      <button className={`red-btn ${styles.submitBtn}`}>
+        Разместить объявление
+      </button>
     </form>
   );
 };

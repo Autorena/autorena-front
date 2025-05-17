@@ -17,52 +17,69 @@ export const ModalProvider = ({ children }: Children) => {
   const [modalContent, setContent] = useState<React.ReactNode | null>(null);
   const [modalClass, setModalClass] = useState("");
   const [crossSize, setCrossSize] = useState(24);
-
-  useEffect(() => {
-    if (isModalActive) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isModalActive]);
-
   const modalStack = useRef<{ content: React.ReactNode; modalClass: string }[]>(
     []
   );
 
-  const setModalContent = (
-    content: React.ReactNode,
-    options?: { modalClass?: string }
-  ) => {
-    if (content) {
-      if (modalContent) {
-        modalStack.current.push({ content: modalContent, modalClass });
-      }
-      setContent(content);
-      setModalClass(options?.modalClass || "");
-      setModalActive(true);
-    } else {
-      setContent(null);
-      setModalClass("");
-      setModalActive(false);
-    }
+  const closeModal = () => {
+    modalStack.current = [];
+    setContent(null);
+    setModalClass("");
+    setModalActive(false);
+    window.history.back();
   };
 
   const goBack = () => {
-    const prev = modalStack.current.pop();
-    if (prev) {
-      setContent(prev.content);
-      setModalClass(prev.modalClass);
+    if (modalStack.current.length > 0) {
+      const prev = modalStack.current.pop();
+      setContent(prev?.content || null);
+      setModalClass(prev?.modalClass || "");
     } else {
-      setContent(null);
-      setModalClass("");
-      setModalActive(false);
+      closeModal();
     }
   };
+
+  const setModalContent = (
+    content: React.ReactNode,
+    options?: { modalClass?: string; isRootModal?: boolean }
+  ) => {
+    if (content) {
+      if (options?.isRootModal) {
+        modalStack.current = [];
+      }
+
+      if (modalContent && !options?.isRootModal) {
+        modalStack.current.push({ content: modalContent, modalClass });
+      }
+
+      setContent(content);
+      setModalClass(options?.modalClass || "");
+      setModalActive(true);
+      window.history.pushState({ isModal: true }, "");
+    } else {
+      closeModal();
+    }
+  };
+
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      if (event.state?.isModal) {
+        goBack();
+      } else if (isModalActive) {
+        closeModal();
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [isModalActive, modalContent]);
+
+  useEffect(() => {
+    document.body.style.overflow = isModalActive ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isModalActive]);
 
   return (
     <ModalContext.Provider

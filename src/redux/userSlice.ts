@@ -25,8 +25,14 @@ const userSlice = createSlice({
     setPhoneConfirmed: (state) => {
       state.isPhoneConfirmed = true;
     },
+    logout: (state) => {
+      state.name = "";
+      state.email = "";
+      state.password = "";
+      state.isPhoneConfirmed = false;
+    },
   },
 });
 
-export const { setUser, setPhoneConfirmed } = userSlice.actions;
+export const { setUser, setPhoneConfirmed, logout } = userSlice.actions;
 export default userSlice.reducer;

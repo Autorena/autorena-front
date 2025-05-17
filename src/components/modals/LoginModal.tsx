@@ -7,6 +7,8 @@ import { ReactComponent as Apple } from "../../assets/apple.svg";
 import { ReactComponent as Google } from "../../assets/google.svg";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { RegistrationModal } from "./RegistrationModal";
+import { useDispatch } from "react-redux";
+import { setPhoneConfirmed, setUser } from "../../redux/userSlice";
 
 type LoginFormData = {
   identifier: string;
@@ -15,6 +17,7 @@ type LoginFormData = {
 
 export const LoginModal = () => {
   const { setModalContent, setModalActive } = useContext(ModalContext);
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -22,7 +25,9 @@ export const LoginModal = () => {
     formState: { errors },
   } = useForm<LoginFormData>();
 
-  const onSubmit = () => {
+  const onSubmit = (data: any) => {
+    console.log(data);
+    dispatch(setPhoneConfirmed());
     setModalActive(false);
   };
 

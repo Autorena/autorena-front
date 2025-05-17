@@ -9,19 +9,13 @@ import story1_1 from "../../assets/story-1-1.png";
 import story_2 from "../../assets/story-2.png";
 import story_3 from "../../assets/story-3.png";
 import story_4 from "../../assets/story-4.png";
-import stylesStory from "../../components/modals/StoryViewer/StoryViewer.module.scss";
 import { useContext } from "react";
 import { StoryViewer } from "../../components/modals/StoryViewer/StoryViewer";
-import { useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../redux/hooks";
 import { ModalContext } from "../../HOC/ModalProvider";
-import { RegistrationModal } from "../../components/modals/RegistrationModal";
 import { StoryGroup } from "../../types";
 
 export const Stories = () => {
   const { setModalContent, setModalActive } = useContext(ModalContext);
-  const { isPhoneConfirmed } = useAppSelector((state) => state.user);
-  const navigate = useNavigate();
 
   const stories: StoryGroup[] = [
     {
@@ -122,7 +116,7 @@ export const Stories = () => {
         initialIndex={index}
         onClose={() => setModalContent(null)}
       />,
-      { modalClass: styles.storyModal }
+      { modalClass: styles.storyModal, skipHistory: true }
     );
   };
 
@@ -134,7 +128,6 @@ export const Stories = () => {
         </div>
         <Swiper
           onSlideChange={() => console.log("slide change")}
-          onSwiper={(swiper) => console.log(swiper)}
           modules={[Navigation]}
           navigation={{
             nextEl: ".custom-button-next",

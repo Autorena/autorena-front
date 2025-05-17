@@ -12,7 +12,7 @@ export const CarCard = ({ carData }: CarCardProps) => {
   const { pathname } = useLocation();
 
   const {
-    common: { photos, title, ads },
+    common: { id, photos, title, ads },
     rent_auto: { cost_per_day, taxi_possible, buy_option, discount },
   } = carData;
 
@@ -37,7 +37,7 @@ export const CarCard = ({ carData }: CarCardProps) => {
 
   return (
     <Link
-      to={`/${carData.common.id}?from=${currentFilter}`}
+      to={`/${id}?from=${currentFilter}`}
       className={`${styles.carCard} ${ads && styles.ads}`}
     >
       <div className={styles.carCard_imgWrap}>

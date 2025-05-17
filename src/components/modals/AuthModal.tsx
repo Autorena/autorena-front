@@ -22,7 +22,7 @@ export const AuthModal = () => {
             paddingLeft: "40px",
             marginBottom: "16px",
           }}
-          onClick={() => setModalContent(<PhoneModal />)}
+          onChange={() => setModalContent(<PhoneModal />)}
         />
         <RadioButton
           label=" Я сдаю авто в аренду"
@@ -34,7 +34,7 @@ export const AuthModal = () => {
             fontWeight: 600,
             paddingLeft: "40px",
           }}
-          onClick={() => setModalContent(<PhoneModal />)}
+          onChange={() => setModalContent(<PhoneModal />)}
         />
       </div>
     </div>

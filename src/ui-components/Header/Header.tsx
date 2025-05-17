@@ -2,18 +2,27 @@ import { useContext, useEffect, useState } from "react";
 import styles from "./Header.module.scss";
 import { ReactComponent as Notification } from "../../assets/notification.svg";
 import { ReactComponent as Message } from "../../assets/message.svg";
+import { ReactComponent as Messages } from "../../assets/message-profile.svg";
 import { ReactComponent as Favorites } from "../../assets/heart.svg";
+import { ReactComponent as Favorite } from "../../assets/favorites-profile.svg";
 import { ReactComponent as Profile } from "../../assets/profile-icon.svg";
+import { ReactComponent as Listing } from "../../assets/listing.svg";
+import { ReactComponent as Settings } from "../../assets/settings.svg";
+import { ReactComponent as ProfileMenu } from "../../assets/profile-2.svg";
 import { ReactComponent as Location } from "../../assets/location-icon.svg";
 import { ReactComponent as Logo } from "../../assets/logo-1.svg";
 import { ReactComponent as Arrow } from "../../assets/arrowBack.svg";
+import { ReactComponent as Plus } from "../../assets/plus.svg";
+import { ReactComponent as Logout } from "../../assets/logout.svg";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { LocationModal } from "../../components/modals/LocationModal";
 import { LocationContext } from "../../HOC/LocationProvider";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { LoginModal } from "../../components/modals/LoginModal";
 import { useAppSelector } from "../../redux/hooks";
 import { declineCity } from "../../utils/declineCity";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/userSlice";
 
 export const Header = () => {
   const user = useAppSelector((state) => state.user);
@@ -22,8 +31,23 @@ export const Header = () => {
   const { location } = useContext(LocationContext);
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [isMobile, setIsMobile] = useState(false);
   const { pathname } = useLocation();
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  let closeTimeout: number;
+
+  const handleMouseEnter = () => {
+    clearTimeout(closeTimeout);
+    setIsDropdownOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    closeTimeout = setTimeout(() => {
+      setIsDropdownOpen(false);
+    }, 200);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,17 +62,18 @@ export const Header = () => {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 900 && pathname.startsWith("/"));
+      setIsMobile(window.innerWidth <= 768);
     };
+
     checkMobile();
     window.addEventListener("resize", checkMobile);
 
-    return () => {
-      window.removeEventListener("resize", checkMobile);
-    };
+    return () => window.removeEventListener("resize", checkMobile);
   }, [pathname]);
 
-  if (isMobile && pathname.match(/^\/\d+/)) return null;
+  if (isMobile && pathname !== "/" && !pathname.startsWith("/filter/")) {
+    return null;
+  }
 
   return (
     <>
@@ -93,9 +118,90 @@ export const Header = () => {
                     <Favorites />
                   </a>
                 </div>
-                <a href="#">
-                  <Profile />
-                </a>
+                <div
+                  className={styles.header_profileWrapper}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <button onClick={() => navigate("/profile")}>
+                    <Profile />
+                  </button>
+                  {isDropdownOpen && (
+                    <div className={styles.header_profileDropdown}>
+                      <ul>
+                        <li>
+                          <NavLink
+                            to="/profile"
+                            className={({ isActive }) =>
+                              isActive ? styles.active : ""
+                            }
+                          >
+                            <ProfileMenu /> Профиль
+                          </NavLink>
+                        </li>
+                        <li>
+                          <NavLink
+                            to="/choose-category"
+                            className={({ isActive }) =>
+                              isActive ? styles.active : ""
+                            }
+                          >
+                            <Listing /> Объявления
+                          </NavLink>
+                        </li>
+                        <li>
+                          <NavLink
+                            to="/favorites"
+                            className={({ isActive }) =>
+                              isActive ? styles.active : ""
+                            }
+                          >
+                            <Favorite /> Избранное
+                          </NavLink>
+                        </li>
+                        <li>
+                          <NavLink
+                            to="/messages"
+                            className={({ isActive }) =>
+                              isActive ? styles.active : ""
+                            }
+                          >
+                            <Messages /> Сообщения
+                          </NavLink>
+                        </li>
+                        <li>
+                          <NavLink
+                            to="/settings"
+                            className={({ isActive }) =>
+                              isActive ? styles.active : ""
+                            }
+                          >
+                            <Settings /> Настройки
+                          </NavLink>
+                        </li>
+                      </ul>
+                      <div className={styles.header_profiles}>
+                        <h4>Мои профили</h4>
+                        <div className={styles.header_profiles_adding}>
+                          <div className={styles.header_profiles_img}></div>
+                          <button>
+                            <Plus />
+                          </button>
+                        </div>
+                      </div>
+                      <button
+                        className={styles.header_logout}
+                        onClick={() => {
+                          dispatch(logout());
+                          setTimeout(() => navigate("/"), 0);
+                        }}
+                      >
+                        <Logout />
+                        Выйти
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -153,6 +259,7 @@ export const Header = () => {
                 Разместить объявление
               </Link>
             </div>
+
             <button
               className={styles.locationBtn}
               onClick={() => {

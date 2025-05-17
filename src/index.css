@@ -22,6 +22,10 @@
   box-sizing: border-box;
 }
 
+a {
+  color: inherit;
+}
+
 a,
 a:link,
 a:visited {
@@ -65,6 +69,10 @@ img,
 svg {
   max-width: 100%;
   height: auto;
+}
+
+svg {
+  display: block;
 }
 
 address {

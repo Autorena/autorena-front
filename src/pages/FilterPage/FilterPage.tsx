@@ -25,7 +25,7 @@ export const FilterPage = () => {
   const { cars, loading } = useAppSelector((state) => state.cars);
 
   const filterTitle = filterNameMap[filter ?? "default"];
-  const [sortOption, setSortOption] = useState<string>("default");
+  const [sortOption, setSortOption] = useState("default");
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(20);
 
@@ -53,8 +53,11 @@ export const FilterPage = () => {
     visibleCount < sortedCars.length
   );
 
-  const handleSortChange = (value: string) => {
-    setSortOption(value);
+  const handleSortChange = (value: string | string[]) => {
+    if (Array.isArray(value)) {
+    } else {
+      setSortOption(value);
+    }
   };
 
   return (
@@ -83,6 +86,7 @@ export const FilterPage = () => {
                 options={
                   sortOptions[(filter ?? "default") as keyof typeof sortOptions]
                 }
+                value={sortOption}
                 onSelect={handleSortChange}
               />
             </div>

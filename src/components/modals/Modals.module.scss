@@ -99,7 +99,8 @@
   &.phone,
   &.registr,
   &.login,
-  &.carPhone {
+  &.carPhone,
+  &.wallet {
     width: 587px;
     padding: 40px;
   }
@@ -281,6 +282,37 @@
       font-weight: 600;
     }
   }
+  .info_text {
+    color: rgba(17, 17, 17, 0.4);
+    font-size: 14px;
+  }
+  &.wallet {
+    .inputWrap {
+      margin-bottom: 8px;
+      display: flex;
+      gap: 8px;
+      input {
+        max-width: 232px;
+        width: 100%;
+        padding: 14px 20px;
+        font-size: 16px;
+      }
+      .confirmBtn {
+        width: 214px;
+        font-size: 20px;
+      }
+    }
+    .info_text {
+      margin-bottom: 26px;
+    }
+    .wallet_bottom {
+      padding-bottom: 62px;
+      h4 {
+        font-size: 20px;
+        font-weight: 600;
+      }
+    }
+  }
 }
 
 .checkboxWrapper {
@@ -352,6 +384,10 @@
 
     input {
       width: 100% !important;
+    }
+    &.wallet {
+      margin: 0 auto;
+      width: auto;
     }
   }
 }

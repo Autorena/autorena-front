@@ -7,17 +7,19 @@ export const StarRating = ({
   rating,
   starSize,
   starGap,
+  className,
 }: {
   rating: number;
   starSize: number;
   starGap?: string;
+  className?: string;
 }) => {
   const fullStars = Math.floor(rating);
   const halfStar = rating % 1 >= 0.5;
   const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
 
   return (
-    <div className={styles.rating}>
+    <div className={`${styles.rating} ${className ? className : ""}`}>
       <div
         className={styles.rating_stars}
         style={{ gap: `${starGap ? starGap : "4px"}` }}

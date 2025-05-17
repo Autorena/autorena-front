@@ -14,21 +14,17 @@ export type modalContextProps = {
   modalContent: React.ReactNode | null;
   setModalContent: (
     content: React.ReactNode,
-    options?: { modalClass: string }
+    options?: {
+      modalClass?: string;
+      skipHistory?: boolean;
+      isRootModal?: boolean;
+    }
   ) => void;
   crossSize: number;
   setCrossSize: (size: number) => void;
   modalClass?: string;
   goBack?: () => void;
 };
-
-// export interface StorySlide {
-//   id: number | string;
-//   background: string;
-//   previewImage?: string;
-//   content?: ReactNode;
-//   slides?: [];
-// }
 
 export type StorySlide = {
   background?: string;
@@ -70,13 +66,13 @@ export type CarCardType = {
     color?: string;
     discount?: number;
     min_rental_period_days: number;
-    deposit_required: boolean;
+    deposit_required?: boolean;
   };
   search_auto?: {
     car_class: string;
     experience_years: number;
   };
-  daily_rent: {
+  daily_rent?: {
     cost_per_day: number;
     delivery_possible: boolean;
     deposit_required: boolean;

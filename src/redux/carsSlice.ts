@@ -113,7 +113,7 @@ const carsSlice = createSlice({
           return false;
         }
 
-        if (filters.can_be_delivered && !car.daily_rent.delivery_possible) {
+        if (filters.can_be_delivered && !car.daily_rent?.delivery_possible) {
           return false;
         }
 

@@ -38,7 +38,7 @@ export const Modal = () => {
           onClick={() => {
             setModalActive(false);
             setModalContent(null);
-            window.history.back();
+            // window.history.back();
           }}
         >
           <Cross width={crossSize} height={crossSize} />

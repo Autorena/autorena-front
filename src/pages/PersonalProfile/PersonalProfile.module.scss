@@ -1,0 +1,259 @@
+@use "../../styles/colors" as *;
+
+.profile {
+  padding: 16px 0 96px;
+  &Wrap {
+    display: flex;
+    gap: 102px;
+  }
+  h3 {
+    font-size: 24px;
+    font-weight: 600;
+  }
+  &_headerMob {
+    display: none;
+  }
+  &_info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  &_imgWrap {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    &.empty {
+      background: $light-gray;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+  &_addProfile {
+    display: none;
+  }
+  &_changeImg {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 30px;
+    height: 30px;
+  }
+  &_name {
+    margin: 8px 0 4px;
+    font-size: 20px;
+    font-weight: 600;
+  }
+  &_rateWrap {
+    display: flex;
+    align-items: center;
+    margin: 0 0 9px;
+  }
+  &_rate {
+    font-weight: 500;
+  }
+  &_rateStars {
+    margin: 0 7px 0 4px;
+  }
+  &_rateCount {
+    font-size: 14px;
+  }
+  &_edit {
+    padding: 12px 20px;
+    background: $light-gray;
+    font-size: 14px;
+    border-radius: 8px;
+  }
+  &_balanceInfo h3 {
+    margin-bottom: 16px;
+  }
+  &_balanceWrap {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+  }
+  &_balance {
+    font-size: 32px;
+    font-weight: 600;
+  }
+  &_replenish {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    padding: 7px;
+    background: $light-gray;
+    &Mob {
+      display: none;
+    }
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+    svg path {
+      fill-opacity: 1;
+    }
+  }
+  &_listings h3 {
+    margin: 41px 0 16px;
+  }
+  &_recommends {
+    max-width: 816px;
+    width: 100%;
+  }
+  &_recommendsWrap {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(165px, 214px));
+    grid-auto-flow: dense;
+    justify-content: space-between;
+    gap: 8px 4px;
+    margin: 24px 0 40px;
+  }
+  &_footer {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    a {
+      text-decoration: underline;
+    }
+  }
+  &_listings_link {
+    display: none;
+  }
+}
+
+.activeListings {
+  max-width: 627px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 0 40px;
+}
+
+.myListings {
+  padding: 24px 0 64px;
+  h3 {
+    margin-bottom: 24px;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+  }
+  &_new {
+    width: 100%;
+    padding: 10px;
+    position: sticky;
+    bottom: 40px;
+    font-size: 16px;
+    line-height: 20px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .profile {
+    &Wrap {
+      gap: 82px;
+    }
+    &_recommendsWrap {
+      grid-template-columns: repeat(3, minmax(165px, 214px));
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .profile {
+    padding: 0;
+    &Wrap {
+      padding: 32px 0 72px;
+      flex-direction: column;
+      gap: 40px;
+    }
+    &_headerMob {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding-top: 24px;
+      svg {
+        width: 30px;
+        height: 30px;
+      }
+      svg path {
+        stroke-opacity: 1;
+      }
+    }
+    &_addProfile {
+      display: block;
+      position: absolute;
+      top: 50%;
+      right: -60px;
+      transform: translateY(-50%);
+    }
+    &_changeImg,
+    &_listings,
+    &_replenish {
+      display: none;
+    }
+    &_balanceInfo {
+      margin-bottom: 48px;
+    }
+    &_balanceWrap {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    &_replenishMob {
+      display: block;
+      padding: 10px 26px;
+      border-radius: 10px;
+      background: $light-gray;
+    }
+    &_listings_link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background: $light-gray;
+      margin-top: 24px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      svg {
+        width: 20px;
+        height: 20px;
+        transform: rotate(180deg);
+        path {
+          fill-opacity: 1;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  .profile {
+    &_headerMob {
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+    &_recommendsWrap {
+      grid-template-columns: repeat(2, minmax(150px, 214px));
+    }
+    &_edit {
+      border-radius: 16px;
+    }
+    &_balanceInfo {
+      margin-bottom: 32px;
+    }
+    &_balanceInfo h3 {
+      margin-bottom: 6px;
+    }
+    &_balance {
+      font-size: 24px;
+    }
+  }
+}
