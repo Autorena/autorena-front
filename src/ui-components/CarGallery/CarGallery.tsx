@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { LazyImage } from "../LazyImage/LazyImage";
 import styles from "./CarGallery.module.scss";
 
 interface CarGalleryProps {
@@ -24,12 +23,10 @@ export const CarGallery = ({ images }: CarGalleryProps) => {
   return (
     <div className={styles.gallery}>
       <div className={styles.mainImage}>
-        <LazyImage
+        <img
           src={images[currentImageIndex]}
           alt="Car gallery main image"
           className={styles.mainImageContent}
-          width="100%"
-          height={400}
         />
         {images.length > 1 && (
           <>
@@ -60,12 +57,11 @@ export const CarGallery = ({ images }: CarGalleryProps) => {
               }`}
               onClick={() => setCurrentImageIndex(index)}
             >
-              <LazyImage
+              <img
                 src={image}
                 alt={`Car thumbnail ${index + 1}`}
                 className={styles.thumbnailImage}
-                width={80}
-                height={60}
+                loading="lazy"
               />
             </button>
           ))}
