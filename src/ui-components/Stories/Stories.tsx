@@ -10,9 +10,10 @@ import story_2 from "../../assets/story-2.png";
 import story_3 from "../../assets/story-3.png";
 import story_4 from "../../assets/story-4.png";
 import { useContext } from "react";
-import { StoryViewer } from "../../components/modals/StoryViewer/StoryViewer";
+// import { StoryViewer } from "../../components/modals/StoryViewer/StoryViewer";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { StoryGroup } from "../../types";
+import { StoryViewer2 } from "../../components/modals/StoryViewer/StoryViewer";
 
 export const Stories = () => {
   const { setModalContent, setModalActive } = useContext(ModalContext);
@@ -23,7 +24,7 @@ export const Stories = () => {
       img: story1_1,
       title: "Розыгрыш IPhone 16 PRO",
       slides: [
-        { background: story1, content: <button>Узнать подробнее</button> },
+        { background: story1, content: <button></button> },
         {
           content: <p>Подробности акции</p>,
         },
@@ -111,7 +112,12 @@ export const Stories = () => {
   const handleStoryClick = (index: number) => {
     setModalActive(true);
     setModalContent(
-      <StoryViewer
+      // <StoryViewer
+      //   storiesData={stories}
+      //   initialIndex={index}
+      //   onClose={() => setModalContent(null)}
+      // />,
+      <StoryViewer2
         storiesData={stories}
         initialIndex={index}
         onClose={() => setModalContent(null)}
@@ -135,8 +141,11 @@ export const Stories = () => {
           }}
           breakpoints={{
             320: {
-              slidesPerView: 3.7,
+              slidesPerView: 1.8,
               spaceBetween: 12,
+            },
+            440: {
+              slidesPerView: 2.2,
             },
             550: {
               slidesPerView: 5,

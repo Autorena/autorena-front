@@ -8,7 +8,7 @@ import { ReactComponent as Google } from "../../assets/google.svg";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { RegistrationModal } from "./RegistrationModal";
 import { useDispatch } from "react-redux";
-import { setPhoneConfirmed, setUser } from "../../redux/userSlice";
+import { setPhoneConfirmed } from "../../redux/userSlice";
 
 type LoginFormData = {
   identifier: string;

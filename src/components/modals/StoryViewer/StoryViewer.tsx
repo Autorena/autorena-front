@@ -1,159 +1,233 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState, useCallback, useEffect } from "react";
+import Stories from "react-insta-stories";
 import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper";
 import styles from "./StoryViewer.module.scss";
-import { ReactComponent as Arrow } from "../../../assets/swiper-arrow.svg";
 import { ReactComponent as Cross } from "../../../assets/cross.svg";
+import { ReactComponent as Arrow } from "../../../assets/swiper-arrow.svg";
 import { StoryModalProps } from "../../../types";
-import { Navigation } from "swiper/modules";
 import "swiper/css";
-import "swiper/css/navigation";
 import { ModalContext } from "../../../HOC/ModalProvider";
 
-export const StoryViewer = ({
+const STORY_DURATION = 7000;
+
+export const StoryViewer2 = ({
   storiesData,
   initialIndex,
   onClose,
 }: StoryModalProps) => {
-  const { setModalActive } = useContext(ModalContext);
+  const { setModalActive, setModalContent } = useContext(ModalContext);
   const [currentGroupIndex, setCurrentGroupIndex] = useState(initialIndex);
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [swiper, setSwiper] = useState<SwiperType | null>(null);
 
-  const currentGroup = storiesData[currentGroupIndex];
+  useEffect(() => {
+    if (swiper && swiper.activeIndex !== currentGroupIndex) {
+      swiper.slideTo(currentGroupIndex);
+    }
+  }, [currentGroupIndex, swiper]);
 
-  const goToNextSlideOrGroup = () => {
-    const isLastSlide = currentSlideIndex >= currentGroup.slides.length - 1;
-    const isLastGroup = currentGroupIndex >= storiesData.length - 1;
+  const transformStories = useCallback((group: (typeof storiesData)[0]) => {
+    return group.slides.map((slide) => ({
+      url: slide.background,
+      duration: STORY_DURATION,
+      content: () => (
+        <div
+          className={styles.story_content}
+          style={{
+            backgroundImage: slide.background
+              ? `url(${slide.background})`
+              : "none",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            backgroundClip: "padding-box",
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {slide.content}
+        </div>
+      ),
+    }));
+  }, []);
 
-    if (!isLastSlide) {
-      setCurrentSlideIndex((prev) => prev + 1);
-    } else if (!isLastGroup) {
-      setCurrentGroupIndex((prev) => prev + 1);
-      setCurrentSlideIndex(0);
-      setIsTransitioning(false);
+  const handleAllStoriesEnd = useCallback(() => {
+    if (currentGroupIndex < storiesData.length - 1) {
+      const nextIndex = currentGroupIndex + 1;
+      setCurrentGroupIndex(nextIndex);
+      swiper?.slideTo(nextIndex, 300);
     } else {
+      onClose();
+    }
+  }, [currentGroupIndex, storiesData.length, swiper, onClose]);
+
+  const handleClose = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setModalActive(false);
+      setModalContent(null);
+      onClose();
+    },
+    [setModalActive, setModalContent, onClose]
+  );
+
+  const handlePrevClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (currentGroupIndex > 0) {
+        const prevIndex = currentGroupIndex - 1;
+        setCurrentGroupIndex(prevIndex);
+      }
+    },
+    [currentGroupIndex]
+  );
+
+  const handleNextClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (currentGroupIndex < storiesData.length - 1) {
+        const nextIndex = currentGroupIndex + 1;
+        setCurrentGroupIndex(nextIndex);
+      }
+    },
+    [currentGroupIndex, storiesData.length]
+  );
+
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      setModalActive(false);
+      setModalContent(null);
       onClose();
     }
   };
 
-  useEffect(() => {
-    // if (isPaused || isTransitioning) return;
-
-    const timer = setTimeout(goToNextSlideOrGroup, 7000);
-
-    return () => clearTimeout(timer);
-  }, [currentSlideIndex, currentGroupIndex, isPaused, isTransitioning]);
-
-  useEffect(() => {
-    if (currentSlideIndex === 0 && !isPaused && !isTransitioning) {
-      const timer = setTimeout(goToNextSlideOrGroup, 7000);
-      return () => clearTimeout(timer);
-    }
-  }, [currentGroupIndex]);
-
-  useEffect(() => {
-    setIsTransitioning(false);
-  }, [currentGroupIndex]);
-
   return (
-    <div className="story-viewer">
-      <div className={styles.story_slider} onClick={(e) => e.stopPropagation()}>
+    <div className={styles.storyViewer} onClick={handleOverlayClick}>
+      <div className={`${styles.story_slider} story-viewer`}>
         <Swiper
           initialSlide={initialIndex}
+          onSwiper={setSwiper}
           onSlideChange={(swiper) => {
-            const newIndex = swiper.realIndex;
-            setCurrentGroupIndex(newIndex);
-            setCurrentSlideIndex(0);
-          }}
-          modules={[Navigation]}
-          navigation={{
-            nextEl: ".story-button-next",
-            prevEl: ".story-button-prev",
+            console.log("Slide changed:", {
+              activeIndex: swiper.activeIndex,
+              currentGroupIndex,
+              realIndex: swiper.realIndex,
+            });
+            setCurrentGroupIndex(swiper.activeIndex);
           }}
           loop={false}
+          allowTouchMove={true}
+          speed={300}
+          centeredSlides={true}
+          slideToClickedSlide={true}
           breakpoints={{
             0: {
-              spaceBetween: 40,
+              spaceBetween: 20,
               slidesPerView: 1,
               centeredSlides: true,
             },
             768: {
-              spaceBetween: 184,
+              spaceBetween: 100,
+              slidesPerView: 1,
+              centeredSlides: true,
+              slidesOffsetBefore: 0,
+              slidesOffsetAfter: 0,
+            },
+            900: {
+              spaceBetween: 140,
               slidesPerView: "auto",
               centeredSlides: true,
+              width: null,
+              slidesOffsetBefore: 0,
+              slidesOffsetAfter: 0,
             },
           }}
         >
           {storiesData.map((group, groupIndex) => {
             const isCurrent = groupIndex === currentGroupIndex;
-            const activeSlide = group.slides[isCurrent ? currentSlideIndex : 0];
+            const stories = transformStories(group);
 
             return (
-              <SwiperSlide key={groupIndex}>
+              <SwiperSlide
+                key={groupIndex}
+                className={styles.story_slide}
+                onClick={(e) => e.stopPropagation()}
+              >
                 <div
-                  className={`${styles.storyCard} ${
+                  className={`${styles.story_card} ${
                     isCurrent ? styles.center : styles.faded
                   }`}
-                  style={{
-                    backgroundImage: `url(${activeSlide?.background || ""})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                  onMouseEnter={() => setIsPaused(true)}
-                  onMouseLeave={() => setIsPaused(false)}
                 >
                   {isCurrent && (
                     <>
                       <button
+                        type="button"
                         className={styles.closeBtn}
-                        onClick={() => setModalActive(false)}
+                        onClick={handleClose}
+                        aria-label="Close stories"
                       >
                         <Cross />
                       </button>
 
-                      <div className={styles.progress_bars_container}>
-                        {group.slides.map((_, idx) => {
-                          const isFilled = idx < currentSlideIndex;
-                          const isActive = idx === currentSlideIndex;
-                          return (
-                            <div
-                              key={`${groupIndex}-${idx}`}
-                              className={`${styles.progress_bar} ${
-                                isFilled
-                                  ? styles.filled
-                                  : isActive
-                                  ? styles.active
-                                  : ""
-                              }`}
-                              style={{
-                                animation:
-                                  isActive && !isTransitioning
-                                    ? "fillProgress 7s linear forwards"
-                                    : undefined,
-                              }}
-                            ></div>
-                          );
-                        })}
+                      {currentGroupIndex > 0 && (
+                        <button
+                          type="button"
+                          className={`${styles.nav_arrow} ${styles.prev} story-prev`}
+                          onClick={handlePrevClick}
+                          aria-label="Previous story"
+                        >
+                          <Arrow />
+                        </button>
+                      )}
+
+                      {currentGroupIndex < storiesData.length - 1 && (
+                        <button
+                          type="button"
+                          className={`${styles.nav_arrow} ${styles.next} story-next`}
+                          onClick={handleNextClick}
+                          aria-label="Next story"
+                        >
+                          <Arrow />
+                        </button>
+                      )}
+
+                      <div className={styles.story_content}>
+                        <Stories
+                          stories={stories}
+                          defaultInterval={STORY_DURATION}
+                          width="100%"
+                          height="100%"
+                          onAllStoriesEnd={handleAllStoriesEnd}
+                          storyContainerStyles={{
+                            background: "transparent",
+                            borderRadius: "8px",
+                            overflow: "hidden",
+                          }}
+                          progressContainerStyles={{
+                            gap: "4px",
+                            filter: "none",
+                            margin: "20px 0 0",
+                            padding: "0 24px",
+                          }}
+                          progressWrapperStyles={{
+                            background: "#efefef",
+                            height: "6px",
+                            margin: "0",
+                            padding: "0",
+                            borderRadius: "40px",
+                          }}
+                          progressStyles={{
+                            background: "rgba(17, 17, 17, 0.24)",
+                            height: "100%",
+
+                            borderRadius: "40px",
+                          }}
+                        />
                       </div>
                     </>
                   )}
-
-                  <button
-                    className={`story-button-prev swiper-arrow ${styles.arrowPrev}`}
-                  >
-                    <Arrow />
-                  </button>
-
-                  <div className={styles.storyInner}>
-                    {activeSlide?.content}
-                  </div>
-
-                  <button
-                    className={`story-button-next swiper-arrow ${styles.arrowNext}`}
-                  >
-                    <Arrow />
-                  </button>
                 </div>
               </SwiperSlide>
             );

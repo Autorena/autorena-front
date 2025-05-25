@@ -35,12 +35,16 @@
 }
 .storyModal {
   background: transparent;
+  top: 0;
 }
 
 @media (max-width: 1000px) {
   .stories {
     width: 100%;
     max-width: 100%;
+  }
+  .storyModal {
+    transform: none;
   }
 }
 
@@ -64,7 +68,7 @@
 @media (max-width: 768px) {
   .stories {
     padding: 0;
-    margin: 41px 0 55px;
+    margin: 20px 0 32px;
   }
   .story {
     &_img {
@@ -82,17 +86,20 @@
 }
 
 @media (max-width: 550px) {
+  .stories {
+    margin: 0;
+  }
   .story {
     &_title {
-      font-size: 13px;
+      font-size: 12px;
     }
     &_img_wrapper {
-      width: 88px;
-      height: 88px;
+      width: 84px;
+      height: 84px;
     }
     &_img {
-      width: 80px;
-      height: 80px;
+      width: 76px;
+      height: 76px;
     }
   }
 }

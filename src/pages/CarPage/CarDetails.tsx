@@ -36,7 +36,6 @@ export const CarDetails = ({
     const handleScroll = () => {
       const currentScroll = window.scrollY;
 
-      // если скроллим вверх — показать
       if (currentScroll < lastScroll) {
         setShowButtons(true);
       } else if (currentScroll > lastScroll) {

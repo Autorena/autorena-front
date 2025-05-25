@@ -28,9 +28,17 @@ export const Modal = () => {
     return () => window.removeEventListener("popstate", handlePopState);
   }, [isModalActive]);
 
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      setModalActive(false);
+      setModalContent(null);
+    }
+  };
+
   return ReactDOM.createPortal(
     <div
       className={`${styles.modal_overlay} ${isModalActive && styles.active}`}
+      onClick={handleOverlayClick}
     >
       <div className={`${styles.modal_content} ${modalClass}`}>
         <button

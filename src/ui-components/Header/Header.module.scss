@@ -3,8 +3,12 @@
 .header {
   position: sticky;
   top: 0;
+  left: 0;
   width: 100%;
   z-index: 1000;
+  background: #fff;
+  transition: transform 0.3s ease;
+
   .container {
     background: #fff;
     &.hide {
@@ -214,6 +218,9 @@
 
 @media (max-width: 900px) {
   .header {
+    &.hidden {
+      transform: translateY(-100%);
+    }
     &_top,
     &_categoriesBtn,
     &_adBtn,
@@ -229,7 +236,7 @@
       width: 100%;
       justify-content: center;
       align-items: center;
-      padding: 40px 0 24px;
+      padding: 8px;
     }
 
     &_bottom.wrap {
@@ -241,17 +248,13 @@
       margin-bottom: 16px;
     }
 
-    &_search input {
-      padding: 10px 16px 10px 42px;
-    }
-
     &_search {
       width: 70%;
       max-width: unset;
       margin: 0 10px 0 8px;
       input {
-        padding-left: 50px;
-        padding-right: 34px;
+        border-radius: 12px;
+        padding: 10px 34px 10px 50px;
       }
     }
 
@@ -276,6 +279,9 @@
     .arrowBack {
       display: block;
     }
+    &_search input {
+      font-size: 15px;
+    }
   }
 }
 
@@ -291,8 +297,8 @@
       height: 23px;
     }
     .locationBtn_mob svg {
-      width: 24px;
-      height: 24px;
+      width: 30px;
+      height: 29px;
     }
   }
 }
@@ -303,10 +309,6 @@
       max-width: 278px;
       min-width: unset;
       margin-right: 6px;
-    }
-    .locationBtn_mob svg {
-      width: 24px;
-      height: 24px;
     }
   }
 }

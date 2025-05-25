@@ -1,10 +1,10 @@
 import styles from "./HeaderMobile.module.scss";
-import { ReactComponent as Logo } from "../../assets/logo-2.svg";
+import { ReactComponent as Home } from "../../assets/home-icon.svg";
 import { ReactComponent as Like } from "../../assets/favorites.svg";
-import { ReactComponent as Listing } from "../../assets/listings.svg";
+import { ReactComponent as Listing } from "../../assets/new-listing.svg";
 import { ReactComponent as Message } from "../../assets/message.svg";
 import { ReactComponent as Profile } from "../../assets/profile-icon.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../redux/hooks";
 import { useContext } from "react";
 import { ModalContext } from "../../HOC/ModalProvider";
@@ -17,6 +17,7 @@ type HeaderMobProps = {
 export const HeaderMobile = ({ className }: HeaderMobProps) => {
   const { isPhoneConfirmed } = useAppSelector((state) => state.user);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { setModalActive, setModalContent } = useContext(ModalContext);
 
   const handleClick = (path: string) => {
@@ -27,38 +28,56 @@ export const HeaderMobile = ({ className }: HeaderMobProps) => {
     }
   };
 
+  const isActive = (path: string) => {
+    if (path === "/") return pathname === "/";
+    return pathname.startsWith(`/${path}`);
+  };
+
   return (
     <div className={`${styles.header_mobile} ${className}`}>
-      <Link to="/" className={styles.header_mobile_item}>
-        <Logo style={{ width: "35px", height: "35px" }} />
-        <p>Поиск</p>
-      </Link>
+      <NavLink
+        to="/"
+        className={({ isActive }) =>
+          isActive
+            ? `${styles.header_mobile_item} ${styles.active}`
+            : `${styles.header_mobile_item}`
+        }
+      >
+        <Home />
+      </NavLink>
       <button
-        onClick={() => {
-          handleClick("favorites");
-        }}
-        className={`${styles.header_mobile_item} ${styles.like}`}
+        onClick={() => handleClick("favorites")}
+        className={`${styles.header_mobile_item} ${
+          isActive("favorites") ? styles.active : ""
+        }`}
       >
         <Like />
-        <p>Избранное</p>
       </button>
-      <Link to="/my-listings" className={styles.header_mobile_item}>
+      <NavLink
+        to="/choose-category"
+        className={({ isActive }) =>
+          isActive
+            ? `${styles.header_mobile_item} ${styles.active}`
+            : `${styles.header_mobile_item}`
+        }
+      >
         <Listing />
-        <p>Объявления</p>
-      </Link>
+      </NavLink>
       <button
         onClick={() => handleClick("messages")}
-        className={styles.header_mobile_item}
+        className={`${styles.header_mobile_item} ${
+          isActive("messages") ? styles.active : ""
+        }`}
       >
         <Message />
-        <p>Сообщения</p>
       </button>
       <button
         onClick={() => handleClick("profile")}
-        className={styles.header_mobile_item}
+        className={`${styles.header_mobile_item} ${
+          isActive("profile") ? styles.active : ""
+        }`}
       >
         <Profile />
-        <p>Профиль</p>
       </button>
     </div>
   );

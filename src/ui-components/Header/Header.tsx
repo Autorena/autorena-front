@@ -5,13 +5,12 @@ import { ReactComponent as Message } from "../../assets/message.svg";
 import { ReactComponent as Messages } from "../../assets/message-profile.svg";
 import { ReactComponent as Favorites } from "../../assets/heart.svg";
 import { ReactComponent as Favorite } from "../../assets/favorites-profile.svg";
-import { ReactComponent as Profile } from "../../assets/profile-icon.svg";
+import { ReactComponent as Profile } from "../../assets/profile-icon-2.svg";
 import { ReactComponent as Listing } from "../../assets/listing.svg";
 import { ReactComponent as Settings } from "../../assets/settings.svg";
 import { ReactComponent as ProfileMenu } from "../../assets/profile-2.svg";
 import { ReactComponent as Location } from "../../assets/location-icon.svg";
 import { ReactComponent as Logo } from "../../assets/logo-1.svg";
-import { ReactComponent as Arrow } from "../../assets/arrowBack.svg";
 import { ReactComponent as Plus } from "../../assets/plus.svg";
 import { ReactComponent as Logout } from "../../assets/logout.svg";
 import { ModalContext } from "../../HOC/ModalProvider";
@@ -29,7 +28,7 @@ export const Header = () => {
   const { setModalActive, setModalContent, setCrossSize } =
     useContext(ModalContext);
   const { location } = useContext(LocationContext);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [showHeader, setShowHeader] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isMobile, setIsMobile] = useState(false);
@@ -50,13 +49,42 @@ export const Header = () => {
   };
 
   useEffect(() => {
+    let lastScroll = window.scrollY;
+    let isMobileScreen = window.innerWidth <= 900;
+    let scrollTimeout: number;
+    const SCROLL_THRESHOLD = 80;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
+      if (!isMobileScreen) return;
+
+      const currentScroll = window.scrollY;
+      const scrollDiff = currentScroll - lastScroll;
+
+      if (scrollDiff > 0 && currentScroll > SCROLL_THRESHOLD) {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          setShowHeader(false);
+        }, 100);
+      } else if (scrollDiff < 0) {
+        clearTimeout(scrollTimeout);
+        setShowHeader(true);
+      }
+
+      lastScroll = currentScroll;
     };
+
+    const handleResize = () => {
+      isMobileScreen = window.innerWidth <= 900;
+      if (!isMobileScreen) setShowHeader(true);
+    };
+
     window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(scrollTimeout);
     };
   }, []);
 
@@ -77,7 +105,11 @@ export const Header = () => {
 
   return (
     <>
-      <header className={`${styles.header} ${isScrolled ? styles.scroll : ""}`}>
+      <header
+        className={`${styles.header} ${
+          !showHeader && window.innerWidth <= 900 ? styles.hidden : ""
+        }`}
+      >
         <div className={styles.header_top}>
           <div className={styles.header_top__wrap}>
             <ul>
@@ -209,7 +241,7 @@ export const Header = () => {
         <div
           className={`container ${styles.container} ${
             pathname === "/create-listing" ? styles.hide : ""
-          }`}
+          } ${!showHeader && window.innerWidth <= 900 ? styles.hidden : ""}`}
         >
           <div className={styles.header_bottom}>
             <Link
@@ -227,14 +259,6 @@ export const Header = () => {
               <button className={`red-btn ${styles.header_categoriesBtn}`}>
                 Категории поиска
               </button>
-              {pathname.startsWith("/filter/") && (
-                <button
-                  onClick={() => navigate(-1)}
-                  className={styles.arrowBack}
-                >
-                  <Arrow />
-                </button>
-              )}
 
               <div className={styles.header_search}>
                 <input

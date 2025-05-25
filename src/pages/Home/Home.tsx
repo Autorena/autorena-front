@@ -5,10 +5,18 @@ import { ReactComponent as Option3 } from "../../assets/filter_3.svg";
 import { ReactComponent as Option4 } from "../../assets/filter_4.svg";
 import { ReactComponent as Option5 } from "../../assets/filter_5.svg";
 import { ReactComponent as Option6 } from "../../assets/option_6.svg";
+import { ReactComponent as Option1_mob } from "../../assets/long-term-lease.svg";
+import { ReactComponent as Option2_mob } from "../../assets/daily-rent.svg";
+import { ReactComponent as Option3_mob } from "../../assets/buyout.svg";
+import { ReactComponent as Option4_mob } from "../../assets/driver-work.svg";
+import { ReactComponent as Option5_mob } from "../../assets/search.svg";
+import { ReactComponent as Option6_mob } from "../../assets/autoservices.svg";
+import { ReactComponent as Option7_mob } from "../../assets/help.svg";
+import { ReactComponent as StoryImg } from "../../assets/bail.svg";
 import { Stories } from "../../ui-components/Stories/Stories";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { LocationContext } from "../../HOC/LocationProvider";
-import { ReactComponent as Location } from "../../assets/location-icon.svg";
+import { ReactComponent as Location } from "../../assets/location-icon-2.svg";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { LocationModal } from "../../components/modals/LocationModal";
 import { CarCard } from "../../ui-components/CarCard/CarCard";
@@ -16,11 +24,12 @@ import { fetchCars } from "../../redux/carsSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { Loader } from "../../ui-components/Loader/Loader";
 import { HeaderMobile } from "../../ui-components/HeaderMobile/HeaderMobile";
-import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
 import { sortCars } from "../../utils/sortCars";
 import { Link } from "react-router-dom";
-import { sortOptions } from "../../constants/sortOptions";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
+import { HomeSlider } from "./HomeSlider";
+import { CookieNotific } from "./CookieNotific";
+import { declineCity } from "../../utils/declineCity";
 
 export const Home = () => {
   const { location } = useContext(LocationContext);
@@ -65,11 +74,6 @@ export const Home = () => {
     return true;
   });
 
-  const handleSortChange = (value: string) => {
-    console.log("Selected sort option:", value);
-    setSortOption(value);
-  };
-
   const sortedFilteredCars = useMemo(() => {
     return sortCars(filteredCars, sortOption);
   }, [filteredCars, sortOption]);
@@ -77,10 +81,11 @@ export const Home = () => {
   const visibleCars = sortedFilteredCars.slice(0, visibleCount);
 
   return (
-    <div className={`container ${styles.homeWrap}`}>
+    <div className={`home container ${styles.homeWrap}`}>
       <HeaderMobile className={styles.header_mobile} />
       <div className={styles.home}>
         <div className={styles.home_main}>
+          <HomeSlider />
           <div className={styles.home_options}>
             <div className={styles.home_optionsWrap}>
               <div className={styles.top_row}>
@@ -164,8 +169,64 @@ export const Home = () => {
               <Option6 />
             </a>
           </div>
-          <Stories />
+          <div className={styles.home_options_mob}>
+            <Link
+              to="/filter/RENT_AUTO"
+              className={styles.home_options_mob_item}
+            >
+              <h4>Долгосрочная аренда</h4>
+              <Option1_mob />
+            </Link>
+            <Link
+              to="/filter/DAILY_RENT"
+              className={styles.home_options_mob_item}
+            >
+              <h4>Посуточная аренда</h4>
+              <Option2_mob />
+            </Link>
+            <Link
+              to="/filter/BUY_AUTO"
+              className={styles.home_options_mob_item}
+            >
+              <h4>Выкуп автомобилей</h4>
+              <Option3_mob />
+            </Link>
+            <Link
+              to="/filter/DRIVER_JOBS"
+              className={styles.home_options_mob_item}
+            >
+              <h4>Работа водителям</h4>
+              <Option4_mob style={{ right: "0" }} />
+            </Link>
+            <Link to="/filter/SEARCH" className={styles.home_options_mob_item}>
+              <h4>Поиск арендатора</h4>
+              <Option5_mob style={{ right: "0" }} />
+            </Link>
+            <Link
+              to="/filter/AUTO_SERVICES"
+              className={styles.home_options_mob_item}
+            >
+              <h4>Автосервисы</h4>
+              <Option6_mob style={{ right: "0" }} />
+            </Link>
+            <Link to="/" className={styles.home_options_mob_item}>
+              <h4>Помощь на дороге</h4>
+              <Option7_mob style={{ right: "0" }} />
+            </Link>
+          </div>
+          <div className={styles.home_stories}>
+            <div className={styles.home_stories_block}>
+              <h4>
+                Авторена внесет залог <span>за вас</span>
+              </h4>
+              <StoryImg />
+            </div>
+            <Stories />
+          </div>
           <div className={styles.home_info}>
+            <h2>
+              Посмотрите объявления в {declineCity(location)} и {location[0]}О
+            </h2>
             <div className={styles.home_info_points}>
               <button className={`${styles.home_filter} ${styles.large}`}>
                 <Location /> {location} и область
@@ -181,29 +242,31 @@ export const Home = () => {
                 Выбрать город
               </button>
 
-              <button
-                className={`${styles.home_filter} ${
-                  "price" in activeFilter && styles.active
-                }`}
-                onClick={() => filterCars("price", 1000)}
-              >
-                Авто до 1000 в сутки
-              </button>
-              <button
-                className={`${styles.home_filter} ${
-                  "car_class" in activeFilter && styles.active
-                }`}
-                onClick={() => filterCars("car_class", "comfort_plus")}
-              >
-                Аренда комфорт +
-              </button>
-              <DropdownList
+              <div className={styles.home_info_points_bottom}>
+                <button
+                  className={`${styles.home_filter} ${
+                    "price" in activeFilter && styles.active
+                  }`}
+                  onClick={() => filterCars("price", 1000)}
+                >
+                  Авто до 1000 в сутки
+                </button>
+                <button
+                  className={`${styles.home_filter} ${
+                    "car_class" in activeFilter && styles.active
+                  }`}
+                  onClick={() => filterCars("car_class", "comfort_plus")}
+                >
+                  Аренда комфорт +
+                </button>
+              </div>
+              {/* <DropdownList
                 options={sortOptions.default}
                 onSelect={(value) => {
                   if (typeof value === "string") handleSortChange(value);
                 }}
                 value={sortOption}
-              />
+              /> */}
             </div>
           </div>
           <div className={styles.home_recommends}>
@@ -227,6 +290,7 @@ export const Home = () => {
           </div>
         </div>
       </div>
+      <CookieNotific />
     </div>
   );
 };
