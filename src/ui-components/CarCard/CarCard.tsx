@@ -41,7 +41,12 @@ export const CarCard = ({ carData }: CarCardProps) => {
       className={`${styles.carCard} ${ads && styles.ads}`}
     >
       <div className={styles.carCard_imgWrap}>
-        <img src={photos[0]} alt="Car photo" className={styles.carCard_img} />
+        <img
+          src={photos[0]}
+          alt="Car photo"
+          className={styles.carCard_img}
+          loading="lazy"
+        />
         <button
           className={styles.carCard_moreBtn}
           onClick={(e) => {

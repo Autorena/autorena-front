@@ -9,7 +9,7 @@ import { ReactComponent as Profile } from "../../assets/profile-icon-2.svg";
 import { ReactComponent as Listing } from "../../assets/listing.svg";
 import { ReactComponent as Settings } from "../../assets/settings.svg";
 import { ReactComponent as ProfileMenu } from "../../assets/profile-2.svg";
-import { ReactComponent as Location } from "../../assets/location-icon.svg";
+import locationIcon from "../../assets/location-icon.png";
 import { ReactComponent as Logo } from "../../assets/logo-1.svg";
 import { ReactComponent as Plus } from "../../assets/plus.svg";
 import { ReactComponent as Logout } from "../../assets/logout.svg";
@@ -274,7 +274,8 @@ export const Header = () => {
                   setModalContent(<LocationModal />);
                 }}
               >
-                <Location />
+                {/* <Location /> */}
+                <img src={locationIcon} alt="" />
               </button>
               <Link
                 to="/choose-category"
@@ -292,7 +293,8 @@ export const Header = () => {
                 setModalContent(<LocationModal />);
               }}
             >
-              <Location />
+              {/* <Location /> */}
+              <img src={locationIcon} alt="" />
               г. {location}
             </button>
           </div>

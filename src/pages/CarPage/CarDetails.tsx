@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useMemo, useCallback } from "react";
 import { useAppSelector } from "../../redux/hooks";
 import { CarCard } from "../../ui-components/CarCard/CarCard";
 import { Review } from "../../ui-components/Review/Review";
@@ -10,6 +10,15 @@ import { CarPhoneModal } from "../../components/modals/CarPhoneModal";
 import { useNavigate } from "react-router-dom";
 import { LoginModal } from "../../components/modals/LoginModal";
 import { useModalWithHistory } from "../../hooks/useModalWithHistory";
+import { CarCardType } from "../../types";
+
+type ReviewType = {
+  title: string;
+  author: string;
+  date: string;
+  rate: number;
+  description: string;
+};
 
 export const CarDetails = ({
   car,
@@ -17,9 +26,9 @@ export const CarDetails = ({
   visibleReviews,
   setShowAllReviews,
 }: {
-  car: any;
-  reviews: any[];
-  visibleReviews: any[];
+  car: CarCardType;
+  reviews: ReviewType[];
+  visibleReviews: ReviewType[];
   showAllReviews: boolean;
   setShowAllReviews: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
@@ -30,25 +39,48 @@ export const CarDetails = ({
   const cars = useAppSelector((state) => state.cars.cars);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    let lastScroll = window.scrollY;
+  // Оптимизируем фильтрацию похожих машин
+  const similarCars = useMemo(() => {
+    return cars
+      .filter(
+        (c) =>
+          c.common.category === car.common.category &&
+          c.common.id !== car.common.id
+      )
+      .slice(0, 4); // Ограничиваем до 4 похожих машин
+  }, [cars, car.common.category, car.common.id]);
 
-    const handleScroll = () => {
-      const currentScroll = window.scrollY;
+  // Оптимизируем обработчики событий
+  const handlePhoneClick = useCallback(() => {
+    setModalActive(true);
+    setModalContent(
+      <CarPhoneModal
+        data={{
+          name: "Сергей",
+          rating: 4.6,
+          rating_count: 12,
+          mobile_phone: "+7 (999) 999 99 99",
+        }}
+      />,
+      { modalClass: `${modalStyles.other}` }
+    );
+  }, [setModalActive, setModalContent]);
 
-      if (currentScroll < lastScroll) {
-        setShowButtons(true);
-      } else if (currentScroll > lastScroll) {
-        setShowButtons(false);
-      }
+  const handleWriteClick = useCallback(() => {
+    if (isAuth) navigate("/chat");
+    else openModal(<LoginModal />);
+  }, [isAuth, navigate, openModal]);
 
-      lastScroll = currentScroll;
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
+  // Оптимизируем обработчик скролла
+  const handleScroll = useCallback(() => {
+    const currentScroll = window.scrollY;
+    setShowButtons(currentScroll < window.scrollY);
   }, []);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
   return (
     <div className={styles.car_left_bottom}>
@@ -86,31 +118,12 @@ export const CarDetails = ({
             !showButtons ? styles.hidden : ""
           }`}
         >
-          <button
-            className={styles.phoneBtn}
-            onClick={() => {
-              setModalActive(true);
-              setModalContent(
-                <CarPhoneModal
-                  data={{
-                    name: "Сергей",
-                    rating: 4.6,
-                    rating_count: 12,
-                    mobile_phone: "+7 (999) 999 99 99",
-                  }}
-                />,
-                { modalClass: `${modalStyles.other}` }
-              );
-            }}
-          >
+          <button className={styles.phoneBtn} onClick={handlePhoneClick}>
             Позвонить
           </button>
           <button
             className={`red-btn ${styles.writeBtn}`}
-            onClick={() => {
-              if (isAuth) navigate("/chat");
-              else openModal(<LoginModal />);
-            }}
+            onClick={handleWriteClick}
           >
             Написать
           </button>
@@ -201,11 +214,9 @@ export const CarDetails = ({
       <div className={styles.car_similar}>
         <h3>Похожие объявления</h3>
         <div className={styles.car_similarWrap}>
-          {cars
-            .filter((c) => c.common.category === car.common.category)
-            .map((car) => (
-              <CarCard carData={car} />
-            ))}
+          {similarCars.map((similarCar) => (
+            <CarCard key={similarCar.common.id} carData={similarCar} />
+          ))}
         </div>
       </div>
       <div className={`${styles.car_bottom_info} ${styles.mobile}`}>

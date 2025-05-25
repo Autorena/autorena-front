@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { HeaderMobile } from "../../ui-components/HeaderMobile/HeaderMobile";
 import styles from "../Home/Home.module.scss";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
@@ -15,7 +15,6 @@ import { fetchCars } from "../../redux/carsSlice";
 import { FilterMenu } from "../../ui-components/FilterMenu/FilterMenu";
 import { filterPresets } from "../../constants/filterPresets";
 import { CarCardLarge } from "../../ui-components/CarCardLarge/CarCardLarge";
-import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 
 export const FilterPage = () => {
   const { filter } = useParams<{ filter?: string }>();
@@ -27,7 +26,6 @@ export const FilterPage = () => {
   const filterTitle = filterNameMap[filter ?? "default"];
   const [sortOption, setSortOption] = useState("default");
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(20);
 
   useEffect(() => {
     dispatch(fetchCars()).catch((error) => {
@@ -35,30 +33,33 @@ export const FilterPage = () => {
     });
   }, []);
 
-  const filteredCars = useMemo(() => {
-    if (!filter) return cars;
-
-    return cars.filter((car) => car.common.category === filter.toUpperCase());
-  }, [cars, filter]);
-
-  const sortedCars = useMemo(
-    () => sortCars(filteredCars, sortOption),
-    [cars, sortOption]
-  );
-
-  const visibleCars = sortedCars.slice(0, visibleCount);
-
-  useInfiniteScroll(
-    () => setVisibleCount((prev) => prev + 20),
-    visibleCount < sortedCars.length
-  );
-
-  const handleSortChange = (value: string | string[]) => {
-    if (Array.isArray(value)) {
-    } else {
+  const handleSortChange = useCallback((value: string | string[]) => {
+    if (typeof value === "string") {
       setSortOption(value);
     }
-  };
+  }, []);
+
+  const filteredAndSortedCars = useMemo(() => {
+    const filtered = !filter
+      ? cars
+      : cars.filter((car) => car.common.category === filter.toUpperCase());
+    return sortCars(filtered, sortOption);
+  }, [cars, filter, sortOption]);
+
+  const ITEMS_PER_PAGE = 20;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(filteredAndSortedCars.length / ITEMS_PER_PAGE);
+
+  const visibleCars = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredAndSortedCars.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredAndSortedCars, currentPage]);
+
+  const handleLoadMore = useCallback(() => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  }, [currentPage, totalPages]);
 
   return (
     <div className={`container ${styles.homeWrap} ${styles.filterPage}`}>
@@ -95,13 +96,21 @@ export const FilterPage = () => {
             <div className={styles.home_recommends_grid}>
               {visibleCars.map((car) =>
                 car.common.size === "large" ? (
-                  <CarCardLarge carData={car} />
+                  <CarCardLarge key={car.common.id} carData={car} />
                 ) : (
-                  <CarCard carData={car} key={car.common.id} />
+                  <CarCard key={car.common.id} carData={car} />
                 )
-              )}{" "}
+              )}
               {loading && <Loader className={styles.load} />}
             </div>
+            {currentPage < totalPages && (
+              <button
+                className={`${styles.loadMore} red-btn`}
+                onClick={handleLoadMore}
+              >
+                Показать еще
+              </button>
+            )}
             <div className={styles.home_ads}>
               <div className={styles.home_ad}>
                 <p>Здесь будет реклама</p>

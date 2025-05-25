@@ -30,6 +30,8 @@ import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import { HomeSlider } from "./HomeSlider";
 import { CookieNotific } from "./CookieNotific";
 import { declineCity } from "../../utils/declineCity";
+import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
+import { sortOptions } from "../../constants/sortOptions";
 
 export const Home = () => {
   const { location } = useContext(LocationContext);
@@ -59,6 +61,10 @@ export const Home = () => {
           )
         : { ...prev, [type]: value }
     );
+  };
+
+  const handleSortChange = (value: string) => {
+    setSortOption(value);
   };
 
   const filteredCars = cars.filter((car) => {
@@ -260,13 +266,15 @@ export const Home = () => {
                   Аренда комфорт +
                 </button>
               </div>
-              {/* <DropdownList
-                options={sortOptions.default}
-                onSelect={(value) => {
-                  if (typeof value === "string") handleSortChange(value);
-                }}
-                value={sortOption}
-              /> */}
+              <div className={styles.home_sortlist}>
+                <DropdownList
+                  options={sortOptions.default}
+                  onSelect={(value) => {
+                    if (typeof value === "string") handleSortChange(value);
+                  }}
+                  value={sortOption}
+                />
+              </div>
             </div>
           </div>
           <div className={styles.home_recommends}>
