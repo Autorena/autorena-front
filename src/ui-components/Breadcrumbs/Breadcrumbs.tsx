@@ -20,11 +20,11 @@ export const Breadcrumbs = ({ className }: { className?: string }) => {
   const car = useAppSelector((state) => state.cars.car);
   const searchParams = new URLSearchParams(location.search);
   const fromFilter = searchParams.get("from") || "RENT_AUTO";
-
   const pathSegments = location.pathname.split("/").filter(Boolean);
-  const isCarPage =
-    pathSegments.length === 1 && !isNaN(Number(pathSegments[0]));
+
+  const isCarPage = pathSegments.length === 1 && car !== null;
   const isFilterPage = pathSegments[0] === "filter" && pathSegments[1];
+  const isChooseCategoryPage = pathSegments[0] === "choose-category";
 
   const breadcrumbs = [
     <Link to="/" key="home" className={styles.link}>
@@ -32,7 +32,15 @@ export const Breadcrumbs = ({ className }: { className?: string }) => {
     </Link>,
   ];
 
-  if (isCarPage) {
+  if (isChooseCategoryPage) {
+    breadcrumbs.push(
+      <Arrow key="arrow-category" />,
+      <span key="category-title" className={styles.link}>
+        {pathTitles["choose-category"]}
+      </span>
+    );
+  } else if (isCarPage && car?.listing.carRentListing) {
+    const { brandId, modelId } = car.listing.carRentListing.carContent;
     breadcrumbs.push(
       <Arrow key="arrow-filter" />,
       <Link to={`/filter/${fromFilter}`} key="filter" className={styles.link}>
@@ -40,11 +48,11 @@ export const Breadcrumbs = ({ className }: { className?: string }) => {
       </Link>,
       <Arrow key="arrow-car" />,
       <span key="car-title" className={styles.link}>
-        {car?.common?.title || "Объявление"}
+        {`Аренда ${brandId} ${modelId}`}
       </span>
     );
   } else if (isFilterPage) {
-    const filter = pathSegments[1];
+    const filter = pathSegments[1].toUpperCase();
     breadcrumbs.push(
       <Arrow key="arrow-filter" />,
       <span key="filter-name" className={styles.link}>

@@ -14,6 +14,7 @@ import { CarCard } from "../../ui-components/CarCard/CarCard";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { FillWallet } from "../../components/modals/FillWallet";
 import { Link } from "react-router-dom";
+import { HeaderMobile } from "../../ui-components/HeaderMobile/HeaderMobile";
 
 export const profileTabs = [
   {
@@ -23,65 +24,100 @@ export const profileTabs = [
       <ActiveListingsTab
         listings={[
           {
-            common: {
-              id: "30",
-              photos: [
-                "car-large.svg",
-                "car-large.svg",
-                "car-large.svg",
-                "car-large.svg",
-                "car-large.svg",
-              ],
-              title: "Аренда TOYOTA Land Cruiser 200",
-              description:
-                "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д ",
-              city: "Новокузнецк",
-              district: "Центральный",
-              address: "г. Москва, Ярославское шоссе, д 6",
-              category: "AUTO_SERVICES",
-              created_at: "2025-03-15T12:34:56Z",
-            },
-            rent_auto: {
-              cost_per_day: 12000,
-              taxi_possible: false,
-              buy_option: true,
-              year: 2024,
-              color: "black",
-              discount: 0,
-              min_rental_period_days: 1,
-            },
-            daily_rent: {
-              cost_per_day: 12000,
-              delivery_possible: true,
-              deposit_required: true,
-              buy_option: false,
+            listing: {
+              id: "d18ec707-8f7c-4e9e-a4c4-bf6d2429f896",
+              size: "large",
+              carRentListing: {
+                id: "4a1e9c2c-1e68-4e0c-90e4-4e210cf603ab",
+                carContent: {
+                  id: "aea9cbbe-93b7-4e88-906d-85cd38209c41",
+                  userId: "deadbeef-dead-beef-dead-beefdeadbeef",
+                  brandId: "TOYOTA",
+                  modelId: "Land Cruiser 200",
+                  yearOfCarProduction: 2024,
+                  fuelType: "FUEL_TYPE_DIESEL",
+                  transmission: "TRANSMISSION_TYPE_AUTOMATIC",
+                  carBodyType: "CAR_BODY_TYPE_SUV",
+                  vehicleSegment: "VEHICLE_SEGMENT_D",
+                  carOptions: {
+                    hasAirConditioning: true,
+                    hasChildSeat: true,
+                  },
+                  carCategory: "CAR_CATEGORY_BUSINESS",
+                  color: "Черный",
+                  photosUrl: [
+                    "car-large.svg",
+                    "car-large.svg",
+                    "car-large.svg",
+                    "car-large.svg",
+                    "car-large.svg",
+                  ],
+                  createdAt: "2025-03-15T12:34:56Z",
+                  updatedAt: "2025-03-15T12:34:56Z",
+                },
+                userId: "deadbeef-dead-beef-dead-beefdeadbeef",
+                listingOptions: {
+                  allowedForTaxi: false,
+                  allowedOnlyForPersonalUse: false,
+                  requireRussianCitizenship: false,
+                  buyoutPossible: true,
+                },
+                depositRequired: false,
+                paymentPeriod: ["PAYMENT_PERIOD_DAILY"],
+                pricePerDay: 12000,
+                minimumRentalPeriod: 1,
+                additionalInfo:
+                  "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д",
+                createdAt: "2025-03-15T12:34:56Z",
+                updatedAt: "2025-03-15T12:34:56Z",
+                city: "Новокузнецк",
+                rentDuration: ["RENT_DURATION_FROM_DAY"],
+              },
             },
           },
           {
-            common: {
-              id: "22",
-              photos: ["car.svg"],
-              title: "Аренда Li L7 2024",
-              description:
-                "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д ",
-              city: "Иркутск",
-              district: "Правобережный",
-              address: "г. Москва, Ярославское шоссе, д 6",
-              category: "DRIVER_JOBS",
-              created_at: "2025-04-07T12:34:56Z",
-            },
-            rent_auto: {
-              cost_per_day: 12000,
-              taxi_possible: false,
-              buy_option: true,
-              year: 2024,
-              color: "black",
-              discount: 0,
-              min_rental_period_days: 1,
-            },
-            driver_job: {
-              cost_per_day: 12000,
-              buy_option: true,
+            listing: {
+              id: "d18ec707-8f7c-4e9e-a4c4-bf6d2429f897",
+              carRentListing: {
+                id: "4a1e9c2c-1e68-4e0c-90e4-4e210cf603ac",
+                carContent: {
+                  id: "aea9cbbe-93b7-4e88-906d-85cd38209c42",
+                  userId: "deadbeef-dead-beef-dead-beefdeadbeef",
+                  brandId: "Li",
+                  modelId: "L7",
+                  yearOfCarProduction: 2024,
+                  fuelType: "FUEL_TYPE_DIESEL",
+                  transmission: "TRANSMISSION_TYPE_AUTOMATIC",
+                  carBodyType: "CAR_BODY_TYPE_SEDAN",
+                  vehicleSegment: "VEHICLE_SEGMENT_D",
+                  carOptions: {
+                    hasAirConditioning: true,
+                    hasChildSeat: true,
+                  },
+                  carCategory: "CAR_CATEGORY_COMFORT_PLUS",
+                  color: "Белый",
+                  photosUrl: ["car.svg"],
+                  createdAt: "2025-04-07T12:34:56Z",
+                  updatedAt: "2025-04-07T12:34:56Z",
+                },
+                userId: "deadbeef-dead-beef-dead-beefdeadbeef",
+                listingOptions: {
+                  allowedForTaxi: false,
+                  allowedOnlyForPersonalUse: false,
+                  requireRussianCitizenship: false,
+                  buyoutPossible: true,
+                },
+                depositRequired: false,
+                paymentPeriod: ["PAYMENT_PERIOD_DAILY"],
+                pricePerDay: 12000,
+                minimumRentalPeriod: 1,
+                additionalInfo:
+                  "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д",
+                createdAt: "2025-04-07T12:34:56Z",
+                updatedAt: "2025-04-07T12:34:56Z",
+                city: "Иркутск",
+                rentDuration: ["RENT_DURATION_FROM_DAY"],
+              },
             },
           },
         ]}
@@ -120,6 +156,7 @@ export const PersonalProfile = () => {
   return (
     <div className="container">
       <div className={styles.profile}>
+        <HeaderMobile />
         <div className={styles.profile_headerMob}>
           <button>
             <Share />

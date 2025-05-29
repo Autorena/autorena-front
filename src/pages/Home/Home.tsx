@@ -33,6 +33,12 @@ import { declineCity } from "../../utils/declineCity";
 import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
 import { sortOptions } from "../../constants/sortOptions";
 
+interface FilterState {
+  price: Array<number>;
+  carCategory: Array<string>;
+  listingType: Array<string>;
+}
+
 export const Home = () => {
   const { location } = useContext(LocationContext);
   const { setModalActive, setModalContent } = useContext(ModalContext);
@@ -40,7 +46,11 @@ export const Home = () => {
   const dispatch = useAppDispatch();
 
   const [visibleCount, setVisibleCount] = useState(20);
-  const [activeFilter, setActiveFilter] = useState<{ [key: string]: any }>({});
+  const [activeFilter, setActiveFilter] = useState<FilterState>({
+    price: new Array<number>(),
+    carCategory: new Array<string>(),
+    listingType: new Array<string>(),
+  });
   const [sortOption, setSortOption] = useState<string>("default");
 
   useEffect(() => {
@@ -53,14 +63,21 @@ export const Home = () => {
     setVisibleCount((prev) => prev + 20);
   }, visibleCount < cars.length);
 
-  const filterCars = (type: string, value: any) => {
-    setActiveFilter((prev) =>
-      prev[type] === value
-        ? Object.fromEntries(
-            Object.entries(prev).filter(([key]) => key !== type)
-          )
-        : { ...prev, [type]: value }
-    );
+  const filterCars = (
+    type: keyof FilterState,
+    value: FilterState[keyof FilterState][number]
+  ) => {
+    setActiveFilter((prev) => {
+      const currentValues = prev[type] as Array<typeof value>;
+      const newValues = currentValues.includes(value)
+        ? currentValues.filter((v) => v !== value)
+        : [...currentValues, value];
+
+      return {
+        ...prev,
+        [type]: newValues,
+      };
+    });
   };
 
   const handleSortChange = (value: string) => {
@@ -68,14 +85,25 @@ export const Home = () => {
   };
 
   const filteredCars = cars.filter((car) => {
-    const { price, car_class } = activeFilter;
+    const { price, carCategory, listingType } = activeFilter;
+    const rentListing = car.listing.carRentListing;
 
-    if (price && car.rent_auto.cost_per_day > price) return false;
-    if (
-      car_class &&
-      car.search_auto?.car_class?.toLowerCase() !== car_class.toLowerCase()
-    )
-      return false;
+    if (price.length > 0 && rentListing?.pricePerDay) {
+      const matchesPrice = price.some((p) => rentListing.pricePerDay <= p);
+      if (!matchesPrice) return false;
+    }
+
+    if (carCategory.length > 0 && rentListing?.carContent.carCategory) {
+      if (!carCategory.includes(rentListing.carContent.carCategory))
+        return false;
+    }
+
+    if (listingType.length > 0) {
+      const matchesListingType = listingType.some(
+        (type) => (type as keyof typeof car.listing) in car.listing
+      );
+      if (!matchesListingType) return false;
+    }
 
     return true;
   });
@@ -231,11 +259,17 @@ export const Home = () => {
           </div>
           <div className={styles.home_info}>
             <h2>
-              Посмотрите объявления в {declineCity(location)} и {location[0]}О
+              Посмотрите объявления в <span>{declineCity(location)}</span>
             </h2>
             <div className={styles.home_info_points}>
-              <button className={`${styles.home_filter} ${styles.large}`}>
-                <Location /> {location} и область
+              <button
+                className={`${styles.home_filter} ${styles.large}`}
+                onClick={() => {
+                  setModalActive(true);
+                  setModalContent(<LocationModal />);
+                }}
+              >
+                <Location /> {location}
               </button>
               <button
                 onClick={() => {
@@ -251,7 +285,7 @@ export const Home = () => {
               <div className={styles.home_info_points_bottom}>
                 <button
                   className={`${styles.home_filter} ${
-                    "price" in activeFilter && styles.active
+                    activeFilter.price.includes(1000) && styles.active
                   }`}
                   onClick={() => filterCars("price", 1000)}
                 >
@@ -259,11 +293,44 @@ export const Home = () => {
                 </button>
                 <button
                   className={`${styles.home_filter} ${
-                    "car_class" in activeFilter && styles.active
+                    activeFilter.carCategory.includes(
+                      "CAR_CATEGORY_COMFORT_PLUS"
+                    ) && styles.active
                   }`}
-                  onClick={() => filterCars("car_class", "comfort_plus")}
+                  onClick={() =>
+                    filterCars("carCategory", "CAR_CATEGORY_COMFORT_PLUS")
+                  }
                 >
                   Аренда комфорт +
+                </button>
+                <button
+                  className={`${styles.home_filter} ${
+                    activeFilter.carCategory.includes(
+                      "CAR_CATEGORY_BUSINESS"
+                    ) && styles.active
+                  }`}
+                  onClick={() =>
+                    filterCars("carCategory", "CAR_CATEGORY_BUSINESS")
+                  }
+                >
+                  Авто бизнес-класса
+                </button>
+                <button
+                  className={`${styles.home_filter} ${
+                    activeFilter.listingType.includes("DAILY_RENT") &&
+                    styles.active
+                  }`}
+                  onClick={() => filterCars("listingType", "DAILY_RENT")}
+                >
+                  Аренда на сутки
+                </button>
+                <button
+                  className={`${styles.home_filter} ${
+                    activeFilter.price.includes(3000) && styles.active
+                  }`}
+                  onClick={() => filterCars("price", 3000)}
+                >
+                  Авто до 3000 в сутки
                 </button>
               </div>
               <div className={styles.home_sortlist}>
@@ -276,14 +343,20 @@ export const Home = () => {
                 />
               </div>
             </div>
+            <div className={styles.home_recommends_grid}>
+              {visibleCars.map((car) => (
+                <CarCard carData={car} key={car.listing.id} />
+              ))}{" "}
+              {loading && <Loader className={styles.load} />}
+            </div>
           </div>
           <div className={styles.home_recommends}>
             <h2 className={`section-title ${styles.title}`}>
               Рекомендации <span>для вас</span>
             </h2>
             <div className={styles.home_recommends_grid}>
-              {visibleCars.map((car) => (
-                <CarCard carData={car} key={car.id} />
+              {cars.map((car) => (
+                <CarCard carData={car} key={car.listing.id} />
               ))}{" "}
               {loading && <Loader className={styles.load} />}
             </div>

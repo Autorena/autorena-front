@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { CarCardProps } from "../../types";
 import styles from "./ActiveListing.module.scss";
 import { ReactComponent as Eye } from "../../assets/eye.svg";
-import { ReactComponent as Like } from "../../assets/favorites.svg";
+import { ReactComponent as Like } from "../../assets/heart.svg";
 import { ReactComponent as Message } from "../../assets/message.svg";
 import { ReactComponent as Edit } from "../../assets/edit.svg";
 import { useState } from "react";
@@ -11,17 +11,23 @@ export const ActiveListing = ({ carData }: CarCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <Link to={`/${carData.common.id}`} className={styles.listing}>
+    <Link
+      to={`/${carData.listing.carRentListing.id}`}
+      className={styles.listing}
+    >
       <img
-        src={carData.common.photos[0]}
+        src={carData.listing.carRentListing.carContent.photosUrl[0]}
         alt="Car photo"
         className={styles.listing_img}
       />
       <div className={styles.listingWrap}>
         <div className={styles.listing_info}>
-          <p className={styles.listing_title}>{carData.common.title}</p>
+          <p
+            className={styles.listing_title}
+          >{`Аренда ${carData.listing.carRentListing.carContent.brandId} ${carData.listing.carRentListing.carContent.modelId}`}</p>
           <p className={styles.listing_price}>
-            {carData.rent_auto.cost_per_day.toLocaleString("ru-RU")}₽ за день
+            {carData.listing.carRentListing.pricePerDay.toLocaleString("ru-RU")}
+            ₽ за день
           </p>
           <p
             className={styles.listing_descr}
@@ -32,7 +38,7 @@ export const ActiveListing = ({ carData }: CarCardProps) => {
               overflow: "hidden",
             }}
           >
-            {carData.common.description}
+            {carData.listing.carRentListing.additionalInfo}
           </p>
           <button
             onClick={(e) => {
@@ -44,7 +50,9 @@ export const ActiveListing = ({ carData }: CarCardProps) => {
           >
             {isExpanded ? "Скрыть" : "Смотреть полностью"}
           </button>
-          <p className={styles.listing_address}>{carData.common.address}</p>
+          <p className={styles.listing_address}>
+            г. {carData.listing.carRentListing.city}
+          </p>
         </div>
         <div className={styles.listing_statistic}>
           <p className={styles.listing_days}>Осталось 29 дней</p>

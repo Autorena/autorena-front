@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CarCardProps } from "../../types";
 import styles from "./CarCardLarge.module.scss";
 import modalStyles from "../../ui-components/Modal/Modal.module.scss";
@@ -14,30 +14,49 @@ import { useModalWithHistory } from "../../hooks/useModalWithHistory";
 export const CarCardLarge = ({ carData }: CarCardProps) => {
   const { openModal } = useModalWithHistory();
   const {
-    common: { id, photos, title, description, address, created_at, ads },
-    rent_auto: { cost_per_day },
+    listing: {
+      id,
+      carRentListing: {
+        carContent: { photosUrl, createdAt },
+        pricePerDay,
+        city,
+        additionalInfo,
+      },
+    },
   } = carData;
 
   const { isPhoneConfirmed } = useAppSelector((state) => state.user);
   const { setModalContent, setModalActive } = useContext(ModalContext);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const carTitle = `Аренда ${carData.listing.carRentListing.carContent.brandId} ${carData.listing.carRentListing.carContent.modelId} ${carData.listing.carRentListing.carContent.yearOfCarProduction}`;
+
+  const getCurrentFilter = () => {
+    if (pathname.startsWith("/filter/")) {
+      return pathname.split("/")[2];
+    }
+    return "RENT_AUTO";
+  };
+
+  const currentFilter = getCurrentFilter();
 
   return (
     <Link
-      to={`/${id}`}
-      className={`${styles.carCard} ${ads && styles.ads} ${styles.fullWidth}`}
+      to={`/${id}?from=${currentFilter}`}
+      className={`${styles.carCard} ${styles.fullWidth}`}
     >
       <div className={styles.imgWrap}>
-        <img src={photos[0]} alt="Car photo" />
+        <img src={photosUrl[0]} alt="Car photo" />
       </div>
       <div className={styles.gallery}>
-        {photos.map((ph) => (
-          <img src={ph} />
+        {photosUrl.map((photo: string) => (
+          <img src={photo} alt="Car photo" />
         ))}
       </div>
       <div className={styles.info}>
         <div className={styles.titleWrap}>
-          {title}
+          {carTitle}
           <button
             className={styles.likeBtn}
             onClick={(e) => {
@@ -53,7 +72,7 @@ export const CarCardLarge = ({ carData }: CarCardProps) => {
           </button>
         </div>
         <p className={styles.price}>
-          <span>{cost_per_day}₽ за день</span>
+          <span>{pricePerDay}₽ за день</span>
 
           <button
             className={styles.likeBtn}
@@ -69,8 +88,8 @@ export const CarCardLarge = ({ carData }: CarCardProps) => {
             <Like />
           </button>
         </p>
-        <p className={styles.description}>{description}</p>
-        <p className={styles.address}>{address}</p>
+        <p className={styles.description}>{additionalInfo}</p>
+        <p className={styles.address}>г. {city}</p>
         <div className={styles.autor}>
           <div className={styles.autor_name}>
             AUTO прокат / аренда автомобилей
@@ -112,8 +131,8 @@ export const CarCardLarge = ({ carData }: CarCardProps) => {
           >
             {window.innerWidth <= 550 ? "Позвонить" : " Показать номер"}
           </button>
-          <div className={styles.date}>{timeAgo(created_at)}</div>
-        </div>{" "}
+          <div className={styles.date}>{timeAgo(createdAt)}</div>
+        </div>
       </div>
     </Link>
   );

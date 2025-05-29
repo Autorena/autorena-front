@@ -11,6 +11,7 @@ import { ChooseCategory } from "./pages/ChooseCategory/ChooseCategory";
 import { CreateListing } from "./pages/CreateListing/CreateListing";
 import { PersonalProfile } from "./pages/PersonalProfile/PersonalProfile";
 import { MyListings } from "./pages/MyListings/MyListings";
+import { Unauthorized } from "./pages/Unauthorized/Unauthorized";
 
 export const App = () => {
   if ("scrollRestoration" in window.history) {
@@ -31,6 +32,7 @@ export const App = () => {
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/profile" element={<PersonalProfile />} />
           <Route path="/my-listings" element={<MyListings />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
         </Route>
       </Routes>
     </>

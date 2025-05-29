@@ -6,30 +6,39 @@ import { useEffect, useState } from "react";
 import { ReactComponent as Plus } from "../../assets/plus.svg";
 import { Link } from "react-router-dom";
 import { useGetBrandsQuery } from "../../redux/brandsApi";
+import { useGetModelsQuery } from "../../redux/modelsApi";
+import { SearchableDropdown } from "../../ui-components/SearchableDropdown/SearchableDropdown";
 
 type CarRentListingFormProps = {
   buyout: boolean;
   minimumRentalPeriod: number;
 };
 
-const brands = [
-  { value: "1", label: "BMW" },
-  { value: "2", label: "Honda" },
-  { value: "3", label: "Mercedes" },
-];
-
-const mockModels = [
-  { id: "m1", name: "3 Series", cyrillic_name: "3 серия", brand_id: "1" },
-  { id: "m2", name: "X5", cyrillic_name: "X5", brand_id: "1" },
-  { id: "m3", name: "Civic", cyrillic_name: "Сивик", brand_id: "2" },
-  { id: "m4", name: "Accord", cyrillic_name: "Аккорд", brand_id: "2" },
-  { id: "m5", name: "E-Class", cyrillic_name: "E-класс", brand_id: "3" },
-];
-
-const modelOptions = mockModels.map((model) => ({
-  value: model.id,
-  label: model.cyrillic_name || model.name,
-}));
+type FormData = {
+  photos: File[];
+  brand_id: string;
+  model_id: string;
+  year: string;
+  fuel_type: string;
+  transmission: string;
+  car_body_type: string;
+  vehicle_segment: string;
+  has_air_conditioning: boolean | undefined;
+  has_child_seat: boolean | undefined;
+  car_category: string;
+  color: string;
+  allowed_for_taxi: boolean;
+  allowed_only_for_personal_use: boolean;
+  require_russian_citizenship: boolean | undefined;
+  buyout_possible: boolean;
+  deposit_required: boolean | undefined;
+  payment_period: string[];
+  price_per_day: string;
+  minimum_rental_period: string;
+  additional_info: string;
+  city: string;
+  rent_duration: string[];
+};
 
 const fuelOptions = [
   { value: "FUEL_TYPE_GASOLINE", label: "Бензин" },
@@ -97,8 +106,13 @@ export const CarRentListingForm = ({
   minimumRentalPeriod,
 }: CarRentListingFormProps) => {
   const [previews, setPreviews] = useState<string[]>([]);
-  const { data } = useGetBrandsQuery("");
-  console.log(data);
+  const { data: brandsData } = useGetBrandsQuery("");
+  const [selectedBrandId, setSelectedBrandId] = useState<string>("");
+
+  const { data: modelsData, isLoading: isLoadingModels } = useGetModelsQuery(
+    { brandId: selectedBrandId },
+    { skip: !selectedBrandId }
+  );
 
   const {
     register,
@@ -106,7 +120,7 @@ export const CarRentListingForm = ({
     control,
     setValue,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormData>({
     defaultValues: {
       photos: [],
       brand_id: "",
@@ -127,7 +141,7 @@ export const CarRentListingForm = ({
       deposit_required: undefined,
       payment_period: [],
       price_per_day: "",
-      minimum_rental_period: minimumRentalPeriod || "",
+      minimum_rental_period: minimumRentalPeriod?.toString() || "",
       additional_info: "",
       city: "",
       rent_duration: [""],
@@ -140,7 +154,7 @@ export const CarRentListingForm = ({
     }
   }, [minimumRentalPeriod, setValue]);
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: FormData) => {
     const payload = {
       listing: {
         car_rent_listing: {
@@ -235,12 +249,15 @@ export const CarRentListingForm = ({
           rules={{ required: "Выберите бренд" }}
           control={control}
           render={({ field }) => (
-            <DropdownList
+            <SearchableDropdown
               className={styles.dropdown}
-              options={brands}
+              options={brandsData?.brands || []}
               value={field.value}
-              onSelect={field.onChange}
-              listStyles={{ bottom: "-130px" }}
+              onSelect={(value) => {
+                field.onChange(value);
+                setSelectedBrandId(value);
+                setValue("model_id", "");
+              }}
             />
           )}
         />
@@ -254,12 +271,12 @@ export const CarRentListingForm = ({
           rules={{ required: "Выберите модель" }}
           control={control}
           render={({ field }) => (
-            <DropdownList
+            <SearchableDropdown
               className={styles.dropdown}
-              options={modelOptions}
+              options={modelsData?.models || []}
               value={field.value}
               onSelect={field.onChange}
-              listStyles={{ bottom: "-190px" }}
+              disabled={!selectedBrandId || isLoadingModels}
             />
           )}
         />
@@ -333,7 +350,6 @@ export const CarRentListingForm = ({
               options={bodyTypeOptions}
               value={field.value}
               onSelect={field.onChange}
-              listStyles={{ bottom: "-480px" }}
             />
           )}
         />
@@ -350,7 +366,6 @@ export const CarRentListingForm = ({
               options={vehicleSegmentOptions}
               value={field.value}
               onSelect={field.onChange}
-              listStyles={{ bottom: "-320px" }}
             />
           )}
         />
@@ -423,7 +438,6 @@ export const CarRentListingForm = ({
               options={categoryOptions}
               value={field.value}
               onSelect={field.onChange}
-              listStyles={{ bottom: "-190px" }}
             />
           )}
         />
@@ -601,7 +615,6 @@ export const CarRentListingForm = ({
               options={paymentPeriodOptions}
               value={field.value}
               onSelect={field.onChange}
-              listStyles={{ bottom: "-130px" }}
               isMulti={true}
             />
           )}
@@ -663,7 +676,6 @@ export const CarRentListingForm = ({
                 options={rentDurationOptions}
                 value={field.value || []}
                 onSelect={field.onChange}
-                listStyles={{ bottom: "-130px" }}
                 isMulti={true}
               />
             )}

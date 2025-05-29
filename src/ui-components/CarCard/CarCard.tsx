@@ -12,37 +12,43 @@ export const CarCard = ({ carData }: CarCardProps) => {
   const { pathname } = useLocation();
 
   const {
-    common: { id, photos, title, ads },
-    rent_auto: { cost_per_day, taxi_possible, buy_option, discount },
+    listing: {
+      id,
+      carRentListing: {
+        carContent: { photosUrl, brandId, modelId, yearOfCarProduction },
+        listingOptions: {
+          allowedForTaxi,
+          allowedOnlyForPersonalUse,
+          buyoutPossible,
+        },
+        pricePerDay,
+      },
+    },
   } = carData;
-
-  // const categoryData = getCategoryData(carData);
-
-  // const cost = categoryData?.cost_per_day ?? 0;
-  // const taxi_possible = categoryData?.taxi_possible ?? false;
-  // const buy_option = categoryData?.buy_option ?? false;
-  // const discount = categoryData?.discount ?? 0;
 
   const { isPhoneConfirmed } = useAppSelector((state) => state.user);
   const { setModalContent, setModalActive } = useContext(ModalContext);
 
   const getCurrentFilter = () => {
-    if (pathname.startsWith("/filter/")) {
-      return pathname.split("/")[2];
-    }
-    return "RENT_AUTO";
+    const filter = pathname.startsWith("/filter/")
+      ? pathname.split("/")[2]
+      : "RENT_AUTO";
+
+    return filter;
   };
 
   const currentFilter = getCurrentFilter();
 
+  const title = `${brandId} ${modelId} ${yearOfCarProduction}`;
+
   return (
     <Link
       to={`/${id}?from=${currentFilter}`}
-      className={`${styles.carCard} ${ads && styles.ads}`}
+      className={`${styles.carCard} ${carData.listing?.ads && styles.ads}`}
     >
       <div className={styles.carCard_imgWrap}>
         <img
-          src={photos[0]}
+          src={photosUrl[0]}
           alt="Car photo"
           className={styles.carCard_img}
           loading="lazy"
@@ -58,7 +64,7 @@ export const CarCard = ({ carData }: CarCardProps) => {
         </button>
       </div>
       <div className={styles.carCard_title}>
-        <p>{title}</p>
+        <p>Аренда {title}</p>
         <button
           className={styles.carCard_likeBtn}
           onClick={(e) => {
@@ -74,16 +80,18 @@ export const CarCard = ({ carData }: CarCardProps) => {
         </button>
       </div>
       <p className={styles.carCard_buyOption}>
-        {buy_option && "возможен выкуп"}
+        {buyoutPossible && "возможен выкуп"}
       </p>
       <div className={styles.carCard_bottom}>
         <p className={styles.carCard_price}>
-          от {cost_per_day.toLocaleString("ru-RU")}₽ за день
+          от {pricePerDay.toLocaleString("ru-RU")}₽ за день
         </p>
         <ul className={styles.carCard_list}>
-          <li> Для личного пользования: {!taxi_possible ? "да" : "нет"}</li>
-          <li>Для такси: {taxi_possible ? "да" : "нет"}</li>
-          <li>Скидка за сроки: {discount !== 0 ? "да" : "нет"}</li>
+          <li>
+            Для личного пользования: {allowedOnlyForPersonalUse ? "да" : "нет"}
+          </li>
+          <li>Для такси: {allowedForTaxi ? "да" : "нет"}</li>
+          <li>Скидка за сроки: нет</li>
         </ul>
       </div>
     </Link>

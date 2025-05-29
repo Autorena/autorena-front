@@ -44,48 +44,65 @@ export type StoryModalProps = {
   onClose: () => void;
 };
 
+export type CarContent = {
+  id: string;
+  userId: string;
+  brandId: string;
+  modelId: string;
+  yearOfCarProduction: number;
+  fuelType: string;
+  transmission: string;
+  carBodyType: string;
+  vehicleSegment: string;
+  carOptions: {
+    hasAirConditioning: boolean;
+    hasChildSeat: boolean;
+  };
+  carCategory: string;
+  color: string;
+  photosUrl: string[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ListingOptions = {
+  allowedForTaxi: boolean;
+  allowedOnlyForPersonalUse: boolean;
+  requireRussianCitizenship: boolean;
+  buyoutPossible: boolean;
+};
+
+export type CarRentListing = {
+  id: string;
+  size?: string;
+  ads?: boolean;
+  carContent: CarContent;
+  userId: string;
+  listingOptions: ListingOptions;
+  depositRequired: boolean;
+  paymentPeriod: string[];
+  pricePerDay: number;
+  minimumRentalPeriod: number;
+  additionalInfo: string;
+  createdAt: string;
+  updatedAt: string;
+  city: string;
+  rentDuration: string[];
+};
+
+export type Listing = {
+  id: string;
+  size?: "large";
+  ads?: boolean;
+  carRentListing: CarRentListing;
+  carBuyListing?: CarRentListing;
+  driverJobListing?: CarRentListing;
+  autoServiceListing?: CarRentListing;
+  wantedCarRentListing?: CarRentListing;
+};
+
 export type CarCardType = {
-  common: {
-    id: string;
-    photos: string[];
-    title: string;
-    description: string;
-    city: string;
-    district: string;
-    address: string;
-    category: string;
-    created_at: string;
-    ads?: boolean;
-    size?: string;
-  };
-  rent_auto: {
-    cost_per_day: number;
-    taxi_possible: boolean;
-    buy_option: boolean;
-    year: number;
-    color?: string;
-    discount?: number;
-    min_rental_period_days: number;
-    deposit_required?: boolean;
-  };
-  search_auto?: {
-    car_class: string;
-    experience_years: number;
-  };
-  daily_rent?: {
-    cost_per_day: number;
-    delivery_possible: boolean;
-    deposit_required: boolean;
-    buy_option: boolean;
-  };
-  driver_job?: {
-    cost_per_day: number;
-    buy_option: boolean;
-  };
-  auto_services?: {
-    cost_per_day: number;
-    buy_option: boolean;
-  };
+  listing: Listing;
 };
 
 export interface CarCardProps {

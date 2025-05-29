@@ -87,7 +87,6 @@
     font-size: 14px;
   }
   .buttons {
-    margin-top: auto;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -156,6 +155,9 @@
         display: none;
       }
       img {
+        width: 301px;
+        height: 248px;
+        object-fit: cover;
         border-radius: 12px;
       }
     }

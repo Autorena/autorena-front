@@ -11,7 +11,7 @@ import { ModalContext } from "../../../HOC/ModalProvider";
 
 const STORY_DURATION = 7000;
 
-export const StoryViewer2 = ({
+export const StoryViewer = ({
   storiesData,
   initialIndex,
   onClose,

@@ -2,39 +2,35 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { cars } from "../utils/cars";
 import { CarCardType } from "../types";
 
+type FilterState = {
+  city?: string;
+  district?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  startDate?: string;
+  endDate?: string;
+  carCategory?: string;
+  carBodyType?: string;
+  hasAirConditioning?: boolean;
+  hasChildSeat?: boolean;
+  allowedForTaxi?: boolean;
+  allowedOnlyForPersonalUse?: boolean;
+  buyoutPossible?: boolean;
+};
+
 export const fetchCars = createAsyncThunk<CarCardType[]>(
   "cars/fetchCars",
   async () => {
     return new Promise<CarCardType[]>((resolve) => {
       setTimeout(() => {
-        const validatedCars = cars.map((car) => {
-          const defaultCar: Partial<CarCardType> = {
-            rent_auto: {
-              cost_per_day: 0,
-              taxi_possible: false,
-              buy_option: false,
-              year: new Date().getFullYear(),
-              min_rental_period_days: 1,
-              deposit_required: false,
-            },
-            daily_rent: {
-              cost_per_day: 0,
-              delivery_possible: false,
-              deposit_required: false,
-              buy_option: false,
-            },
-          };
-
-          return {
-            ...defaultCar,
-            ...car,
-            common: {
-              ...car.common,
-            },
-          } as CarCardType;
-        });
-
-        resolve(validatedCars);
+        const typedCars = cars.map((car) => ({
+          ...car,
+          listing: {
+            ...car.listing,
+            size: car.listing.size as "large" | undefined,
+          },
+        })) as CarCardType[];
+        resolve(typedCars);
       }, 500);
     });
   }
@@ -45,9 +41,16 @@ export const fetchCarById = createAsyncThunk<CarCardType, string>(
   async (id) => {
     return new Promise<CarCardType>((resolve, reject) => {
       setTimeout(() => {
-        const foundCar = cars.find((car) => car.common.id === id);
+        const foundCar = cars.find((car) => car.listing.id === id);
         if (foundCar) {
-          resolve(foundCar as CarCardType);
+          const typedCar = {
+            ...foundCar,
+            listing: {
+              ...foundCar.listing,
+              size: foundCar.listing.size as "large" | undefined,
+            },
+          } as CarCardType;
+          resolve(typedCar);
         } else {
           reject(new Error("Car not found"));
         }
@@ -56,64 +59,112 @@ export const fetchCarById = createAsyncThunk<CarCardType, string>(
   }
 );
 
+interface CarsState {
+  cars: CarCardType[];
+  car: CarCardType | null;
+  loading: boolean;
+  error: string | null;
+}
+
+const initialState: CarsState = {
+  cars: [],
+  car: null,
+  loading: false,
+  error: null,
+};
+
 const carsSlice = createSlice({
   name: "cars",
-  initialState: {
-    cars: [] as CarCardType[],
-    car: {} as CarCardType,
-    loading: false,
-    error: null as string | null,
-  },
+  initialState,
   reducers: {
-    filterCars: (state, action) => {
+    filterCars: (state, action: { payload: FilterState }) => {
       const filters = action.payload;
 
-      state.cars = (cars as CarCardType[]).filter((car) => {
+      const typedCars = cars.map((car) => ({
+        ...car,
+        listing: {
+          ...car.listing,
+          size: car.listing.size as "large" | undefined,
+        },
+      })) as CarCardType[];
+
+      state.cars = typedCars.filter((car) => {
+        const { carRentListing } = car.listing;
+        if (!carRentListing) {
+          return false;
+        }
+
+        const { carContent, listingOptions } = carRentListing;
+
+        // Фильтр по городу
         if (
           filters.city &&
-          !car.common.city.toLowerCase().includes(filters.city.toLowerCase())
-        ) {
-          return false;
-        }
-
-        if (
-          filters.district &&
-          !car.common.district
+          !carRentListing.city
             .toLowerCase()
-            .includes(filters.district.toLowerCase())
+            .includes(filters.city.toLowerCase())
+        ) {
+          return false;
+        }
+
+        if (filters.minPrice && carRentListing.pricePerDay < filters.minPrice) {
+          return false;
+        }
+
+        if (filters.maxPrice && carRentListing.pricePerDay > filters.maxPrice) {
+          return false;
+        }
+
+        if (
+          filters.startDate &&
+          new Date(carContent.createdAt) > new Date(filters.startDate)
         ) {
           return false;
         }
 
         if (
-          filters.min_price &&
-          car.rent_auto.cost_per_day < Number(filters.min_price)
+          filters.endDate &&
+          new Date(carContent.createdAt) < new Date(filters.endDate)
         ) {
           return false;
         }
 
         if (
-          filters.max_price &&
-          car.rent_auto.cost_per_day > Number(filters.max_price)
+          filters.carCategory &&
+          carContent.carCategory !== filters.carCategory
         ) {
           return false;
         }
 
         if (
-          filters.start_date &&
-          new Date(car.common.created_at) > new Date(filters.start_date)
+          filters.carBodyType &&
+          carContent.carBodyType !== filters.carBodyType
         ) {
           return false;
         }
 
         if (
-          filters.end_date &&
-          new Date(car.common.created_at) < new Date(filters.end_date)
+          filters.hasAirConditioning &&
+          !carContent.carOptions.hasAirConditioning
         ) {
           return false;
         }
 
-        if (filters.can_be_delivered && !car.daily_rent?.delivery_possible) {
+        if (filters.hasChildSeat && !carContent.carOptions.hasChildSeat) {
+          return false;
+        }
+
+        if (filters.allowedForTaxi && !listingOptions.allowedForTaxi) {
+          return false;
+        }
+
+        if (
+          filters.allowedOnlyForPersonalUse &&
+          !listingOptions.allowedOnlyForPersonalUse
+        ) {
+          return false;
+        }
+
+        if (filters.buyoutPossible && !listingOptions.buyoutPossible) {
           return false;
         }
 
@@ -125,6 +176,7 @@ const carsSlice = createSlice({
     builder
       .addCase(fetchCars.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchCars.fulfilled, (state, action) => {
         state.loading = false;
@@ -132,11 +184,19 @@ const carsSlice = createSlice({
       })
       .addCase(fetchCars.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message ?? null;
+        state.error = action.error.message ?? "Failed to fetch cars";
+      })
+      .addCase(fetchCarById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
       .addCase(fetchCarById.fulfilled, (state, action) => {
         state.loading = false;
         state.car = action.payload;
+      })
+      .addCase(fetchCarById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message ?? "Failed to fetch car";
       });
   },
 });

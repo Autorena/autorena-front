@@ -12,20 +12,34 @@ import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
 import { sortOptions } from "../../constants/sortOptions";
 import { sortCars } from "../../utils/sortCars";
 import { fetchCars } from "../../redux/carsSlice";
-import { FilterMenu } from "../../ui-components/FilterMenu/FilterMenu";
-import { filterPresets } from "../../constants/filterPresets";
+import {
+  FilterMenu,
+  FilterMenuProps,
+} from "../../ui-components/FilterMenu/FilterMenu";
 import { CarCardLarge } from "../../ui-components/CarCardLarge/CarCardLarge";
+import { CarCardType } from "../../types";
+import { setFilteredCars } from "../../redux/listingsSlice";
 
 export const FilterPage = () => {
   const { filter } = useParams<{ filter?: string }>();
-  console.log(filter);
-  const filters = filterPresets[filter ?? "default"];
   const dispatch = useAppDispatch();
   const { cars, loading } = useAppSelector((state) => state.cars);
+  const filteredListings = useAppSelector(
+    (state) => state.listings.filteredListings
+  );
 
   const filterTitle = filterNameMap[filter ?? "default"];
   const [sortOption, setSortOption] = useState("default");
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+
+  const filterToListingMap: Record<string, keyof CarCardType["listing"]> = {
+    RENT_AUTO: "carRentListing",
+    DAILY_RENT: "carRentListing",
+    BUY_AUTO: "carRentListing",
+    DRIVER_JOBS: "carRentListing",
+    AUTO_SERVICES: "carRentListing",
+    SEARCH: "carRentListing",
+  };
 
   useEffect(() => {
     dispatch(fetchCars()).catch((error) => {
@@ -33,27 +47,64 @@ export const FilterPage = () => {
     });
   }, []);
 
+  useEffect(() => {
+    dispatch(setFilteredCars([]));
+  }, [filter, dispatch]);
+
   const handleSortChange = useCallback((value: string | string[]) => {
     if (typeof value === "string") {
       setSortOption(value);
     }
   }, []);
 
-  const filteredAndSortedCars = useMemo(() => {
-    const filtered = !filter
-      ? cars
-      : cars.filter((car) => car.common.category === filter.toUpperCase());
-    return sortCars(filtered, sortOption);
-  }, [cars, filter, sortOption]);
+  const displayData = useMemo(() => {
+    if (filteredListings.length > 0) {
+      return filteredListings.map((listing) => ({ listing }));
+    }
+
+    if (!filter) return cars;
+
+    const listingType = filterToListingMap[filter.toUpperCase()];
+    if (!listingType) return cars;
+
+    return cars.filter((car) => {
+      if (listingType === "carRentListing") {
+        if (filter.toUpperCase() === "BUY_AUTO") {
+          return (
+            car.listing.carRentListing?.listingOptions?.buyoutPossible === true
+          );
+        }
+
+        const isDailyRent = car.listing.carRentListing?.rentDuration?.includes(
+          "RENT_DURATION_FROM_DAY"
+        );
+        return filter.toUpperCase() === "DAILY_RENT"
+          ? isDailyRent
+          : !isDailyRent;
+      }
+      return !!car.listing[listingType];
+    });
+  }, [cars, filter, filteredListings]);
+
+  const sortedData = useMemo(() => {
+    if (sortOption === "default") {
+      return displayData;
+    }
+    return sortCars(displayData, sortOption);
+  }, [displayData, sortOption]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter, sortOption, filteredListings]);
 
   const ITEMS_PER_PAGE = 20;
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(filteredAndSortedCars.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(sortedData.length / ITEMS_PER_PAGE);
 
-  const visibleCars = useMemo(() => {
+  const visibleData = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredAndSortedCars.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredAndSortedCars, currentPage]);
+    return sortedData.slice(start, start + ITEMS_PER_PAGE);
+  }, [sortedData, currentPage]);
 
   const handleLoadMore = useCallback(() => {
     if (currentPage < totalPages) {
@@ -64,9 +115,9 @@ export const FilterPage = () => {
   return (
     <div className={`container ${styles.homeWrap} ${styles.filterPage}`}>
       <FilterMenu
-        filters={filters}
-        setIsFilterOpen={setIsFiltersOpen}
-        isFiltersOpen={isFiltersOpen}
+        filterType={filter?.toUpperCase() as FilterMenuProps["filterType"]}
+        isOpen={isFiltersOpen}
+        onClose={() => setIsFiltersOpen(false)}
       />
 
       <HeaderMobile className={styles.header_mobile} />
@@ -85,7 +136,11 @@ export const FilterPage = () => {
               </button>
               <DropdownList
                 options={
-                  sortOptions[(filter ?? "default") as keyof typeof sortOptions]
+                  sortOptions[
+                    (
+                      filter ?? "default"
+                    ).toUpperCase() as keyof typeof sortOptions
+                  ] ?? sortOptions.default
                 }
                 value={sortOption}
                 onSelect={handleSortChange}
@@ -94,11 +149,11 @@ export const FilterPage = () => {
           </div>
           <div className={styles.home_recommends}>
             <div className={styles.home_recommends_grid}>
-              {visibleCars.map((car) =>
-                car.common.size === "large" ? (
-                  <CarCardLarge key={car.common.id} carData={car} />
+              {visibleData.map((item) =>
+                item.listing.size === "large" ? (
+                  <CarCardLarge key={item.listing.id} carData={item} />
                 ) : (
-                  <CarCard key={car.common.id} carData={car} />
+                  <CarCard key={item.listing.id} carData={item} />
                 )
               )}
               {loading && <Loader className={styles.load} />}

@@ -41,7 +41,11 @@ export const ModalProvider = ({ children }: Children) => {
 
   const setModalContent = (
     content: React.ReactNode,
-    options?: { modalClass?: string; isRootModal?: boolean }
+    options?: {
+      modalClass?: string;
+      isRootModal?: boolean;
+      skipHistory?: boolean;
+    }
   ) => {
     if (content) {
       if (options?.isRootModal) {
@@ -55,7 +59,10 @@ export const ModalProvider = ({ children }: Children) => {
       setContent(content);
       setModalClass(options?.modalClass || "");
       setModalActive(true);
-      window.history.pushState({ isModal: true }, "");
+
+      if (!options?.skipHistory) {
+        window.history.pushState({ isModal: true }, "");
+      }
     } else {
       closeModal();
     }

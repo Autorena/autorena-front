@@ -26,10 +26,13 @@
     gap: 12px;
     padding: 16px 24px;
     position: absolute;
-    bottom: -166px;
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
     border-radius: 12px;
     background: $light-gray;
     z-index: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   &_item {

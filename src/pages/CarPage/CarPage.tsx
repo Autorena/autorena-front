@@ -48,22 +48,23 @@ export const CarPage = () => {
   }, []);
 
   useEffect(() => {
-    console.log("ID changed to:", id);
     dispatch(fetchCarById(id!));
   }, [id]);
 
   if (
     !car ||
-    !car.common ||
-    !car.common.photos ||
-    car.common.photos.length === 0
+    !car.listing.carRentListing.carContent.photosUrl ||
+    car.listing.carRentListing.carContent.photosUrl.length === 0
   ) {
     return <Loader />;
   }
 
+  const { carContent } = car.listing.carRentListing;
+  const carTitle = `Аренда ${carContent.brandId} ${carContent.modelId} ${carContent.yearOfCarProduction}`;
+
   const reviews = [
     {
-      title: car.common.title,
+      title: carTitle,
       author: "Александр",
       date: "6 декабря",
       rate: 4.5,
@@ -71,7 +72,7 @@ export const CarPage = () => {
         "Хотелось бы оставить отзыв о работе данной компании. Отличный сервис, советую. Все оперативно и без подводных камней. Хотелось бы оставить отзыв о работе данной компании. Отличный сервис, советую. Все оперативно и без подводных камней.",
     },
     {
-      title: car.common.title,
+      title: carTitle,
       author: "Владимир",
       date: "6 декабря",
       rate: 5,
@@ -79,7 +80,7 @@ export const CarPage = () => {
         "Хотелось бы оставить отзыв о работе данной компании. Отличный сервис, советую. Все оперативно и без подводных камней. Хотелось бы оставить отзыв о работе данной компании. Отличный сервис, советую. Все оперативно и без подводных камней.Хотелось бы оставить отзыв о работе данной компании. Отличный сервис, советую. Все оперативно и без подводных камней.",
     },
     {
-      title: car.common.title,
+      title: carTitle,
       author: "Анатолий",
       date: "19 декабря",
       rate: 4,
@@ -105,7 +106,7 @@ export const CarPage = () => {
             >
               <ArrowBack />
             </button>
-            <h2>{car.common.title}</h2>
+            <h2>{carTitle}</h2>
             <div className={styles.car_headerWrap}>
               <button className={styles.shareBtn}>
                 <Share />
@@ -123,18 +124,21 @@ export const CarPage = () => {
               </button>
             </div>
           </div>{" "}
-          <CarGallery photos={car.common.photos} />
+          <CarGallery photos={carContent.photosUrl} />
           <div className={styles.car_top_mobile}>
-            <h3>{car.common.title}</h3>
+            <h3>{carTitle}</h3>
             <p className={styles.price}>
               {" "}
-              {car.rent_auto.cost_per_day.toLocaleString("ru-RU")}₽ за день
+              {car.listing.carRentListing.pricePerDay.toLocaleString("ru-RU")}₽
+              за день
             </p>
             <div className={styles.car_top_info}>
               <span className={styles.car_author_rate}>4.6</span>
               <span className={styles.reviews}>12 отзывов</span>
             </div>
-            <p className={styles.car_top_address}>{car.common.address}</p>
+            <p className={styles.car_top_address}>
+              г. {car.listing.carRentListing.city}
+            </p>
           </div>
           <CarDetails
             car={car}
@@ -147,7 +151,8 @@ export const CarPage = () => {
         <div className={styles.car_right}>
           <div className={styles.car_right_top}>
             <p className={styles.car_right_price}>
-              {car.rent_auto.cost_per_day.toLocaleString("ru-RU")}₽ за день
+              {car.listing.carRentListing.pricePerDay.toLocaleString("ru-RU")}₽
+              за день
             </p>
             <button
               className={styles.showBtn}

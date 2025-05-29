@@ -20,6 +20,33 @@ type ReviewType = {
   description: string;
 };
 
+const transmissionMap: Record<string, string> = {
+  TRANSMISSION_TYPE_MANUAL: "Механическая",
+  TRANSMISSION_TYPE_AUTOMATIC: "Автоматическая",
+  TRANSMISSION_TYPE_CVT: "Вариатор",
+  TRANSMISSION_TYPE_ROBOT: "Робот",
+  TRANSMISSION_TYPE_DCT: "Робот с двумя сцеплениями",
+};
+
+const fuelTypeMap: Record<string, string> = {
+  FUEL_TYPE_PETROL: "Бензин",
+  FUEL_TYPE_DIESEL: "Дизель",
+  FUEL_TYPE_HYBRID: "Гибрид",
+  FUEL_TYPE_ELECTRIC: "Электро",
+  FUEL_TYPE_GAS: "Газ",
+};
+
+const carCategoryMap: Record<string, string> = {
+  CAR_CATEGORY_ECONOMY: "Эконом",
+  CAR_CATEGORY_COMFORT: "Комфорт",
+  CAR_CATEGORY_BUSINESS: "Бизнес",
+  CAR_CATEGORY_PREMIUM: "Премиум",
+  CAR_CATEGORY_SUV: "Внедорожник",
+  CAR_CATEGORY_SPORT: "Спорт",
+  CAR_CATEGORY_VAN: "Минивэн",
+  CAR_CATEGORY_ELECTRIC: "Электро",
+};
+
 export const CarDetails = ({
   car,
   reviews,
@@ -35,22 +62,25 @@ export const CarDetails = ({
   const { setModalActive, setModalContent } = useContext(ModalContext);
   const { openModal } = useModalWithHistory();
   const [showButtons, setShowButtons] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const SCROLL_THRESHOLD = 50;
+
   const isAuth = useAppSelector((state) => state.user.isPhoneConfirmed);
   const cars = useAppSelector((state) => state.cars.cars);
   const navigate = useNavigate();
 
-  // Оптимизируем фильтрацию похожих машин
+  const { carContent } = car.listing.carRentListing;
+
   const similarCars = useMemo(() => {
     return cars
       .filter(
         (c) =>
-          c.common.category === car.common.category &&
-          c.common.id !== car.common.id
+          c.listing.carRentListing.carContent.carCategory ===
+            carContent.carCategory && c.listing.id !== car.listing.id
       )
-      .slice(0, 4); // Ограничиваем до 4 похожих машин
-  }, [cars, car.common.category, car.common.id]);
+      .slice(0, 8);
+  }, [cars, carContent.carCategory, car.listing.id]);
 
-  // Оптимизируем обработчики событий
   const handlePhoneClick = useCallback(() => {
     setModalActive(true);
     setModalContent(
@@ -71,13 +101,17 @@ export const CarDetails = ({
     else openModal(<LoginModal />);
   }, [isAuth, navigate, openModal]);
 
-  // Оптимизируем обработчик скролла
   const handleScroll = useCallback(() => {
     const currentScroll = window.scrollY;
-    setShowButtons(currentScroll < window.scrollY);
-  }, []);
+
+    if (Math.abs(currentScroll - lastScrollY) > SCROLL_THRESHOLD) {
+      setShowButtons(currentScroll < lastScrollY);
+      setLastScrollY(currentScroll);
+    }
+  }, [lastScrollY]);
 
   useEffect(() => {
+    setLastScrollY(window.scrollY);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
@@ -86,7 +120,7 @@ export const CarDetails = ({
     <div className={styles.car_left_bottom}>
       <div className={`${styles.car_info_term} ${styles.location}`}>
         <h3 className={styles.car_subtitle}>Расположение</h3>
-        <p>{car.common.address}</p>
+        <p>г. {car.listing.carRentListing.city}</p>
       </div>
       <div className={styles.car_info_term}>
         <h3 className={styles.car_subtitle}>Условия аренды</h3>
@@ -101,13 +135,14 @@ export const CarDetails = ({
             Страховка: <span>ОСАГО</span>
           </li>
           <li>
-            Минимальное количество суток: <span>2</span>
+            Минимальное количество суток:{" "}
+            <span>{car.listing.carRentListing.minimumRentalPeriod}</span>
           </li>
           <li>
             Есть лимит пробега: <span>Нет</span>
           </li>
           <li>
-            Депозит: <span>20000 ₽</span>
+            Депозит: <span>2000 ₽</span>
           </li>
         </ul>
       </div>
@@ -130,34 +165,60 @@ export const CarDetails = ({
         </div>
         <ul className={styles.car_list}>
           <li>
-            Марка: <span>OMODA</span>
+            Марка: <span>{carContent.brandId}</span>
           </li>
           <li>
-            Модель: <span>С5</span>
+            Модель: <span>{carContent.modelId}</span>
           </li>
           <li>
-            Год выпуска: <span>{car.rent_auto.year}</span>
+            Год выпуска: <span>{carContent.yearOfCarProduction}</span>
           </li>
           <li>
-            Двигатель: <span>Бензин</span>
+            Двигатель:{" "}
+            <span>
+              {fuelTypeMap[carContent.fuelType] || carContent.fuelType}
+            </span>
           </li>
           <li>
             Привод: <span>Передний</span>
           </li>
           <li>
-            Коробка передач: <span>Вариатор</span>
+            Коробка передач:{" "}
+            <span>
+              {transmissionMap[carContent.transmission] ||
+                carContent.transmission}
+            </span>
           </li>
           <li>
             Комплектация: <span>1.5T CVT Ultimate</span>
           </li>
           <li>
-            Класс авто: <span>Комфорт</span>
+            Класс авто:{" "}
+            <span>
+              {carCategoryMap[carContent.carCategory] || carContent.carCategory}
+            </span>
           </li>
           <li>
             Дополнительно:
             <span>
-              Кондиционер, аудиосистема, сиденья с подогревом, камера заднего
-              вида
+              {Object.entries(carContent.carOptions)
+                .filter(([, value]) => value)
+                .map(([key]) => {
+                  const optionNames: Record<string, string> = {
+                    hasAirConditioning: "Кондиционер",
+                    hasChildSeat: "Детское кресло",
+                    hasBluetooth: "Bluetooth",
+                    hasNavigation: "Навигация",
+                    hasParkingSensors: "Парктроник",
+                    hasBackupCamera: "Камера заднего вида",
+                    hasLeatherSeats: "Кожаный салон",
+                    hasSunroof: "Люк",
+                    hasHeatedSeats: "Подогрев сидений",
+                    hasCruiseControl: "Круиз-контроль",
+                  };
+                  return optionNames[key] || key;
+                })
+                .join(", ")}
             </span>
           </li>
         </ul>
@@ -165,16 +226,14 @@ export const CarDetails = ({
       <div className={styles.car_info_term}>
         <h3 className={styles.car_subtitle}>Описание</h3>
         <p>
-          Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в
-          сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на
-          гарантии, русификация, полный пакет документов и.т. д
+          {car.listing.carRentListing.additionalInfo || "Описание отсутствует"}
         </p>
       </div>
       <div className={`${styles.car_reviews} ${styles.car_info_term}`}>
         <h3>Отзывы</h3>
         <div className={styles.car_reviewsWrap}>
           {visibleReviews.map((r) => (
-            <Review reviewData={r} />
+            <Review key={r.author + r.date} reviewData={r} />
           ))}
         </div>
         {visibleReviews.length < reviews.length && (
@@ -188,9 +247,18 @@ export const CarDetails = ({
       </div>
       <div className={styles.car_bottom_info}>
         <p>
-          Объявление №<span>3467343247</span>
+          Объявление №<span>{car.listing.id}</span>
         </p>
-        <p>1 октября 2024, 03:00</p>
+        <p>
+          {new Date(carContent.createdAt).toLocaleDateString("ru-RU", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })}
+        </p>
         <p>800 просмотров</p>
       </div>
       <div className={styles.car_info_mobile}>
@@ -215,15 +283,15 @@ export const CarDetails = ({
         <h3>Похожие объявления</h3>
         <div className={styles.car_similarWrap}>
           {similarCars.map((similarCar) => (
-            <CarCard key={similarCar.common.id} carData={similarCar} />
+            <CarCard key={similarCar.listing.id} carData={similarCar} />
           ))}
         </div>
       </div>
       <div className={`${styles.car_bottom_info} ${styles.mobile}`}>
         <p>
-          Объявление №<span>3467343247</span>
+          Объявление №<span>{car.listing.id}</span>
         </p>
-        <p>1 октября 2024, 03:00</p>
+        <p>{new Date(carContent.createdAt).toLocaleDateString("ru-RU")}</p>
         <p>800 просмотров</p>
       </div>
     </div>

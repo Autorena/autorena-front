@@ -1,4 +1,5 @@
 import styles from "./Stories.module.scss";
+import modalStyles from "../Modal/Modal.module.scss";
 import { ReactComponent as Arrow } from "../../assets/swiper-arrow.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
@@ -10,10 +11,9 @@ import story_2 from "../../assets/story-2.png";
 import story_3 from "../../assets/story-3.png";
 import story_4 from "../../assets/story-4.png";
 import { useContext } from "react";
-// import { StoryViewer } from "../../components/modals/StoryViewer/StoryViewer";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { StoryGroup } from "../../types";
-import { StoryViewer2 } from "../../components/modals/StoryViewer/StoryViewer";
+import { StoryViewer } from "../../components/modals/StoryViewer/StoryViewer";
 
 export const Stories = () => {
   const { setModalContent, setModalActive } = useContext(ModalContext);
@@ -112,17 +112,15 @@ export const Stories = () => {
   const handleStoryClick = (index: number) => {
     setModalActive(true);
     setModalContent(
-      // <StoryViewer
-      //   storiesData={stories}
-      //   initialIndex={index}
-      //   onClose={() => setModalContent(null)}
-      // />,
-      <StoryViewer2
+      <StoryViewer
         storiesData={stories}
         initialIndex={index}
         onClose={() => setModalContent(null)}
       />,
-      { modalClass: styles.storyModal, skipHistory: true }
+      {
+        modalClass: `${styles.storyModal} ${modalStyles.other}`,
+        skipHistory: true,
+      }
     );
   };
 
