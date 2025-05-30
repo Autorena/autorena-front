@@ -33,11 +33,10 @@ import { declineCity } from "../../utils/declineCity";
 import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
 import { sortOptions } from "../../constants/sortOptions";
 
-interface FilterState {
-  price: Array<number>;
-  carCategory: Array<string>;
-  listingType: Array<string>;
-}
+type ActiveFilter = {
+  type: "price" | "carCategory" | "listingType" | null;
+  value: number | string | null;
+};
 
 export const Home = () => {
   const { location } = useContext(LocationContext);
@@ -46,10 +45,9 @@ export const Home = () => {
   const dispatch = useAppDispatch();
 
   const [visibleCount, setVisibleCount] = useState(20);
-  const [activeFilter, setActiveFilter] = useState<FilterState>({
-    price: new Array<number>(),
-    carCategory: new Array<string>(),
-    listingType: new Array<string>(),
+  const [activeFilter, setActiveFilter] = useState<ActiveFilter>({
+    type: null,
+    value: null,
   });
   const [sortOption, setSortOption] = useState<string>("default");
 
@@ -64,19 +62,16 @@ export const Home = () => {
   }, visibleCount < cars.length);
 
   const filterCars = (
-    type: keyof FilterState,
-    value: FilterState[keyof FilterState][number]
+    type: "price" | "carCategory" | "listingType",
+    value: number | string
   ) => {
     setActiveFilter((prev) => {
-      const currentValues = prev[type] as Array<typeof value>;
-      const newValues = currentValues.includes(value)
-        ? currentValues.filter((v) => v !== value)
-        : [...currentValues, value];
-
-      return {
-        ...prev,
-        [type]: newValues,
-      };
+      // Если кликаем на уже активный фильтр - снимаем его
+      if (prev.type === type && prev.value === value) {
+        return { type: null, value: null };
+      }
+      // Иначе устанавливаем новый фильтр
+      return { type, value };
     });
   };
 
@@ -85,27 +80,23 @@ export const Home = () => {
   };
 
   const filteredCars = cars.filter((car) => {
-    const { price, carCategory, listingType } = activeFilter;
+    const { type, value } = activeFilter;
     const rentListing = car.listing.carRentListing;
 
-    if (price.length > 0 && rentListing?.pricePerDay) {
-      const matchesPrice = price.some((p) => rentListing.pricePerDay <= p);
-      if (!matchesPrice) return false;
-    }
+    if (!type || !value) return true;
 
-    if (carCategory.length > 0 && rentListing?.carContent.carCategory) {
-      if (!carCategory.includes(rentListing.carContent.carCategory))
-        return false;
+    switch (type) {
+      case "price":
+        return rentListing?.pricePerDay
+          ? rentListing.pricePerDay <= (value as number)
+          : false;
+      case "carCategory":
+        return rentListing?.carContent.carCategory === value;
+      case "listingType":
+        return value in car.listing;
+      default:
+        return true;
     }
-
-    if (listingType.length > 0) {
-      const matchesListingType = listingType.some(
-        (type) => (type as keyof typeof car.listing) in car.listing
-      );
-      if (!matchesListingType) return false;
-    }
-
-    return true;
   });
 
   const sortedFilteredCars = useMemo(() => {
@@ -285,7 +276,9 @@ export const Home = () => {
               <div className={styles.home_info_points_bottom}>
                 <button
                   className={`${styles.home_filter} ${
-                    activeFilter.price.includes(1000) && styles.active
+                    activeFilter.type === "price" &&
+                    activeFilter.value === 1000 &&
+                    styles.active
                   }`}
                   onClick={() => filterCars("price", 1000)}
                 >
@@ -293,9 +286,9 @@ export const Home = () => {
                 </button>
                 <button
                   className={`${styles.home_filter} ${
-                    activeFilter.carCategory.includes(
-                      "CAR_CATEGORY_COMFORT_PLUS"
-                    ) && styles.active
+                    activeFilter.type === "carCategory" &&
+                    activeFilter.value === "CAR_CATEGORY_COMFORT_PLUS" &&
+                    styles.active
                   }`}
                   onClick={() =>
                     filterCars("carCategory", "CAR_CATEGORY_COMFORT_PLUS")
@@ -305,9 +298,9 @@ export const Home = () => {
                 </button>
                 <button
                   className={`${styles.home_filter} ${
-                    activeFilter.carCategory.includes(
-                      "CAR_CATEGORY_BUSINESS"
-                    ) && styles.active
+                    activeFilter.type === "carCategory" &&
+                    activeFilter.value === "CAR_CATEGORY_BUSINESS" &&
+                    styles.active
                   }`}
                   onClick={() =>
                     filterCars("carCategory", "CAR_CATEGORY_BUSINESS")
@@ -317,7 +310,8 @@ export const Home = () => {
                 </button>
                 <button
                   className={`${styles.home_filter} ${
-                    activeFilter.listingType.includes("DAILY_RENT") &&
+                    activeFilter.type === "listingType" &&
+                    activeFilter.value === "DAILY_RENT" &&
                     styles.active
                   }`}
                   onClick={() => filterCars("listingType", "DAILY_RENT")}
@@ -326,7 +320,9 @@ export const Home = () => {
                 </button>
                 <button
                   className={`${styles.home_filter} ${
-                    activeFilter.price.includes(3000) && styles.active
+                    activeFilter.type === "price" &&
+                    activeFilter.value === 3000 &&
+                    styles.active
                   }`}
                   onClick={() => filterCars("price", 3000)}
                 >

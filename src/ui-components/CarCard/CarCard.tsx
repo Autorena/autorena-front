@@ -1,15 +1,13 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import styles from "./CarCard.module.scss";
 import { ReactComponent as Favorite } from "../../assets/favorite.svg";
 import { ReactComponent as More } from "../../assets/more-icon.svg";
 import { CarCardProps } from "../../types";
 import { useAppSelector } from "../../redux/hooks";
-import { useContext } from "react";
-import { ModalContext } from "../../HOC/ModalProvider";
-import { LoginModal } from "../../components/modals/LoginModal";
 
 export const CarCard = ({ carData }: CarCardProps) => {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const {
     listing: {
@@ -27,7 +25,7 @@ export const CarCard = ({ carData }: CarCardProps) => {
   } = carData;
 
   const { isPhoneConfirmed } = useAppSelector((state) => state.user);
-  const { setModalContent, setModalActive } = useContext(ModalContext);
+  // const { setModalContent, setModalActive } = useContext(ModalContext);
 
   const getCurrentFilter = () => {
     const filter = pathname.startsWith("/filter/")
@@ -71,8 +69,9 @@ export const CarCard = ({ carData }: CarCardProps) => {
             e.preventDefault();
             e.stopPropagation();
             if (!isPhoneConfirmed) {
-              setModalActive(true);
-              setModalContent(<LoginModal />);
+              navigate("/unauthorized?action=favorite");
+              // setModalActive(true);
+              // setModalContent(<LoginModal />);
             }
           }}
         >

@@ -6,9 +6,6 @@ import { ReactComponent as Message } from "../../assets/message.svg";
 import { ReactComponent as Profile } from "../../assets/profile-icon.svg";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../redux/hooks";
-import { useContext } from "react";
-import { ModalContext } from "../../HOC/ModalProvider";
-import { LoginModal } from "../../components/modals/LoginModal";
 
 type HeaderMobProps = {
   className?: string;
@@ -18,13 +15,14 @@ export const HeaderMobile = ({ className }: HeaderMobProps) => {
   const { isPhoneConfirmed } = useAppSelector((state) => state.user);
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { setModalActive, setModalContent } = useContext(ModalContext);
+  // const { setModalActive, setModalContent } = useContext(ModalContext);
 
   const handleClick = (path: string) => {
     if (isPhoneConfirmed) navigate(`/${path}`);
     else {
-      setModalActive(true);
-      setModalContent(<LoginModal />);
+      // setModalActive(true);
+      // setModalContent(<LoginModal />);
+      navigate(`/unauthorized?action=${path}`);
     }
   };
 
@@ -46,7 +44,7 @@ export const HeaderMobile = ({ className }: HeaderMobProps) => {
         <Home />
       </NavLink>
       <button
-        onClick={() => handleClick("favorites")}
+        onClick={() => handleClick("favorite")}
         className={`${styles.header_mobile_item} ${
           isActive("favorites") ? styles.active : ""
         }`}

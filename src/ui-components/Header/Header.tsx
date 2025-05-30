@@ -17,7 +17,6 @@ import { ModalContext } from "../../HOC/ModalProvider";
 import { LocationModal } from "../../components/modals/LocationModal";
 import { LocationContext } from "../../HOC/LocationProvider";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { LoginModal } from "../../components/modals/LoginModal";
 import { useAppSelector } from "../../redux/hooks";
 import { declineCity } from "../../utils/declineCity";
 import { useDispatch } from "react-redux";
@@ -130,9 +129,10 @@ export const Header = () => {
               <button
                 className={`gray-btn ${styles.authBtn}`}
                 onClick={() => {
-                  setModalActive(true);
-                  setCrossSize(32);
-                  setModalContent(<LoginModal />);
+                  // setModalActive(true);
+                  // setCrossSize(32);
+                  // setModalContent(<LoginModal />);
+                  navigate("/unauthorized?action=profile&from=/");
                 }}
               >
                 Регистрация / вход
@@ -278,7 +278,11 @@ export const Header = () => {
                 <img src={locationIcon} alt="" />
               </button>
               <Link
-                to="/choose-category"
+                to={`${
+                  user.isPhoneConfirmed
+                    ? "/choose-category"
+                    : "/unauthorized?action=create_listing"
+                }`}
                 className={`red-btn ${styles.header_adBtn}`}
               >
                 Разместить объявление

@@ -34,6 +34,7 @@ export const RegistrationModal = () => {
         isPhoneConfirmed: false,
       })
     );
+
     setModalContent(<AuthModal />);
   };
 

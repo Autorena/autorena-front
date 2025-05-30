@@ -1,6 +1,11 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import { useLocation } from "react-router-dom";
 import styles from "./Unauthorized.module.scss";
-import img from "../../assets/no-auth.png";
+import { ReactComponent as Img } from "../../assets/no-auth.svg";
+import { BottomSheet } from "../../ui-components/BottomSheet/BottomSheet";
+import { ModalContext } from "../../HOC/ModalProvider";
+import { LoginModal } from "../../components/modals/LoginModal";
+import { RegistrationModal } from "../../components/modals/RegistrationModal";
 
 type ActionConfig = {
   title: string;
@@ -11,58 +16,81 @@ type ActionConfig = {
 const actionConfigs: Record<string, ActionConfig> = {
   favorite: {
     title: "Избранное",
-    text: "сохранять избранные объявления.",
+    text: "Войдите или зарегистрируйтесь, чтобы сохранять избранные объявления.",
     buttonText: "Войти / Зарегистрироваться",
   },
-  rent: {
-    title: "Аренда автомобиля",
-    text: "Войдите или зарегистрируйтесь, чтобы арендовать автомобиль",
+  messages: {
+    title: "Сообщения",
+    text: "Войдите или зарегистрируйтесь, чтобы посмотреть входящие сообщения.",
     buttonText: "Войти / Зарегистрироваться",
   },
   create_listing: {
-    title: "Создание объявления",
-    text: "Войдите или зарегистрируйтесь, чтобы создать объявление",
+    title: "Объявления",
+    text: "Войдите или зарегистрируйтесь, чтобы разместиться на площадке или управлять существующими объявлениями.",
     buttonText: "Войти / Зарегистрироваться",
   },
-  default: {
-    title: "Требуется авторизация",
-    text: "Войдите или зарегистрируйтесь, чтобы продолжить",
+  profile: {
+    title: "Профиль",
+    text: "Создайте свой личный аккаунт, для того чтобы получить все удобства сервиса Авторена.",
     buttonText: "Войти / Зарегистрироваться",
   },
 };
 
 export const Unauthorized = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
   const action = searchParams.get("action") || "default";
-  const from = searchParams.get("from") || "";
-
+  // const from = searchParams.get("from") || "/";
+  const [isAuthSheetOpen, setAuthSheetOpen] = useState(false);
   const config = actionConfigs[action] || actionConfigs.default;
-
-  const handleAuth = () => {
-    // Здесь можно добавить логику для открытия модального окна авторизации
-    // или редиректа на страницу авторизации с сохранением from параметра
-    navigate(`/auth?from=${from}`);
-  };
+  const { setModalActive, setModalContent } = useContext(ModalContext);
 
   return (
     <div className="container">
       <div className={styles.unauth}>
         <h3 className={styles.unauth_title}>{config.title}</h3>
         <div className={styles.unauth_content}>
-          <img src={img} alt="No authorization" />
-          <p
-            className={styles.unauth_text}
-          >{`Войдите или зарегистрируйтесь, чтобы ${config.text}`}</p>
+          <Img />
+          <p className={styles.unauth_text}>{config.text}</p>
           <button
             className={`red-btn ${styles.unauth_btn}`}
-            onClick={handleAuth}
+            onClick={() => setAuthSheetOpen(true)}
           >
             {config.buttonText}
           </button>
         </div>
       </div>
+
+      <BottomSheet
+        isOpen={isAuthSheetOpen}
+        onClose={() => setAuthSheetOpen(false)}
+        height="260px"
+      >
+        <div className={styles.authContent}>
+          <button
+            className={styles.authButton}
+            onClick={() => {
+              setModalActive(true);
+              setModalContent(<LoginModal />);
+            }}
+          >
+            Войти через телефон или почту
+          </button>
+          <button
+            className={styles.registerBtn}
+            onClick={() => {
+              setModalActive(true);
+              setModalContent(<RegistrationModal />);
+            }}
+          >
+            Зарегистрироваться
+          </button>
+          <p className={styles.authAgreement}>
+            При регистрации и входе вы соглашаетесь с условиями использования
+            Авторена и политикой конфиденциальности.
+          </p>
+        </div>
+      </BottomSheet>
     </div>
   );
 };

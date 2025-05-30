@@ -288,9 +288,9 @@
 @media (max-width: 550px) {
   .header {
     &_search {
-      max-width: 330px;
-      width: 100%;
+      width: calc(100% - 35px);
       min-width: 310px;
+      margin: 0;
     }
     .arrowBack svg {
       width: 23px;
@@ -300,13 +300,19 @@
       width: 34px;
       height: 34px;
     }
+    &_bottom:first-of-type {
+      margin: 0;
+      justify-content: space-between;
+    }
+    &_bottom:nth-child(1) {
+      padding: 8px 20px;
+    }
   }
 }
 
 @media (max-width: 391px) {
   .header {
     &_search {
-      max-width: 278px;
       min-width: unset;
       margin-right: 6px;
     }

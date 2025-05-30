@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { useAppDispatch } from "../../redux/hooks";
 import { setPhoneConfirmed } from "../../redux/userSlice";
+import { useNavigate } from "react-router-dom";
 
 type CodeType = {
   code: string;
@@ -13,6 +14,7 @@ export const PhoneConfirmModal = ({ phone }: { phone: string }) => {
   const [timeLeft, setTimeLeft] = useState(180);
   const { setModalActive } = useContext(ModalContext);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -43,6 +45,7 @@ export const PhoneConfirmModal = ({ phone }: { phone: string }) => {
   const onSubmit = () => {
     dispatch(setPhoneConfirmed());
     setModalActive(false);
+    navigate("/");
   };
 
   return (

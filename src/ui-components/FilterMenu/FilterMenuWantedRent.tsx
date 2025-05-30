@@ -40,9 +40,12 @@ export const FilterMenuWantedRent = ({
     reset,
     watch,
     setValue,
-  } = useForm<WantedRentFilterFormData>();
+  } = useForm<WantedRentFilterFormData>({
+    mode: "onChange",
+  });
 
   const onSubmit = async (data: WantedRentFilterFormData) => {
+    if (!data.min_age || !data.max_age) return;
     const filterObject = {
       filter: {
         wanted_car_rent_listing: {
@@ -99,7 +102,9 @@ export const FilterMenuWantedRent = ({
               className={`${styles.filterMenu_year} ${
                 errors.min_age ? "invalid" : ""
               }`}
-              {...register("min_age")}
+              {...register("min_age", {
+                required: "Обязательное поле",
+              })}
             />
             <input
               type="number"
@@ -107,7 +112,18 @@ export const FilterMenuWantedRent = ({
               className={`${styles.filterMenu_year} ${
                 errors.max_age ? "invalid" : ""
               }`}
-              {...register("max_age")}
+              {...register("max_age", {
+                required: "Обязательное поле",
+                validate: (value) => {
+                  const minAge = watch("min_age");
+                  return (
+                    !minAge ||
+                    !value ||
+                    value >= minAge ||
+                    "Должно быть больше минимального возраста"
+                  );
+                },
+              })}
             />
           </div>
         </div>

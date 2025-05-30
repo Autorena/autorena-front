@@ -16,10 +16,11 @@ export const useSortedCars = (
     const filterCars = cars.filter((car) => {
       const { price, car_class } = filters;
 
-      if (price && car.rent_auto.cost_per_day > price) return false;
+      if (price && car.listing.carRentListing.pricePerDay > price) return false;
       if (
         car_class &&
-        car.search_auto?.car_class?.toLowerCase() !== car_class.toLowerCase()
+        car.listing.carRentListing.carContent.carCategory?.toLowerCase() !==
+          car_class.toLowerCase()
       )
         return false;
 

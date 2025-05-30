@@ -4,15 +4,16 @@ import styles from "./CarCardLarge.module.scss";
 import modalStyles from "../../ui-components/Modal/Modal.module.scss";
 import { ReactComponent as Like } from "../../assets/favorite.svg";
 import { useAppSelector } from "../../redux/hooks";
-import { useContext } from "react";
-import { ModalContext } from "../../HOC/ModalProvider";
 import { LoginModal } from "../../components/modals/LoginModal";
 import { timeAgo } from "../../utils/timeAgo";
 import { CarPhoneModal } from "../../components/modals/CarPhoneModal";
 import { useModalWithHistory } from "../../hooks/useModalWithHistory";
+import { useContext } from "react";
+import { ModalContext } from "../../HOC/ModalProvider";
 
 export const CarCardLarge = ({ carData }: CarCardProps) => {
   const { openModal } = useModalWithHistory();
+  const navigate = useNavigate();
   const {
     listing: {
       id,
@@ -27,7 +28,6 @@ export const CarCardLarge = ({ carData }: CarCardProps) => {
 
   const { isPhoneConfirmed } = useAppSelector((state) => state.user);
   const { setModalContent, setModalActive } = useContext(ModalContext);
-  const navigate = useNavigate();
   const { pathname } = useLocation();
 
   const carTitle = `Аренда ${carData.listing.carRentListing.carContent.brandId} ${carData.listing.carRentListing.carContent.modelId} ${carData.listing.carRentListing.carContent.yearOfCarProduction}`;
@@ -63,8 +63,9 @@ export const CarCardLarge = ({ carData }: CarCardProps) => {
               e.preventDefault();
               e.stopPropagation();
               if (!isPhoneConfirmed) {
-                setModalActive(true);
-                setModalContent(<LoginModal />);
+                navigate("/unauthorized?action=favorite");
+                // setModalActive(true);
+                // setModalContent(<LoginModal />);
               }
             }}
           >
@@ -80,8 +81,9 @@ export const CarCardLarge = ({ carData }: CarCardProps) => {
               e.preventDefault();
               e.stopPropagation();
               if (!isPhoneConfirmed) {
-                setModalActive(true);
-                setModalContent(<LoginModal />);
+                navigate("/unauthorized?action=favorite");
+                // setModalActive(true);
+                // setModalContent(<LoginModal />);
               }
             }}
           >

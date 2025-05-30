@@ -1,0 +1,161 @@
+@use "../../styles/colors" as *;
+
+.unauth {
+  margin: 0 auto;
+  padding: 24px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  &_content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  &_title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 96px;
+  }
+  &_text {
+    max-width: 251px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 300;
+    margin: 40px 0 24px;
+  }
+  &_btn {
+    font-size: 16px;
+    padding: 16px;
+    border-radius: 8px;
+  }
+}
+
+.authContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.authButton {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  background: $red-color;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.registerBtn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background: #fff;
+  border-radius: 8px;
+
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.authAgreement {
+  margin-top: 20px;
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.authSheetOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  opacity: 0;
+  animation: fadeIn 0.3s ease forwards;
+
+  &.closing {
+    animation: fadeOut 0.3s ease forwards;
+  }
+}
+
+.authSheet {
+  background-color: white;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 20px 20px 0 0;
+  padding: 20px;
+  padding-bottom: 40px;
+  transform: translateY(100%);
+  animation: slideUp 0.3s ease forwards;
+  max-height: 80vh;
+  height: 260px;
+  overflow-y: auto;
+
+  &.closing {
+    animation: slideDown 0.3s ease forwards;
+  }
+}
+
+.sheetHandle {
+  width: 40px;
+  height: 4px;
+  background-color: #ccc;
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+
+.sheetTitle {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

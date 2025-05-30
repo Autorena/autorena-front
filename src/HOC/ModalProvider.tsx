@@ -26,7 +26,7 @@ export const ModalProvider = ({ children }: Children) => {
     setContent(null);
     setModalClass("");
     setModalActive(false);
-    window.history.back();
+    // window.history.back();
   };
 
   const goBack = () => {

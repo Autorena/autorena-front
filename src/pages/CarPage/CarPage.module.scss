@@ -1,5 +1,7 @@
 @use "../../styles/colors" as *;
-
+.carPage {
+  height: 100vh;
+}
 .car {
   &_left {
     // max-width: 786px;

@@ -9,6 +9,7 @@ import { ModalContext } from "../../HOC/ModalProvider";
 import { RegistrationModal } from "./RegistrationModal";
 import { useDispatch } from "react-redux";
 import { setPhoneConfirmed } from "../../redux/userSlice";
+import { useNavigate } from "react-router-dom";
 
 type LoginFormData = {
   identifier: string;
@@ -18,6 +19,7 @@ type LoginFormData = {
 export const LoginModal = () => {
   const { setModalContent, setModalActive } = useContext(ModalContext);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -28,6 +30,7 @@ export const LoginModal = () => {
   const onSubmit = (data: any) => {
     console.log(data);
     dispatch(setPhoneConfirmed());
+    navigate("/");
     setModalActive(false);
   };
 

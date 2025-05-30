@@ -5,7 +5,7 @@ body {
 }
 
 .app {
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -337,7 +337,7 @@ input {
       border-radius: 16px;
       .swiper-slide {
         width: 100%;
-        height: 148px;
+        min-height: 148px;
         background-size: cover;
         background-position: center;
         border-radius: 16px;
@@ -360,6 +360,14 @@ input {
           opacity: 1;
         }
       }
+    }
+  }
+}
+
+@media (max-width: 390px) {
+  .home-slider {
+    .swiper-wrapper .swiper-slide {
+      height: 148px;
     }
   }
 }

@@ -11,11 +11,7 @@ import { ModalContext } from "../../../HOC/ModalProvider";
 
 const STORY_DURATION = 7000;
 
-export const StoryViewer = ({
-  storiesData,
-  initialIndex,
-  onClose,
-}: StoryModalProps) => {
+export const StoryViewer = ({ storiesData, initialIndex }: StoryModalProps) => {
   const { setModalActive, setModalContent } = useContext(ModalContext);
   const [currentGroupIndex, setCurrentGroupIndex] = useState(initialIndex);
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
@@ -57,18 +53,18 @@ export const StoryViewer = ({
       setCurrentGroupIndex(nextIndex);
       swiper?.slideTo(nextIndex, 300);
     } else {
-      onClose();
+      setModalActive(false);
+      setModalContent(null);
     }
-  }, [currentGroupIndex, storiesData.length, swiper, onClose]);
+  }, [currentGroupIndex, storiesData.length, swiper]);
 
   const handleClose = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
       setModalActive(false);
       setModalContent(null);
-      onClose();
     },
-    [setModalActive, setModalContent, onClose]
+    [setModalActive, setModalContent]
   );
 
   const handlePrevClick = useCallback(
@@ -99,7 +95,6 @@ export const StoryViewer = ({
     if (e.target === e.currentTarget) {
       setModalActive(false);
       setModalContent(null);
-      onClose();
     }
   };
 

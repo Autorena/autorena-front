@@ -32,8 +32,8 @@ export const App = () => {
           <Route path="/create-listing" element={<CreateListing />} />
           <Route path="/profile" element={<PersonalProfile />} />
           <Route path="/my-listings" element={<MyListings />} />
-          <Route path="/unauthorized" element={<Unauthorized />} />
-        </Route>
+        </Route>{" "}
+        <Route path="/unauthorized" element={<Unauthorized />} />
       </Routes>
     </>
   );
