@@ -2,6 +2,9 @@
 
 .profile {
   padding: 16px 0 96px;
+  &_container {
+    position: relative;
+  }
   &Wrap {
     display: flex;
     gap: 102px;
@@ -11,13 +14,44 @@
     font-weight: 600;
   }
   &_headerMob {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #fff;
+    z-index: 500;
     display: none;
+    justify-content: space-between;
+    padding: 16px 20px 10px;
+    .logo {
+      width: 99px;
+      height: 14px;
+    }
+    &_right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    .shareBtn svg path {
+      fill-opacity: 0.4;
+    }
   }
-  &_info {
+  &_info,
+  &_info_right {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+  }
+  &_info {
+    &_rating {
+      display: none;
+    }
   }
   &_imgWrap {
     position: relative;
@@ -68,9 +102,17 @@
     background: $light-gray;
     font-size: 14px;
     border-radius: 8px;
+    svg {
+      display: none;
+    }
   }
-  &_balanceInfo h3 {
-    margin-bottom: 16px;
+  &_balanceInfo {
+    .link {
+      display: none;
+    }
+    h3 {
+      margin-bottom: 16px;
+    }
   }
   &_balanceWrap {
     display: flex;
@@ -124,6 +166,123 @@
   &_listings_link {
     display: none;
   }
+  &_banner {
+    display: none;
+  }
+  &_list {
+    display: none;
+    &_wrap {
+      position: relative;
+    }
+    &_item {
+      position: relative;
+      width: 100%;
+      background: $light-gray;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 12px;
+      font-weight: 300;
+      margin-bottom: 1px;
+      padding: 14px 12px;
+      &:after {
+        content: "";
+        display: block;
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        right: 12px;
+        background: url(../../assets/profile/arrow.svg);
+        background-position: center;
+        background-size: cover;
+        transition: transform 0.2s ease;
+      }
+      &_active:after {
+        transform: rotate(180deg);
+      }
+      &:active {
+        background: #e0e0e0;
+      }
+      &_dropdown {
+        justify-content: space-between;
+      }
+      &_arrow {
+        width: 10px;
+        height: 10px;
+        margin-left: auto;
+        transition: transform 0.2s ease;
+        &_open {
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+  &_dropdown {
+    margin: 1px 0;
+    z-index: 1;
+    list-style: none;
+
+    &_item {
+      display: block;
+      padding: 12px 24px;
+      background: $light-gray;
+      font-size: 14px;
+      margin-bottom: 1px;
+      font-weight: 300;
+      text-decoration: none;
+
+      &:active {
+        background: #e0e0e0;
+      }
+    }
+  }
+}
+
+.profile_list_wrap:first-of-type .profile_list_item {
+  padding: 24px 12px 14px;
+  border-radius: 8px 8px 0 0;
+}
+
+.profile_list_wrap:last-of-type .profile_list_item {
+  padding: 14px 12px 24px;
+  border-radius: 0 0 8px 8px;
+  margin-bottom: 0;
+}
+
+.wallet {
+  padding-bottom: 40px;
+  &_title {
+    font-size: 24px;
+    font-weight: 600;
+  }
+  .inputWrap {
+    display: flex;
+    gap: 8px;
+    margin: 16px 0 8px;
+    input {
+      padding: 14px 16px;
+      max-width: 232px;
+      min-width: 165px;
+      width: 100%;
+      background: #fff;
+    }
+  }
+  .confirmBtn {
+    width: 222px;
+    font-size: 16px;
+    padding: 14px;
+    flex-shrink: 0;
+  }
+  .info_text {
+    margin-bottom: 26px;
+    color: rgba(17, 17, 17, 0.4);
+    font-size: 14px;
+    font-weight: 400;
+  }
+  &_bottom h4 {
+    font-size: 20px;
+    font-weight: 600;
+  }
 }
 
 .activeListings {
@@ -165,27 +324,26 @@
 
 @media (max-width: 768px) {
   .profile {
-    padding: 0;
-    &Wrap {
-      padding: 32px 0 72px;
+    padding: 56px 0 0;
+    &_right {
+      display: flex;
       flex-direction: column;
-      gap: 40px;
+      gap: 24px;
+    }
+    &Wrap {
+      padding: 0 0 72px;
+      flex-direction: column;
+      gap: 24px;
+    }
+    &_imgWrap {
+      width: 64px;
+      height: 64px;
     }
     &_headerMob {
       display: flex;
-      justify-content: space-between;
-      width: 100%;
-      padding-top: 24px;
-      svg {
-        width: 30px;
-        height: 30px;
-      }
-      svg path {
-        stroke-opacity: 1;
-      }
     }
     &_addProfile {
-      display: block;
+      display: none;
       position: absolute;
       top: 50%;
       right: -60px;
@@ -197,18 +355,45 @@
       display: none;
     }
     &_balanceInfo {
-      margin-bottom: 48px;
+      position: relative;
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: $light-gray;
+      h3 {
+        font-size: 14px;
+        font-weight: 300;
+        margin-bottom: 4px;
+      }
+      .link {
+        display: block;
+        position: absolute;
+        right: 0;
+        bottom: -15px;
+        color: rgba(17, 17, 17, 0.4);
+        font-size: 9px;
+        font-weight: 300;
+      }
     }
     &_balanceWrap {
-      flex-direction: column;
-      align-items: flex-start;
+      justify-content: space-between;
       gap: 8px;
     }
+    &_balance {
+      font-size: 24px;
+    }
     &_replenishMob {
+      position: absolute;
+      top: 18px;
+      right: 20px;
       display: block;
-      padding: 10px 26px;
-      border-radius: 10px;
-      background: $light-gray;
+      padding: 10px 18px;
+      border-radius: 4px;
+      font-weight: 500;
+      font-size: 16px;
+      background: $primary-black;
+      color: #fff;
     }
     &_listings_link {
       display: flex;
@@ -229,25 +414,137 @@
         }
       }
     }
+    &_info {
+      position: relative;
+      width: 100%;
+      flex-direction: row;
+      justify-content: flex-start;
+      gap: 12px;
+      &_rating {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        position: absolute;
+        right: 0;
+        p {
+          color: rgba(17, 17, 17, 0.4);
+          font-size: 9px;
+          font-weight: 300;
+          line-height: normal;
+        }
+      }
+      &_rating_rate {
+        width: fit-content;
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 2px 10px;
+        border-radius: 4px;
+        background: #fff;
+        box-shadow: 0px -1px 24px 0px rgba(0, 0, 0, 0.12),
+          0px 1px 4px 0px rgba(0, 0, 0, 0.08);
+      }
+    }
+    &_info_right {
+      justify-self: flex-start;
+      align-items: flex-start;
+      gap: 2px;
+    }
+    &_edit {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 0;
+      background: transparent;
+      color: rgba(17, 17, 17, 0.4);
+      svg {
+        display: block;
+        transform: rotate(180deg);
+        width: 10px;
+        height: 10px;
+      }
+    }
+    &_name {
+      margin: 0;
+    }
+    &_rateWrap {
+      display: none;
+    }
+    &_banner {
+      display: block;
+      margin: 0 auto;
+    }
+    &_recommends {
+      display: none;
+    }
+    &_list {
+      display: flex;
+      flex-direction: column;
+      border-radius: 8px;
+
+      &_item {
+        position: relative;
+        width: 100%;
+        background: $light-gray;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 12px;
+        font-weight: 300;
+        margin-bottom: 1px;
+        padding: 14px 12px;
+        &:after {
+          content: "";
+          display: block;
+          width: 20px;
+          height: 20px;
+          position: absolute;
+          right: 12px;
+          background: url(../../assets/profile/arrow.svg);
+          background-position: center;
+          background-size: cover;
+          transition: transform 0.2s ease;
+        }
+        &_active:after {
+          transform: rotate(90deg);
+        }
+        &:active {
+          background: #e0e0e0;
+        }
+        // &:nth-child(1) {
+        //   padding: 24px 12px 14px;
+        //   border-radius: 8px 8px 0 0;
+        // }
+        // &:last-child {
+        //   padding: 14px 12px 24px;
+        //   border-radius: 0 0 8px 8px;
+        //   margin-bottom: 0;
+        // }
+      }
+    }
+    &_footer {
+      display: none;
+    }
   }
 }
 
 @media (max-width: 500px) {
   .profile {
-    &_headerMob {
-      svg {
-        width: 24px;
-        height: 24px;
-      }
-    }
     &_recommendsWrap {
       grid-template-columns: repeat(2, minmax(150px, 214px));
     }
     &_edit {
       border-radius: 16px;
     }
-    &_balanceInfo {
-      margin-bottom: 32px;
+    &_name {
+      font-size: 16px;
+    }
+    &_edit {
+      font-size: 12px;
+      line-height: 15px;
     }
     &_balanceInfo h3 {
       margin-bottom: 6px;
@@ -255,5 +552,66 @@
     &_balance {
       font-size: 24px;
     }
+    &_banner {
+      width: 100%;
+    }
+  }
+  .wallet {
+    &_title {
+      font-size: 20px;
+    }
+    .confirmBtn {
+      width: 150px;
+      font-size: 15px;
+      padding: 12px;
+    }
+    .inputWrap {
+      margin: 12px 0 5px;
+      input {
+        padding: 12px 16px;
+      }
+    }
+    &_bottom h4 {
+      font-size: 16px;
+    }
+    .info_text {
+      font-size: 12px;
+    }
+  }
+}
+
+.bannerSheet {
+  &_content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  &_image {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  &_title {
+    margin: 16px 0 5px;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  &_text {
+    font-size: 14px;
+    line-height: 1.4;
+    color: rgba(17, 17, 17, 0.8);
+    margin-bottom: 8px;
+  }
+
+  &_button {
+    width: 100%;
+    margin-top: 8px;
+    padding: 12px;
+    font-size: 16px;
   }
 }

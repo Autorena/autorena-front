@@ -96,7 +96,6 @@ const carsSlice = createSlice({
 
         const { carContent, listingOptions } = carRentListing;
 
-        // Фильтр по городу
         if (
           filters.city &&
           !carRentListing.city
@@ -171,6 +170,10 @@ const carsSlice = createSlice({
         return true;
       });
     },
+    resetCar: (state) => {
+      state.car = null;
+      state.loading = true;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -201,5 +204,5 @@ const carsSlice = createSlice({
   },
 });
 
-export const { filterCars } = carsSlice.actions;
+export const { filterCars, resetCar } = carsSlice.actions;
 export default carsSlice.reducer;

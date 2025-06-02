@@ -43,7 +43,9 @@ export const LocationModal = () => {
           Найти
         </button>
       </div>
-      <div className={styles.cities}>
+      <div
+        className={`${styles.cities} ${debouncedSearch ? styles.search : ""}`}
+      >
         {cities.map((city) => (
           <button
             key={city.id}

@@ -6,6 +6,7 @@ import { BottomSheet } from "../../ui-components/BottomSheet/BottomSheet";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { LoginModal } from "../../components/modals/LoginModal";
 import { RegistrationModal } from "../../components/modals/RegistrationModal";
+import { HeaderMobile } from "../../ui-components/HeaderMobile/HeaderMobile";
 
 type ActionConfig = {
   title: string;
@@ -91,6 +92,7 @@ export const Unauthorized = () => {
           </p>
         </div>
       </BottomSheet>
+      <HeaderMobile />
     </div>
   );
 };

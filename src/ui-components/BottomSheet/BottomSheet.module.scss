@@ -22,12 +22,13 @@
 .sheet {
   background-color: $light-gray;
   width: 100%;
-  max-width: 500px;
+  max-width: 540px;
   border-radius: 16px 16px 0 0;
   padding: 20px 32px 60px;
   padding-bottom: 40px;
   transform: translateY(100%);
   animation: slideUp 0.3s ease forwards;
+  z-index: 1000;
 
   &.closing {
     animation: slideDown 0.3s ease forwards;

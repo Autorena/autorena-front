@@ -43,13 +43,21 @@
       overflow-x: hidden;
       padding-right: 15px;
       &::-webkit-scrollbar {
-        width: 3px;
-        background: rgba(17, 17, 17, 0.14);
-        border-radius: 3px;
-        opacity: 0.4;
+        width: 0;
+        // background: rgba(17, 17, 17, 0.14);
+        // border-radius: 3px;
+        // opacity: 0.4;
       }
-      &::-webkit-scrollbar-thumb {
-        background-color: rgba(17, 17, 17, 0.18);
+      // &::-webkit-scrollbar-thumb {
+      //   background-color: rgba(17, 17, 17, 0.18);
+      // }
+      &.search {
+        display: flex;
+        flex-wrap: wrap;
+        height: auto;
+        .city {
+          width: calc((100% / 3) - 40px);
+        }
       }
     }
     & .city {

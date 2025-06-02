@@ -3,9 +3,8 @@ import styles from "./CarPage.module.scss";
 import modalStyles from "../../ui-components/Modal/Modal.module.scss";
 import { ReactComponent as Heart } from "../../assets/favorite.svg";
 import { ReactComponent as ArrowBack } from "../../assets/car-arrowBack.svg";
-import { ReactComponent as Share } from "../../assets/share.svg";
 import { useContext, useEffect, useState } from "react";
-import { fetchCarById, fetchCars } from "../../redux/carsSlice";
+import { fetchCarById, fetchCars, resetCar } from "../../redux/carsSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { Breadcrumbs } from "../../ui-components/Breadcrumbs/Breadcrumbs";
 import { Loader } from "../../ui-components/Loader/Loader";
@@ -16,6 +15,7 @@ import { StarRating } from "../../ui-components/StarRating/StarRating";
 import { CarDetails } from "./CarDetails";
 import { CarPhoneModal } from "../../components/modals/CarPhoneModal";
 import { useModalWithHistory } from "../../hooks/useModalWithHistory";
+import { ShareBtn } from "../../ui-components/ShareBtn/ShareBtn";
 
 export type ReviewType = {
   title: string;
@@ -30,8 +30,8 @@ export const CarPage = () => {
   const { openModal } = useModalWithHistory();
   const isAuth = useAppSelector((state) => state.user.isPhoneConfirmed);
   const { id } = useParams();
-  const cars = useAppSelector((state) => state.cars.cars);
-  const car = useAppSelector((state) => state.cars.car);
+  const { cars, car, loading } = useAppSelector((state) => state.cars);
+  // const car = useAppSelector((state) => state.cars.car);
   const { isPhoneConfirmed } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -41,30 +41,11 @@ export const CarPage = () => {
   const fromFilter = searchParams.get("from") || "RENT_AUTO";
   console.log("Перешли с фильтра:", fromFilter);
 
-  const handleShareClick = async () => {
-    if (!car) return;
-    try {
-      const shareData = {
-        title: carTitle,
-        text: `Арендуйте ${carContent.brandId} ${
-          carContent.modelId
-        } за ${car!.listing.carRentListing.pricePerDay.toLocaleString(
-          "ru-RU"
-        )}₽ в день`,
-        url: window.location.href,
-      };
-
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        // Fallback для браузеров, которые не поддерживают Web Share API
-        await navigator.clipboard.writeText(window.location.href);
-        alert("Ссылка скопирована в буфер обмена");
-      }
-    } catch (err) {
-      console.error("Ошибка при попытке поделиться:", err);
-    }
-  };
+  useEffect(() => {
+    return () => {
+      dispatch(resetCar());
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     if (!cars || cars.length === 0) {
@@ -78,6 +59,7 @@ export const CarPage = () => {
 
   if (
     !car ||
+    loading ||
     !car.listing.carRentListing.carContent.photosUrl ||
     car.listing.carRentListing.carContent.photosUrl.length === 0
   ) {
@@ -137,13 +119,15 @@ export const CarPage = () => {
             </button>
             <h2>{carTitle}</h2>
             <div className={styles.car_headerWrap}>
-              <button
-                className={styles.shareBtn}
-                title="Поделиться"
-                onClick={handleShareClick}
-              >
-                <Share />
-              </button>
+              <ShareBtn
+                title={carTitle}
+                text={`Арендуйте ${carContent.brandId} ${
+                  carContent.modelId
+                } за ${car.listing.carRentListing.pricePerDay.toLocaleString(
+                  "ru-RU"
+                )}₽ в день`}
+                url={window.location.href}
+              />
               <button
                 onClick={() => {
                   if (isPhoneConfirmed) navigate("/profile");

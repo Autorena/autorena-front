@@ -27,6 +27,7 @@ import { HeaderMobile } from "../../ui-components/HeaderMobile/HeaderMobile";
 import { sortCars } from "../../utils/sortCars";
 import { Link } from "react-router-dom";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
+import { useScrollPosition } from "../../hooks/useScrollPosition";
 import { HomeSlider } from "./HomeSlider";
 import { CookieNotific } from "./CookieNotific";
 import { declineCity } from "../../utils/declineCity";
@@ -57,6 +58,8 @@ export const Home = () => {
     });
   }, []);
 
+  useScrollPosition("homeScrollPosition");
+
   useInfiniteScroll(() => {
     setVisibleCount((prev) => prev + 20);
   }, visibleCount < cars.length);
@@ -66,11 +69,9 @@ export const Home = () => {
     value: number | string
   ) => {
     setActiveFilter((prev) => {
-      // Если кликаем на уже активный фильтр - снимаем его
       if (prev.type === type && prev.value === value) {
         return { type: null, value: null };
       }
-      // Иначе устанавливаем новый фильтр
       return { type, value };
     });
   };
