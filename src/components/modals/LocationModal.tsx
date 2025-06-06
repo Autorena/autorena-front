@@ -5,15 +5,28 @@ import { LocationContext } from "../../HOC/LocationProvider";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { useForm } from "react-hook-form";
 import { useDebounce } from "../../hooks/debounce";
+import { useFilter } from "../../HOC/FilterContext";
 
 type FormData = {
   searchValue: string;
 };
 
-export const LocationModal = () => {
+type LocationModalProps = {
+  forFilters?: boolean;
+  initialCity?: string;
+  cityKey?: string;
+};
+
+export const LocationModal = ({
+  forFilters = false,
+  initialCity,
+  cityKey = "rent_city",
+}: LocationModalProps) => {
   const { setModalActive } = useContext(ModalContext);
-  const { setLocation } = useContext(LocationContext);
+  const { setLocation: setGlobalLocation } = useContext(LocationContext);
   const [cities, setCities] = useState(citiesData);
+  const { setFilterValue } = useFilter();
+  const [selectedCity, setSelectedCity] = useState(initialCity || "");
 
   const { register, reset, watch } = useForm<FormData>();
   const searchValue = watch("searchValue", "");
@@ -26,6 +39,20 @@ export const LocationModal = () => {
     setCities(filtered);
   }, [debouncedSearch]);
 
+  const handleCitySelect = (cityName: string) => {
+    setSelectedCity(cityName);
+
+    if (forFilters) {
+      setFilterValue(cityKey, cityName);
+    } else {
+      setGlobalLocation(cityName);
+    }
+
+    setModalActive(false);
+    setCities(citiesData);
+    reset();
+  };
+
   return (
     <form
       className={`${styles.modal} ${styles.location}`}
@@ -37,7 +64,9 @@ export const LocationModal = () => {
           {...register("searchValue", {
             required: "Поле обязательно",
           })}
-          placeholder="Поиск по городам"
+          placeholder={
+            forFilters ? "Поиск города для фильтра" : "Поиск по городам"
+          }
         />
         <button className={`red-btn ${styles.inputBtn}`} type="submit">
           Найти
@@ -49,13 +78,10 @@ export const LocationModal = () => {
         {cities.map((city) => (
           <button
             key={city.id}
-            className={styles.city}
-            onClick={() => {
-              setLocation(city.name);
-              setModalActive(false);
-              setCities(citiesData);
-              reset();
-            }}
+            className={`${styles.city} ${
+              selectedCity === city.name ? styles.selected : ""
+            }`}
+            onClick={() => handleCitySelect(city.name)}
           >
             {city.name}
           </button>

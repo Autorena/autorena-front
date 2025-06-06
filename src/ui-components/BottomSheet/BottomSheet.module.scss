@@ -20,6 +20,7 @@
 }
 
 .sheet {
+  position: relative;
   background-color: $light-gray;
   width: 100%;
   max-width: 540px;
@@ -33,11 +34,18 @@
   &.closing {
     animation: slideDown 0.3s ease forwards;
   }
+
+  .closeBtn {
+    position: absolute;
+    right: 14px;
+    top: 14px;
+  }
 }
 
 .handle {
   width: 64px;
   margin: 0 auto 40px;
+  cursor: pointer;
 }
 
 .content {

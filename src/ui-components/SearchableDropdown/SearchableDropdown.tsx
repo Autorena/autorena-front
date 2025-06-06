@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, ReactNode } from "react";
 import styles from "./SearchableDropdown.module.scss";
 import { ReactComponent as Arrow } from "../../assets/arrowList.svg";
 import { ReactComponent as Check } from "../../assets/check.svg";
@@ -19,10 +19,14 @@ type SearchableDropdownProps = {
   value?: string;
   onSelect: (value: string) => void;
   className?: string;
+  generalStyles?: React.CSSProperties;
   buttonStyles?: React.CSSProperties;
   listStyles?: React.CSSProperties;
+  placeholder?: string;
   searchPlaceholder?: string;
   disabled?: boolean;
+  icon?: ReactNode;
+  iconPosition?: "start" | "end";
 };
 
 export const SearchableDropdown = ({
@@ -30,10 +34,14 @@ export const SearchableDropdown = ({
   value,
   onSelect,
   className,
+  generalStyles,
   buttonStyles,
   listStyles,
+  placeholder = "Выберите...",
   searchPlaceholder = "Поиск...",
   disabled = false,
+  icon,
+  iconPosition = "end",
 }: SearchableDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -94,18 +102,23 @@ export const SearchableDropdown = ({
         disabled ? styles.disabled : ""
       }`}
       ref={dropdownRef}
+      style={generalStyles || {}}
     >
       <button
         type="button"
-        className={styles.searchableDropdown_title}
+        className={`${styles.searchableDropdown_title}`}
         onClick={() => !disabled && setIsOpen((prev) => !prev)}
         style={buttonStyles}
         disabled={disabled}
       >
+        {iconPosition === "start" && icon}
         {selectedOption
           ? selectedOption.cyrillicName || selectedOption.name
-          : "Выберите..."}
-        <Arrow className={`${styles.arrow} ${isOpen ? styles.open : ""}`} />
+          : placeholder}
+        {iconPosition === "end" &&
+          (icon || (
+            <Arrow className={`${styles.arrow} ${isOpen ? styles.open : ""}`} />
+          ))}
       </button>
 
       {isOpen && (

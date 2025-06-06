@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactNode } from "react";
 import styles from "./DropdownList.module.scss";
 import { ReactComponent as Arrow } from "../../assets/arrowList.svg";
 import { ReactComponent as Check } from "../../assets/check.svg";
@@ -14,6 +14,9 @@ type CommonDropdownProps = {
   listStyles?: React.CSSProperties;
   className?: string;
   autoSelectFirst?: boolean;
+  placeholder?: string;
+  icon?: ReactNode;
+  iconPosition?: "start" | "end";
 };
 
 type SingleSelectDropdownProps = CommonDropdownProps & {
@@ -40,6 +43,9 @@ export const DropdownList = (props: DropdownListProps) => {
     listStyles,
     isMulti = false,
     className,
+    placeholder = "Выберите...",
+    icon,
+    iconPosition = "end",
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -80,28 +86,32 @@ export const DropdownList = (props: DropdownListProps) => {
         .map((opt) => opt.label);
       return selectedLabels.length > 0
         ? selectedLabels.join(", ")
-        : "Выберите...";
+        : placeholder;
     }
 
     if (!value) {
       return autoSelectFirst && options.length > 0
         ? options[0].label
-        : "Выберите...";
+        : placeholder;
     }
 
-    return options.find((opt) => opt.value === value)?.label || "Выберите...";
+    return options.find((opt) => opt.value === value)?.label || placeholder;
   };
 
   return (
-    <div className={`${styles.dropdownList} ${className ? className : ""}`}>
+    <div className={`${styles.dropdownList}`}>
       <button
         type="button"
-        className={styles.dropdownList_title}
+        className={`${styles.dropdownList_title} ${className ? className : ""}`}
         onClick={() => setIsOpen((prev) => !prev)}
         style={buttonStyles}
       >
+        {iconPosition === "start" && icon}
         {getButtonLabel()}
-        <Arrow className={`${styles.arrow} ${isOpen ? styles.open : ""}`} />
+        {iconPosition === "end" &&
+          (icon || (
+            <Arrow className={`${styles.arrow} ${isOpen ? styles.open : ""}`} />
+          ))}
       </button>
 
       {isOpen && (

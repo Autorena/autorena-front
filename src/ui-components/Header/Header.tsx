@@ -9,7 +9,7 @@ import { ReactComponent as Profile } from "../../assets/profile-icon-2.svg";
 import { ReactComponent as Listing } from "../../assets/listing.svg";
 import { ReactComponent as Settings } from "../../assets/settings.svg";
 import { ReactComponent as ProfileMenu } from "../../assets/profile-2.svg";
-import locationIcon from "../../assets/location-icon.png";
+import { ReactComponent as LocationIcon } from "../../assets/location-icon.svg";
 import { ReactComponent as Logo } from "../../assets/logo-1.svg";
 import { ReactComponent as Plus } from "../../assets/plus.svg";
 import { ReactComponent as Logout } from "../../assets/logout.svg";
@@ -21,6 +21,7 @@ import { useAppSelector } from "../../redux/hooks";
 import { declineCity } from "../../utils/declineCity";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/userSlice";
+import { ReactComponent as Search } from "../../assets/input-search.svg";
 
 export const Header = () => {
   const user = useAppSelector((state) => state.user);
@@ -35,6 +36,7 @@ export const Header = () => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   let closeTimeout: number;
+  const [isSearchActive, setIsSearchActive] = useState(false);
 
   const handleMouseEnter = () => {
     clearTimeout(closeTimeout);
@@ -98,6 +100,25 @@ export const Header = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, [pathname]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const searchElement = document.querySelector(`.${styles.header_search}`);
+      const searchBtn = document.querySelector(`.${styles.header_searchBtn}`);
+
+      if (
+        searchElement &&
+        !searchElement.contains(event.target as Node) &&
+        searchBtn &&
+        !searchBtn.contains(event.target as Node)
+      ) {
+        setIsSearchActive(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   if (isMobile && pathname !== "/" && !pathname.startsWith("/filter/")) {
     return null;
   }
@@ -116,7 +137,7 @@ export const Header = () => {
                 <a href="#">PRO Кабинет</a>
               </li>
               <li>
-                <a href="#">БАЗА ЧС</a>
+                <Link to="/blacklist">БАЗА ЧС</Link>
               </li>
               <li>
                 <a href="#">Помощь</a>
@@ -260,23 +281,37 @@ export const Header = () => {
                 Категории поиска
               </button>
 
-              <div className={styles.header_search}>
+              <div
+                className={`${styles.header_search} ${
+                  isSearchActive ? styles.active : ""
+                }`}
+              >
                 <input
                   type="text"
                   placeholder={`Поиск в ${declineCity(location)}`}
                 />
                 <button className={`red-btn ${styles.searchBtn}`}>Найти</button>
               </div>
-              <button
-                className={styles.locationBtn_mob}
-                onClick={() => {
-                  setModalActive(true);
-                  setModalContent(<LocationModal />);
-                }}
-              >
-                {/* <Location /> */}
-                <img src={locationIcon} alt="" />
-              </button>
+
+              <div className={styles.header_icons_mob}>
+                <button
+                  className={styles.header_searchBtn}
+                  onClick={() => setIsSearchActive(!isSearchActive)}
+                >
+                  <Search />
+                </button>
+
+                <button
+                  className={styles.locationBtn_mob}
+                  onClick={() => {
+                    setModalActive(true);
+                    setModalContent(<LocationModal />);
+                  }}
+                >
+                  <LocationIcon />
+                </button>
+              </div>
+
               <Link
                 to={`${
                   user.isPhoneConfirmed
@@ -297,8 +332,7 @@ export const Header = () => {
                 setModalContent(<LocationModal />);
               }}
             >
-              {/* <Location /> */}
-              <img src={locationIcon} alt="" />
+              <LocationIcon />
               г. {location}
             </button>
           </div>

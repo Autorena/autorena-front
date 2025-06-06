@@ -7,9 +7,6 @@ import { CarCard } from "../../ui-components/CarCard/CarCard";
 import { Breadcrumbs } from "../../ui-components/Breadcrumbs/Breadcrumbs";
 import { useParams } from "react-router-dom";
 import { filterNameMap } from "../../constants/filterMap";
-import { ReactComponent as Filters } from "../../assets/filters.svg";
-import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
-import { sortOptions } from "../../constants/sortOptions";
 import { sortCars } from "../../utils/sortCars";
 import { fetchCars } from "../../redux/carsSlice";
 import {
@@ -19,9 +16,13 @@ import {
 import { CarCardLarge } from "../../ui-components/CarCardLarge/CarCardLarge";
 import { CarCardType } from "../../types";
 import { setFilteredCars } from "../../redux/listingsSlice";
+import { ReactComponent as Banner } from "../../assets/profile-banner-1.svg";
+import { RentFilter } from "./RentFilter";
+import { DailyRentFilter } from "./DailyRentFilter";
 
 export const FilterPage = () => {
   const { filter } = useParams<{ filter?: string }>();
+  console.log(filter);
   const dispatch = useAppDispatch();
   const { cars, loading } = useAppSelector((state) => state.cars);
   const filteredListings = useAppSelector(
@@ -112,6 +113,37 @@ export const FilterPage = () => {
     }
   }, [currentPage, totalPages]);
 
+  const renderFilter = () => {
+    switch (filter) {
+      case "RENT_AUTO":
+      case "BUY_AUTO":
+      case "DRIVER_JOBS":
+      case "SEARCH":
+      case "AUTO_SERVICES":
+        return (
+          <RentFilter
+            isFiltersOpen={isFiltersOpen}
+            setIsFiltersOpen={setIsFiltersOpen}
+            sortOption={sortOption}
+            onSortChange={handleSortChange}
+            filterType={(filter ?? "default").toUpperCase()}
+          />
+        );
+      case "DAILY_RENT":
+        return (
+          <DailyRentFilter
+            isFiltersOpen={isFiltersOpen}
+            setIsFiltersOpen={setIsFiltersOpen}
+            sortOption={sortOption}
+            onSortChange={handleSortChange}
+            filterType={(filter ?? "default").toUpperCase()}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className={`container ${styles.homeWrap} ${styles.filterPage}`}>
       <FilterMenu
@@ -126,26 +158,8 @@ export const FilterPage = () => {
         <div className={styles.home_main}>
           <div className={styles.home_info}>
             <h2 className="section-title">{filterTitle}</h2>
-            <div className={styles.home_info_points}>
-              <button
-                className={`${styles.home_filter} ${styles.filterBtn}`}
-                onClick={() => setIsFiltersOpen((prev) => !prev)}
-              >
-                <Filters />
-                Фильтры
-              </button>
-              <DropdownList
-                options={
-                  sortOptions[
-                    (
-                      filter ?? "default"
-                    ).toUpperCase() as keyof typeof sortOptions
-                  ] ?? sortOptions.default
-                }
-                value={sortOption}
-                onSelect={handleSortChange}
-              />
-            </div>
+            <Banner className={styles.home_info_banner} />
+            {renderFilter()}
           </div>
           <div className={styles.home_recommends}>
             <div className={styles.home_recommends_grid}>

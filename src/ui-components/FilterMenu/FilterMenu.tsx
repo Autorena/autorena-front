@@ -1,3 +1,4 @@
+import { FilterMenuDaily } from "./FilterMenuDaily";
 import { FilterMenuDriverVac } from "./FilterMenuDriverVac";
 import { FilterMenuRent } from "./FilterMenuRent";
 import { FilterMenuWantedRent } from "./FilterMenuWantedRent";
@@ -43,9 +44,10 @@ export const FilterMenu = ({
 
   switch (filterType) {
     case "RENT_AUTO":
-    case "DAILY_RENT":
     case "AUTO_SERVICES":
       return <FilterMenuRent isOpen={isOpen} onClose={onClose} />;
+    case "DAILY_RENT":
+      return <FilterMenuDaily isOpen={isOpen} onClose={onClose} />;
     case "BUY_AUTO":
       return <FilterMenuWantedRent isOpen={isOpen} onClose={onClose} />;
     case "DRIVER_JOBS":

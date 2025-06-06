@@ -107,6 +107,7 @@
       padding: 7px 77px 7px 31px;
     }
     & .searchBtn {
+      display: none;
       position: absolute;
       height: calc(100% - 2px);
       top: 1px;
@@ -234,42 +235,87 @@
 
     &_bottom:first-of-type {
       width: 100%;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      padding: 8px;
+      padding: 8px 20px;
     }
 
     &_bottom.wrap {
       padding: 0;
-    }
-
-    &_logo {
-      width: 157px;
-      margin-bottom: 16px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
     &_search {
-      width: 70%;
+      flex: 1;
+      width: auto;
       max-width: unset;
-      margin: 0 10px 0 8px;
+      margin: 0;
+      position: relative;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(-20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+
+      &.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0);
+        pointer-events: auto;
+      }
+
       input {
         border-radius: 12px;
-        padding: 10px 34px 10px 50px;
+        padding: 10px 34px 10px 38px;
+        width: 100%;
+      }
+
+      .searchBtn {
+        display: none;
+      }
+    }
+
+    &_searchBtn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+
+      svg {
+        width: 24px;
+        height: 24px;
       }
     }
 
     &_search::before {
-      width: 32px;
-      height: 31px;
-      background: url(../../assets/logo-2.svg);
+      width: 20px;
+      height: 20px;
+      background: url(../../assets/input-search.svg);
       background-size: cover;
     }
+
     .locationBtn_mob {
       display: block;
+      flex-shrink: 0;
     }
     .locationBtn_mob img {
       width: 28px;
       height: 28px;
+    }
+    &_icons_mob {
+      height: 40px;
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
     }
   }
 }
@@ -289,7 +335,7 @@
   .header {
     &_search {
       width: calc(100% - 35px);
-      min-width: 310px;
+      min-width: 275px;
       margin: 0;
     }
     .arrowBack svg {
@@ -302,6 +348,7 @@
     }
     &_bottom:first-of-type {
       margin: 0;
+      gap: 8px;
       justify-content: space-between;
     }
     &_bottom:nth-child(1) {

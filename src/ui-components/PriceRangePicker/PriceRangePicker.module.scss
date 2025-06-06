@@ -1,0 +1,165 @@
+@use "../../styles/colors" as *;
+
+.pricePicker {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  min-width: 300px;
+
+  .priceInputs {
+    display: flex;
+    gap: 16px;
+  }
+
+  .priceInput {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+
+    input {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      width: 100%;
+
+      &::-webkit-inner-spin-button,
+      &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      &[type="number"] {
+        -moz-appearance: textfield;
+      }
+
+      &::placeholder {
+        color: #999;
+      }
+    }
+  }
+}
+.bottomSheet {
+  padding: 16px 40px 40px;
+  background: #fff;
+}
+
+.pricePickerDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.pricePickerButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  width: 100%;
+  justify-content: flex-start;
+
+  .arrow {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s ease;
+
+    &.open {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.priceSheet {
+  display: flex;
+  flex-direction: column;
+
+  .title {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .inputs {
+    display: flex;
+    gap: 12px;
+    margin: 16px 0 24px;
+  }
+
+  .inputWrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .inputContainer {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+
+      .inputPrefix {
+        position: absolute;
+        left: 16px;
+        color: rgba(17, 17, 17, 0.4);
+        font-size: 16px;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      input {
+        width: 100%;
+        padding: 8px 8px 8px 42px;
+        border: 1px solid #dedede;
+        border-radius: 8px;
+        font-size: 16px;
+        color: #111111;
+
+        &::placeholder {
+          color: rgba(17, 17, 17, 0.4);
+        }
+      }
+    }
+  }
+
+  .buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: auto;
+
+    button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      text-align: center;
+    }
+  }
+
+  .showBtn {
+    width: 100%;
+    padding: 13px;
+    font-size: 14px;
+    font-weight: 500;
+    background: $primary-black;
+    color: #fff;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+
+    &.active {
+      background: $red-color;
+    }
+  }
+}

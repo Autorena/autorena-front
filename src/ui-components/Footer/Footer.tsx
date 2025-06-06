@@ -31,7 +31,7 @@ export const Footer = () => {
             <div className={styles.footer_items}>
               <Link to="/">Лизинг</Link>
               <Link to="/">Запчасти</Link>
-              <Link to="/">База черного списка</Link>
+              <Link to="/blacklist">База черного списка</Link>
               <Link to="/">Размещение на Авторене</Link>
               <Link to="/">Безопасность</Link>
               <Link to="/">Техподдержка</Link>

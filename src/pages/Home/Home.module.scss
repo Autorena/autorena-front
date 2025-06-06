@@ -283,6 +283,11 @@
   }
   .home_info_points {
     margin-bottom: 0;
+    &_top {
+      width: 100%;
+      display: flex;
+      gap: 12px;
+    }
   }
   .home_recommends {
     width: 100%;
@@ -305,6 +310,10 @@
       width: fit-content;
       line-height: 20px;
     }
+  }
+  .home_info_banner,
+  .filtersPanel {
+    display: none;
   }
 }
 
@@ -392,7 +401,7 @@
       padding: 0;
       &.filterPage {
         .home_info_points {
-          margin: 16px 0;
+          margin: 0;
         }
         .home_recommends,
         .home_recommends_grid {
@@ -406,6 +415,7 @@
     &_info h2 {
       font-size: 24px;
       padding: 0 20px;
+      margin-bottom: 16px;
     }
     &_info_points,
     &_recommends .title {
@@ -618,6 +628,85 @@
       .home_recommends {
         padding-top: 0;
       }
+      .home_info_banner {
+        display: block;
+        padding: 16px 20px 24px;
+        width: 100%;
+      }
+      .filtersPanel {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        width: calc(100% - 40px);
+        margin: 0 auto 24px;
+        padding: 16px 20px;
+        background: $light-gray;
+        border-radius: 16px;
+
+        .home_filter {
+          width: auto;
+          padding: 8px 10px;
+          background: #dedede;
+          align-items: center;
+          gap: 4px;
+          font-size: 14px;
+          font-weight: 300;
+          border-radius: 8px;
+          &.filterBtn {
+            .arrow {
+              width: 14px;
+              height: 14px;
+              transform: rotate(-90deg);
+            }
+          }
+          &_choose {
+            font-size: 13px;
+            font-weight: 300;
+          }
+          &.active {
+            font-weight: 400;
+          }
+          &.active svg path {
+            fill-opacity: 1;
+            stroke-opacity: 1;
+          }
+          &.count {
+            position: relative;
+            justify-content: center;
+            span {
+              width: 14px;
+              height: 14px;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              position: absolute;
+              top: -4px;
+              right: -4px;
+              background: $red-color;
+              color: #fff;
+              font-size: 10px;
+              font-weight: 400;
+            }
+          }
+          &.count svg path {
+            fill-opacity: 1;
+          }
+          svg path {
+            fill-opacity: 0.4;
+            stroke-opacity: 0.4;
+          }
+        }
+        .applyBtn {
+          width: 100%;
+          padding: 10px;
+          background: $primary-black;
+          border-radius: 8px;
+          color: #fff;
+          font-size: 14px;
+          font-weight: 500;
+        }
+      }
     }
     &_sliderWrap {
       margin-bottom: 0;
@@ -668,6 +757,9 @@
           color: $red-color;
         }
       }
+    }
+    &_info h2 {
+      margin-bottom: 0;
     }
   }
 }

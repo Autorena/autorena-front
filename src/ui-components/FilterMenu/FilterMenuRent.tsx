@@ -11,6 +11,12 @@ import { ReactComponent as Cross } from "../../assets/cross.svg";
 import { useLazyFilterListingsQuery } from "../../redux/listingsApi";
 import { useAppDispatch } from "../../redux/hooks";
 import { setFilteredCars } from "../../redux/listingsSlice";
+import { useFilter } from "../../HOC/FilterContext";
+import { useEffect } from "react";
+
+const FILTER_KEYS = {
+  CITY: "long_rent_city",
+} as const;
 
 type RentFilterFormData = {
   city?: string;
@@ -33,6 +39,7 @@ type FilterMenuRentProps = {
 export const FilterMenuRent = ({ isOpen, onClose }: FilterMenuRentProps) => {
   const [trigger] = useLazyFilterListingsQuery();
   const dispatch = useAppDispatch();
+  const { getFilterValue, setFilterValue } = useFilter();
   const {
     register,
     handleSubmit,
@@ -41,6 +48,18 @@ export const FilterMenuRent = ({ isOpen, onClose }: FilterMenuRentProps) => {
     watch,
     setValue,
   } = useForm<RentFilterFormData>();
+
+  useEffect(() => {
+    const city = getFilterValue<string>(FILTER_KEYS.CITY);
+    if (city) {
+      setValue("city", city);
+    }
+  }, [getFilterValue, setValue]);
+
+  const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const city = e.target.value;
+    setFilterValue(FILTER_KEYS.CITY, city);
+  };
 
   const onSubmit = async (data: RentFilterFormData) => {
     const filterObject = {
@@ -94,7 +113,18 @@ export const FilterMenuRent = ({ isOpen, onClose }: FilterMenuRentProps) => {
       <div className={styles.filterMenu_fields}>
         <div className={styles.inputWrap}>
           <label htmlFor="city">Город</label>
-          <input type="text" placeholder="Город" {...register("city")} />
+          <input
+            type="text"
+            placeholder="Город"
+            {...register("city")}
+            onChange={(e) => {
+              register("city").onChange(e);
+              handleCityChange(e);
+            }}
+            value={
+              watch("city") || getFilterValue<string>(FILTER_KEYS.CITY) || ""
+            }
+          />
         </div>
 
         <label className="checkboxWrapper" style={{ display: "flex" }}>

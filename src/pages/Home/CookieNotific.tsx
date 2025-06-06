@@ -14,17 +14,6 @@ export const CookieNotific = () => {
     setIsVisible(consent !== "true");
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 1000 && isVisible) {
-        handleClose();
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isVisible]);
-
   const handleClose = () => {
     setIsHiding(true);
     setTimeout(() => {

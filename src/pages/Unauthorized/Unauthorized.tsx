@@ -65,7 +65,7 @@ export const Unauthorized = () => {
       <BottomSheet
         isOpen={isAuthSheetOpen}
         onClose={() => setAuthSheetOpen(false)}
-        height="260px"
+        defaultHeight={260}
       >
         <div className={styles.authContent}>
           <button

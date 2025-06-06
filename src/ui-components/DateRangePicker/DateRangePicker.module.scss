@@ -1,0 +1,183 @@
+@use "../../styles/colors" as *;
+
+.datePicker {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  .dateInputs {
+    display: flex;
+    gap: 16px;
+  }
+
+  .dateInput {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    input {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  }
+}
+
+.datePickerDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  margin-top: 4px;
+}
+
+.datePickerButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.datePickerSheetContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -10px;
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 16px;
+
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    .prevArrow,
+    .nextArrow {
+      width: 20px;
+      height: 20px;
+    }
+    .nextArrow {
+      transform: rotate(180deg);
+    }
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 30px;
+  }
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(17, 17, 17, 0.6);
+  margin-bottom: 8px;
+}
+
+.daysGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: 100%;
+  gap: 4px;
+
+  .day,
+  .emptyDay {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+
+  .day {
+    color: $primary-black;
+
+    &:hover:not(.selectedStart):not(.selectedEnd):not(.between) {
+      background-color: #f0f0f0;
+    }
+
+    &.today {
+      font-weight: 600;
+      color: $red-color;
+    }
+
+    &.selectedStart,
+    &.selectedEnd {
+      background-color: $red-color;
+      color: #fff;
+    }
+
+    &.between {
+      background-color: rgba(237, 41, 57, 0.2);
+    }
+  }
+}
+
+.selectedRangeDisplay {
+  margin-top: 24px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  height: 20px; /* Maintain space even when empty */
+}
+
+.applyButton {
+  margin-top: 24px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  background: $red-color;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+
+  &:disabled {
+    background: #e0e0e0;
+    cursor: not-allowed;
+  }
+}
+
+.bottomSheet {
+  background: #fff;
+  padding-bottom: 20px; /* Add some padding at the bottom */
+}
+
+/* Keep existing styles for the old components if they are still used elsewhere */
+.datePickerDropdown,
+.datePicker,
+.dateInputs,
+.dateInput,
+.datePickerButton {
+  /* styles */
+}
