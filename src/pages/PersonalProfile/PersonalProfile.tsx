@@ -427,7 +427,7 @@ export const PersonalProfile = () => {
         <BottomSheet
           isOpen={isBannerSheetOpen}
           onClose={() => setIsBannerSheetOpen(false)}
-          defaultHeight={330}
+          defaultHeight={440}
         >
           <div className={styles.bannerSheet}>
             <div className={styles.bannerSheet_content}>

@@ -1,6 +1,6 @@
 import { ReactComponent as Filters } from "../../assets/filters.svg";
 import { ReactComponent as Location } from "../../assets/location-icon-2.svg";
-import banner from "../../assets/banner-2.png";
+import banner from "../../assets/banner-3.png";
 import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
 import { sortOptions } from "../../constants/sortOptions";
 import styles from "../Home/Home.module.scss";
@@ -10,7 +10,10 @@ import { LocationModal } from "../../components/modals/LocationModal";
 import { useFilter } from "../../HOC/FilterContext";
 
 const FILTER_KEYS = {
-  CITY: "long_rent_city",
+  BRAND: "buy_auto_brand",
+  CAR_BODY_TYPE: "buy_auto_car_body_type",
+  PRICE_RANGE: "buy_auto_price_range",
+  CITY: "buy_auto_city",
 } as const;
 
 export interface FilterProps {
@@ -21,7 +24,7 @@ export interface FilterProps {
   filterType: string;
 }
 
-export const RentFilter = ({
+export const BuyAutoFilter = ({
   isFiltersOpen,
   setIsFiltersOpen,
   sortOption,

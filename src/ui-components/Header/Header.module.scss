@@ -114,6 +114,9 @@
       right: 1px;
     }
   }
+  &_icons_mob {
+    display: none;
+  }
   & .locationBtn {
     display: flex;
     align-items: flex-end;
@@ -224,8 +227,7 @@
     }
     &_top,
     &_categoriesBtn,
-    &_adBtn,
-    &_logo {
+    &_adBtn {
       display: none;
     }
 
@@ -234,15 +236,15 @@
     }
 
     &_bottom:first-of-type {
-      width: 100%;
+      // width: 100%;
       justify-content: space-between;
-      align-items: center;
-      padding: 8px 20px;
+      align-items: flex-start;
+      padding: 12px 20px;
     }
 
     &_bottom.wrap {
       padding: 0;
-      width: 100%;
+      // width: 100%;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -252,13 +254,14 @@
       flex: 1;
       width: auto;
       max-width: unset;
-      margin: 0;
+      margin: 0 0 0 10px;
       position: relative;
       opacity: 0;
       visibility: hidden;
       transform: translateX(-20px);
       transition: all 0.3s ease;
       pointer-events: none;
+      display: none;
 
       &.active {
         opacity: 1;
@@ -310,12 +313,15 @@
       height: 28px;
     }
     &_icons_mob {
-      height: 40px;
       margin-left: auto;
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 8px;
+      gap: 10px;
+      svg {
+        width: 28px;
+        height: 28px;
+      }
     }
   }
 }
@@ -325,8 +331,21 @@
     .arrowBack {
       display: block;
     }
+    &_search {
+      min-width: unset;
+    }
     &_search input {
       font-size: 15px;
+    }
+    &_logo {
+      width: 99px;
+      height: 14px;
+    }
+    &_icons_mob {
+      svg {
+        width: 24px;
+        height: 24px;
+      }
     }
   }
 }
@@ -352,7 +371,7 @@
       justify-content: space-between;
     }
     &_bottom:nth-child(1) {
-      padding: 8px 20px;
+      padding: 12px 20px;
     }
   }
 }

@@ -22,6 +22,7 @@ import { declineCity } from "../../utils/declineCity";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/userSlice";
 import { ReactComponent as Search } from "../../assets/input-search.svg";
+import { SearchModal } from "../../components/modals/SearchModal/SearchModal";
 
 export const Header = () => {
   const user = useAppSelector((state) => state.user);
@@ -36,7 +37,7 @@ export const Header = () => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   let closeTimeout: number;
-  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
   const handleMouseEnter = () => {
     clearTimeout(closeTimeout);
@@ -111,7 +112,7 @@ export const Header = () => {
         searchBtn &&
         !searchBtn.contains(event.target as Node)
       ) {
-        setIsSearchActive(false);
+        setIsSearchModalOpen(false);
       }
     };
 
@@ -283,7 +284,7 @@ export const Header = () => {
 
               <div
                 className={`${styles.header_search} ${
-                  isSearchActive ? styles.active : ""
+                  isSearchModalOpen ? styles.active : ""
                 }`}
               >
                 <input
@@ -296,12 +297,12 @@ export const Header = () => {
               <div className={styles.header_icons_mob}>
                 <button
                   className={styles.header_searchBtn}
-                  onClick={() => setIsSearchActive(!isSearchActive)}
+                  onClick={() => setIsSearchModalOpen(true)}
                 >
                   <Search />
                 </button>
 
-                <button
+                {/* <button
                   className={styles.locationBtn_mob}
                   onClick={() => {
                     setModalActive(true);
@@ -309,6 +310,9 @@ export const Header = () => {
                   }}
                 >
                   <LocationIcon />
+                </button> */}
+                <button>
+                  <Settings />
                 </button>
               </div>
 
@@ -338,6 +342,10 @@ export const Header = () => {
           </div>
         </div>
       </header>
+      <SearchModal
+        isOpen={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
+      />
     </>
   );
 };

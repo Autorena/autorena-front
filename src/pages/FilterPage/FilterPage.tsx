@@ -16,9 +16,9 @@ import {
 import { CarCardLarge } from "../../ui-components/CarCardLarge/CarCardLarge";
 import { CarCardType } from "../../types";
 import { setFilteredCars } from "../../redux/listingsSlice";
-import { ReactComponent as Banner } from "../../assets/profile-banner-1.svg";
 import { RentFilter } from "./RentFilter";
 import { DailyRentFilter } from "./DailyRentFilter";
+import { BuyAutoFilter } from "./BuyAutoFilter";
 
 export const FilterPage = () => {
   const { filter } = useParams<{ filter?: string }>();
@@ -116,7 +116,25 @@ export const FilterPage = () => {
   const renderFilter = () => {
     switch (filter) {
       case "RENT_AUTO":
+        return (
+          <RentFilter
+            isFiltersOpen={isFiltersOpen}
+            setIsFiltersOpen={setIsFiltersOpen}
+            sortOption={sortOption}
+            onSortChange={handleSortChange}
+            filterType={(filter ?? "default").toUpperCase()}
+          />
+        );
       case "BUY_AUTO":
+        return (
+          <BuyAutoFilter
+            isFiltersOpen={isFiltersOpen}
+            setIsFiltersOpen={setIsFiltersOpen}
+            sortOption={sortOption}
+            onSortChange={handleSortChange}
+            filterType={(filter ?? "default").toUpperCase()}
+          />
+        );
       case "DRIVER_JOBS":
       case "SEARCH":
       case "AUTO_SERVICES":
@@ -158,7 +176,7 @@ export const FilterPage = () => {
         <div className={styles.home_main}>
           <div className={styles.home_info}>
             <h2 className="section-title">{filterTitle}</h2>
-            <Banner className={styles.home_info_banner} />
+            {/* <Banner className={styles.home_info_banner} /> */}
             {renderFilter()}
           </div>
           <div className={styles.home_recommends}>

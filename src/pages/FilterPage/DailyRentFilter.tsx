@@ -6,6 +6,8 @@ import { ReactComponent as Location } from "../../assets/location-icon-2.svg";
 import { ReactComponent as Search } from "../../assets/search-icon.svg";
 import { ReactComponent as Arrow } from "../../assets/swiper-arrow.svg";
 import { ReactComponent as Calendar } from "../../assets/calendar.svg";
+import banner from "../../assets/banner-1.png";
+
 import { sortOptions } from "../../constants/sortOptions";
 import { useContext, useState, useRef } from "react";
 import { ModalContext } from "../../HOC/ModalProvider";
@@ -152,6 +154,7 @@ export const DailyRentFilter = ({
 
   return (
     <>
+      <img src={banner} alt="" className={styles.home_info_banner} />
       <div className={styles.filtersPanel}>
         <div className={styles.home_info_points_top}>
           <button
