@@ -314,22 +314,6 @@ input {
     top: 50%;
     transform: translateY(-50%);
   }
-}
-
-@media (max-width: 550px) {
-  .section-title {
-    font-size: 24px;
-  }
-
-  .SwiperThumbs {
-    .swiper-slide img {
-      max-height: 250px;
-    }
-  }
-
-  .stories .swiper-horizontal {
-    padding: 0 20px 0 16px;
-  }
 
   .home-slider {
     .swiper-wrapper {
@@ -361,6 +345,22 @@ input {
         }
       }
     }
+  }
+}
+
+@media (max-width: 550px) {
+  .section-title {
+    font-size: 24px;
+  }
+
+  .SwiperThumbs {
+    .swiper-slide img {
+      max-height: 250px;
+    }
+  }
+
+  .stories .swiper-horizontal {
+    padding: 0 20px 0 16px;
   }
 }
 

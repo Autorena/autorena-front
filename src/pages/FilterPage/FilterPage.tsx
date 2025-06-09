@@ -19,6 +19,8 @@ import { setFilteredCars } from "../../redux/listingsSlice";
 import { RentFilter } from "./RentFilter";
 import { DailyRentFilter } from "./DailyRentFilter";
 import { BuyAutoFilter } from "./BuyAutoFilter";
+import { WantedRentFilter } from "./WantedRentFilter";
+import { DriverVacFilter } from "./DriverVacFilter";
 
 export const FilterPage = () => {
   const { filter } = useParams<{ filter?: string }>();
@@ -135,11 +137,29 @@ export const FilterPage = () => {
             filterType={(filter ?? "default").toUpperCase()}
           />
         );
-      case "DRIVER_JOBS":
-      case "SEARCH":
       case "AUTO_SERVICES":
         return (
           <RentFilter
+            isFiltersOpen={isFiltersOpen}
+            setIsFiltersOpen={setIsFiltersOpen}
+            sortOption={sortOption}
+            onSortChange={handleSortChange}
+            filterType={(filter ?? "default").toUpperCase()}
+          />
+        );
+      case "DRIVER_JOBS":
+        return (
+          <DriverVacFilter
+            isFiltersOpen={isFiltersOpen}
+            setIsFiltersOpen={setIsFiltersOpen}
+            sortOption={sortOption}
+            onSortChange={handleSortChange}
+            filterType={(filter ?? "default").toUpperCase()}
+          />
+        );
+      case "WANTED_RENT":
+        return (
+          <WantedRentFilter
             isFiltersOpen={isFiltersOpen}
             setIsFiltersOpen={setIsFiltersOpen}
             sortOption={sortOption}

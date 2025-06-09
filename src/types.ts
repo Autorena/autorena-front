@@ -90,11 +90,26 @@ export type CarRentListing = {
   rentDuration: string[];
 };
 
+export type CarSellListing = {
+  id: string;
+  carContent: CarContent;
+  userId: string;
+  listingOptions: ListingOptions;
+  depositRequired: boolean;
+  paymentPeriod: string[];
+  price: number;
+  additionalInfo: string;
+  createdAt: string;
+  updatedAt: string;
+  city: string;
+};
+
 export type Listing = {
   id: string;
   size?: "large";
   ads?: boolean;
-  carRentListing: CarRentListing;
+  carRentListing?: CarRentListing;
+  carSellListing?: CarSellListing;
   carBuyListing?: CarRentListing;
   driverJobListing?: CarRentListing;
   autoServiceListing?: CarRentListing;

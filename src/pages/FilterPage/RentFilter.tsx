@@ -8,11 +8,7 @@ import { useContext } from "react";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { LocationModal } from "../../components/modals/LocationModal";
 import { useFilter } from "../../HOC/FilterContext";
-
-const FILTER_KEYS = {
-  CITY: "long_rent_city",
-} as const;
-
+import { FILTER_KEYS } from "../../constants/filterKeys";
 export interface FilterProps {
   isFiltersOpen: boolean;
   setIsFiltersOpen: (value: boolean) => void;
@@ -44,15 +40,15 @@ export const RentFilter = ({
                 <LocationModal
                   forFilters={true}
                   initialCity={
-                    getFilterValue<string>(FILTER_KEYS.CITY) ?? undefined
+                    getFilterValue<string>(FILTER_KEYS.RENT_CITY) ?? undefined
                   }
-                  cityKey={FILTER_KEYS.CITY}
+                  cityKey={FILTER_KEYS.RENT_CITY}
                 />
               );
             }}
           >
             <Location />{" "}
-            {getFilterValue<string>(FILTER_KEYS.CITY) || "Выберите город"}
+            {getFilterValue<string>(FILTER_KEYS.RENT_CITY) || "Выберите город"}
           </button>
           <button
             onClick={() => {
@@ -61,9 +57,9 @@ export const RentFilter = ({
                 <LocationModal
                   forFilters={true}
                   initialCity={
-                    getFilterValue<string>(FILTER_KEYS.CITY) ?? undefined
+                    getFilterValue<string>(FILTER_KEYS.RENT_CITY) ?? undefined
                   }
-                  cityKey={FILTER_KEYS.CITY}
+                  cityKey={FILTER_KEYS.RENT_CITY}
                 />
               );
             }}

@@ -4,4 +4,5 @@ export const filterNameMap: Record<string, string> = {
   BUY_AUTO: "Выкуп автомобилей",
   AUTO_SERVICES: "Автосервисы",
   DRIVER_JOBS: "Работа водителям",
+  WANTED_RENT: "Поиск арендатора",
 };

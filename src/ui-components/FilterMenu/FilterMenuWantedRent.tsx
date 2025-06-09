@@ -1,25 +1,31 @@
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import styles from "./FilterMenu.module.scss";
-import { DropdownList } from "../DropdownList/DropdownList";
-import { useAppDispatch } from "../../redux/hooks";
-import { setFilteredCars } from "../../redux/listingsSlice";
-import { useLazyFilterListingsQuery } from "../../redux/listingsApi";
 import {
   carCategoryOptions,
   driveExperienceOptions,
-  rentDurationOptions,
+  rentTypesOptions,
+  wantedRentDurationOptions,
 } from "../../constants/filterOptions";
+import { DropdownList } from "../DropdownList/DropdownList";
 import { ReactComponent as Cross } from "../../assets/cross.svg";
+import { useLazyFilterListingsQuery } from "../../redux/listingsApi";
+import { useAppDispatch } from "../../redux/hooks";
+import { setFilteredCars } from "../../redux/listingsSlice";
+import { useFilter } from "../../HOC/FilterContext";
+import { useEffect } from "react";
+import { RadioButton } from "../RadioButton/RadioButton";
+import { FILTER_KEYS } from "../../constants/filterKeys";
 
 type WantedRentFilterFormData = {
-  city?: string;
+  rent_types: string;
   min_age?: number;
   max_age?: number;
-  drive_experience?: string[];
+  drive_experience: string[];
   deposit_required?: boolean;
-  rent_durations?: string[];
+  rent_durations: string[];
   require_russian_citizenship?: boolean;
-  car_category?: string[];
+  car_category: string[];
+  city: string;
 };
 
 type FilterMenuWantedRentProps = {
@@ -33,6 +39,7 @@ export const FilterMenuWantedRent = ({
 }: FilterMenuWantedRentProps) => {
   const [trigger] = useLazyFilterListingsQuery();
   const dispatch = useAppDispatch();
+  const { getFilterValue, setFilterValue } = useFilter();
   const {
     register,
     handleSubmit,
@@ -40,17 +47,26 @@ export const FilterMenuWantedRent = ({
     reset,
     watch,
     setValue,
-  } = useForm<WantedRentFilterFormData>({
-    mode: "onChange",
-  });
+    control,
+  } = useForm<WantedRentFilterFormData>();
+
+  useEffect(() => {
+    const city = getFilterValue<string>(FILTER_KEYS.WANTED_RENT_CITY);
+    if (city) {
+      setValue("city", city);
+    }
+  }, [getFilterValue, setValue]);
+
+  const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const city = e.target.value;
+    setFilterValue(FILTER_KEYS.WANTED_RENT_CITY, city);
+  };
 
   const onSubmit = async (data: WantedRentFilterFormData) => {
-    if (!data.min_age || !data.max_age) return;
     const filterObject = {
       filter: {
         wanted_car_rent_listing: {
-          rent_types: ["RENT_TYPE_BUYOUT"],
-          city: data.city,
+          rent_types: data.rent_types ? [data.rent_types] : undefined,
           min_age: data.min_age,
           max_age: data.max_age,
           drive_experience: data.drive_experience,
@@ -58,6 +74,7 @@ export const FilterMenuWantedRent = ({
           rent_durations: data.rent_durations,
           require_russian_citizenship: data.require_russian_citizenship,
           car_category: data.car_category,
+          city: data.city,
         },
       },
       pagination: {
@@ -68,7 +85,6 @@ export const FilterMenuWantedRent = ({
 
     try {
       const result = await trigger(filterObject);
-
       if (result.data) {
         dispatch(setFilteredCars(result.data.listings));
         onClose();
@@ -83,14 +99,54 @@ export const FilterMenuWantedRent = ({
       onSubmit={handleSubmit(onSubmit)}
       className={`${styles.filterMenu} ${isOpen ? styles.open : ""}`}
     >
-      <button className={styles.filterMenu_close} onClick={onClose}>
+      <button
+        className={styles.filterMenu_close}
+        onClick={onClose}
+        type="button"
+      >
         <Cross />
       </button>
       <h2 className={styles.filterMenu_title}>Фильтры</h2>
       <div className={styles.filterMenu_fields}>
         <div className={styles.inputWrap}>
+          <label htmlFor="rent_types">Тип аренды</label>
+          <Controller
+            name="rent_types"
+            control={control}
+            render={({ field }) => (
+              <div style={{ display: "flex", gap: "16px" }}>
+                {rentTypesOptions.map((option) => (
+                  <RadioButton
+                    key={option.value}
+                    name="rent_types"
+                    value={option.value}
+                    label={option.label}
+                    checked={field.value === option.value}
+                    onChange={() => field.onChange(option.value)}
+                    labelStyle={{ paddingLeft: "36px" }}
+                  />
+                ))}
+              </div>
+            )}
+          />
+        </div>
+
+        <div className={styles.inputWrap}>
           <label htmlFor="city">Город</label>
-          <input type="text" placeholder="Город" {...register("city")} />
+          <input
+            type="text"
+            placeholder="Город"
+            {...register("city")}
+            onChange={(e) => {
+              register("city").onChange(e);
+              handleCityChange(e);
+            }}
+            value={
+              watch("city") ||
+              getFilterValue<string>(FILTER_KEYS.WANTED_RENT_CITY) ||
+              ""
+            }
+          />
         </div>
 
         <div className={styles.inputWrap}>
@@ -99,30 +155,23 @@ export const FilterMenuWantedRent = ({
             <input
               type="number"
               placeholder="От"
-              className={`${styles.filterMenu_year} ${
+              className={`${styles.filterMenu_price} ${
                 errors.min_age ? "invalid" : ""
               }`}
               {...register("min_age", {
-                required: "Обязательное поле",
+                valueAsNumber: true,
+                min: 0,
               })}
             />
             <input
               type="number"
               placeholder="До"
-              className={`${styles.filterMenu_year} ${
+              className={`${styles.filterMenu_price} ${
                 errors.max_age ? "invalid" : ""
               }`}
               {...register("max_age", {
-                required: "Обязательное поле",
-                validate: (value) => {
-                  const minAge = watch("min_age");
-                  return (
-                    !minAge ||
-                    !value ||
-                    value >= minAge ||
-                    "Должно быть больше минимального возраста"
-                  );
-                },
+                valueAsNumber: true,
+                min: 0,
               })}
             />
           </div>
@@ -140,6 +189,16 @@ export const FilterMenuWantedRent = ({
           />
         </div>
 
+        <div className={styles.inputWrap}>
+          <label htmlFor="rent_durations">Сроки аренды</label>
+          <DropdownList
+            options={wantedRentDurationOptions}
+            value={watch("rent_durations")}
+            onSelect={(value) => setValue("rent_durations", value as string[])}
+            isMulti
+          />
+        </div>
+
         <label className="checkboxWrapper" style={{ display: "flex" }}>
           <input
             type="checkbox"
@@ -147,18 +206,8 @@ export const FilterMenuWantedRent = ({
             {...register("deposit_required")}
           />
           <span className="checkboxCustom" />
-          <span className="checkboxLabel">Требуется залог</span>
+          <span className="checkboxLabel">Без депозита</span>
         </label>
-
-        <div className={styles.inputWrap}>
-          <label htmlFor="rent_durations">Срок аренды</label>
-          <DropdownList
-            options={rentDurationOptions}
-            value={watch("rent_durations")}
-            onSelect={(value) => setValue("rent_durations", value as string[])}
-            isMulti
-          />
-        </div>
 
         <label className="checkboxWrapper" style={{ display: "flex" }}>
           <input
@@ -171,7 +220,7 @@ export const FilterMenuWantedRent = ({
         </label>
 
         <div className={styles.inputWrap}>
-          <label htmlFor="car_category">Класс автомобиля</label>
+          <label htmlFor="car_category">Класс авто</label>
           <DropdownList
             options={carCategoryOptions}
             value={watch("car_category")}

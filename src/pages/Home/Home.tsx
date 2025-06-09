@@ -224,7 +224,10 @@ export const Home = () => {
               <h4>Работа водителям</h4>
               <Option4_mob style={{ right: "0" }} />
             </Link>
-            <Link to="/filter/SEARCH" className={styles.home_options_mob_item}>
+            <Link
+              to="/filter/WANTED_RENT"
+              className={styles.home_options_mob_item}
+            >
               <h4>Поиск арендатора</h4>
               <Option5_mob style={{ right: "0" }} />
             </Link>

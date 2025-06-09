@@ -1,6 +1,6 @@
 import { ReactComponent as Filters } from "../../assets/filters.svg";
 import { ReactComponent as Location } from "../../assets/location-icon-2.svg";
-import banner from "../../assets/banner-3.png";
+import { ReactComponent as Banner } from "../../assets/profile-banner-1.svg";
 import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
 import { sortOptions } from "../../constants/sortOptions";
 import styles from "../Home/Home.module.scss";
@@ -8,13 +8,7 @@ import { useContext } from "react";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { LocationModal } from "../../components/modals/LocationModal";
 import { useFilter } from "../../HOC/FilterContext";
-
-const FILTER_KEYS = {
-  BRAND: "buy_auto_brand",
-  CAR_BODY_TYPE: "buy_auto_car_body_type",
-  PRICE_RANGE: "buy_auto_price_range",
-  CITY: "car_sell_city",
-} as const;
+import { FILTER_KEYS } from "../../constants/filterKeys";
 
 export interface FilterProps {
   isFiltersOpen: boolean;
@@ -24,7 +18,7 @@ export interface FilterProps {
   filterType: string;
 }
 
-export const BuyAutoFilter = ({
+export const DriverVacFilter = ({
   isFiltersOpen,
   setIsFiltersOpen,
   sortOption,
@@ -36,7 +30,7 @@ export const BuyAutoFilter = ({
 
   return (
     <>
-      <img src={banner} alt="" className={styles.home_info_banner} />
+      <Banner className={styles.home_info_banner} />
       <div className={styles.home_info_points}>
         <div className={styles.home_info_points_top}>
           <button
@@ -47,15 +41,17 @@ export const BuyAutoFilter = ({
                 <LocationModal
                   forFilters={true}
                   initialCity={
-                    getFilterValue<string>(FILTER_KEYS.CITY) ?? undefined
+                    getFilterValue<string>(FILTER_KEYS.DRIVER_VAC_CITY) ??
+                    undefined
                   }
-                  cityKey={FILTER_KEYS.CITY}
+                  cityKey={FILTER_KEYS.DRIVER_VAC_CITY}
                 />
               );
             }}
           >
             <Location />{" "}
-            {getFilterValue<string>(FILTER_KEYS.CITY) || "Выберите город"}
+            {getFilterValue<string>(FILTER_KEYS.DRIVER_VAC_CITY) ||
+              "Выберите город"}
           </button>
           <button
             onClick={() => {
@@ -64,9 +60,10 @@ export const BuyAutoFilter = ({
                 <LocationModal
                   forFilters={true}
                   initialCity={
-                    getFilterValue<string>(FILTER_KEYS.CITY) ?? undefined
+                    getFilterValue<string>(FILTER_KEYS.DRIVER_VAC_CITY) ??
+                    undefined
                   }
-                  cityKey={FILTER_KEYS.CITY}
+                  cityKey={FILTER_KEYS.DRIVER_VAC_CITY}
                 />
               );
             }}

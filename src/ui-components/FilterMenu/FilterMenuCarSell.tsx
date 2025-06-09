@@ -1,42 +1,31 @@
 import { useForm } from "react-hook-form";
 import styles from "./FilterMenu.module.scss";
+import { DropdownList } from "../DropdownList/DropdownList";
+import { useAppDispatch } from "../../redux/hooks";
+import { setFilteredCars } from "../../redux/listingsSlice";
+import { useLazyFilterListingsQuery } from "../../redux/listingsApi";
 import {
   carBodyTypeOptions,
   carCategoryOptions,
   fuelTypeOptions,
   transmissionOptions,
 } from "../../constants/filterOptions";
-import { DropdownList } from "../DropdownList/DropdownList";
 import { ReactComponent as Cross } from "../../assets/cross.svg";
-import { useLazyFilterListingsQuery } from "../../redux/listingsApi";
-import { useAppDispatch } from "../../redux/hooks";
-import { setFilteredCars } from "../../redux/listingsSlice";
-import { useFilter } from "../../HOC/FilterContext";
-import { useEffect } from "react";
+import { RentFilterFormData } from "./FilterMenuRent";
 import { FILTER_KEYS } from "../../constants/filterKeys";
+import { useFilter } from "../../HOC/FilterContext";
 
-export type RentFilterFormData = {
-  city?: string;
-  deposit_required?: boolean;
-  transmission_type?: string;
-  fuel_type?: string;
-  car_body_type?: string;
-  car_category?: string;
-  min_year?: number;
-  max_year?: number;
-  min_price_per_day?: number;
-  max_price_per_day?: number;
-};
-
-type FilterMenuRentProps = {
+type FilterMenuWantedRentProps = {
   isOpen: boolean;
   onClose: () => void;
 };
 
-export const FilterMenuRent = ({ isOpen, onClose }: FilterMenuRentProps) => {
+export const FilterMenuCarSell = ({
+  isOpen,
+  onClose,
+}: FilterMenuWantedRentProps) => {
   const [trigger] = useLazyFilterListingsQuery();
   const dispatch = useAppDispatch();
-  const { getFilterValue, setFilterValue } = useFilter();
   const {
     register,
     handleSubmit,
@@ -44,24 +33,21 @@ export const FilterMenuRent = ({ isOpen, onClose }: FilterMenuRentProps) => {
     reset,
     watch,
     setValue,
-  } = useForm<RentFilterFormData>();
+  } = useForm<RentFilterFormData>({
+    mode: "onChange",
+  });
 
-  useEffect(() => {
-    const city = getFilterValue<string>(FILTER_KEYS.RENT_CITY);
-    if (city) {
-      setValue("city", city);
-    }
-  }, [getFilterValue, setValue]);
+  const { getFilterValue, setFilterValue } = useFilter();
 
   const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const city = e.target.value;
-    setFilterValue(FILTER_KEYS.RENT_CITY, city);
+    setFilterValue(FILTER_KEYS.CAR_SELL_CITY, city);
   };
 
   const onSubmit = async (data: RentFilterFormData) => {
     const filterObject = {
       filter: {
-        car_rent_listing: {
+        car_sell_listing: {
           transmission_type: data.transmission_type
             ? [data.transmission_type]
             : undefined,
@@ -81,10 +67,9 @@ export const FilterMenuRent = ({ isOpen, onClose }: FilterMenuRentProps) => {
         page_size: 20,
       },
     };
-
     try {
       const result = await trigger(filterObject);
-      console.log("Filter results:", result);
+
       if (result.data) {
         dispatch(setFilteredCars(result.data.listings));
         onClose();
@@ -120,7 +105,7 @@ export const FilterMenuRent = ({ isOpen, onClose }: FilterMenuRentProps) => {
             }}
             value={
               watch("city") ||
-              getFilterValue<string>(FILTER_KEYS.RENT_CITY) ||
+              getFilterValue<string>(FILTER_KEYS.CAR_SELL_CITY) ||
               ""
             }
           />

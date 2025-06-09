@@ -4,21 +4,27 @@ import { DropdownList } from "../DropdownList/DropdownList";
 import {
   driveExperienceOptions,
   employmentTypeOptions,
+  paymentPeriodOptions,
   salaryPeriodOptions,
   workScheduleOptions,
 } from "../../constants/filterOptions";
 import { ReactComponent as Cross } from "../../assets/cross.svg";
 import { useLazyFilterListingsQuery } from "../../redux/listingsApi";
+import { useFilter } from "../../HOC/FilterContext";
+import { FILTER_KEYS } from "../../constants/filterKeys";
+import { useEffect } from "react";
 
 type DriverVacFilterFormData = {
   city?: string;
-  min_salary?: number;
-  max_salary?: number;
-  salary_periods?: string[];
-  drive_experience?: string[];
+  min_salary: number;
+  max_salary: number;
+  age: number;
+  required_experience?: string[];
+  salary_periods: string[];
+  payment_periods: string[];
   employment_types?: string[];
   work_schedules?: string[];
-  require_russian_citizenship?: boolean;
+  is_russian_citizenship?: boolean;
 };
 
 type FilterMenuDriverVacProps = {
@@ -31,6 +37,7 @@ export const FilterMenuDriverVac = ({
   onClose,
 }: FilterMenuDriverVacProps) => {
   const [trigger] = useLazyFilterListingsQuery();
+  const { getFilterValue, setFilterValue } = useFilter();
   const {
     register,
     handleSubmit,
@@ -40,6 +47,21 @@ export const FilterMenuDriverVac = ({
     setValue,
   } = useForm<DriverVacFilterFormData>();
 
+  // Синхронизация города из FilterContext с формой
+  useEffect(() => {
+    const cityFromContext = getFilterValue<string>(FILTER_KEYS.DRIVER_VAC_CITY);
+    if (cityFromContext) {
+      setValue("city", cityFromContext);
+    }
+  }, [getFilterValue, setValue]);
+
+  // Обработчик изменения города в форме
+  const handleCityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const cityValue = event.target.value;
+    setValue("city", cityValue);
+    setFilterValue(FILTER_KEYS.DRIVER_VAC_CITY, cityValue);
+  };
+
   const onSubmit = async (data: DriverVacFilterFormData) => {
     const filterObject = {
       filter: {
@@ -47,11 +69,13 @@ export const FilterMenuDriverVac = ({
           city: data.city,
           min_salary: data.min_salary ? Number(data.min_salary) : undefined,
           max_salary: data.max_salary ? Number(data.max_salary) : undefined,
+          age: data.age,
           salary_periods: data.salary_periods,
-          drive_experience: data.drive_experience,
+          payment_periods: data.payment_periods,
+          drive_experience: data.required_experience,
           employment_types: data.employment_types,
           work_schedules: data.work_schedules,
-          require_russian_citizenship: data.require_russian_citizenship,
+          is_russian_citizenship: data.is_russian_citizenship,
         },
       },
       pagination: {
@@ -85,7 +109,15 @@ export const FilterMenuDriverVac = ({
       <div className={styles.filterMenu_fields}>
         <div className={styles.inputWrap}>
           <label htmlFor="city">Город</label>
-          <input type="text" placeholder="Город" {...register("city")} />
+          <input
+            type="text"
+            placeholder="Город"
+            {...register("city")}
+            onChange={handleCityChange}
+            defaultValue={
+              getFilterValue<string>(FILTER_KEYS.DRIVER_VAC_CITY) || ""
+            }
+          />
         </div>
 
         <div className={styles.inputWrap}>
@@ -111,6 +143,30 @@ export const FilterMenuDriverVac = ({
         </div>
 
         <div className={styles.inputWrap}>
+          <label htmlFor="age">Возраст</label>
+          <input
+            type="number"
+            className={`${errors.age ? "invalid" : ""}`}
+            {...register("age", {
+              min: 0,
+              valueAsNumber: true,
+              validate: (value) =>
+                value >= 0 || "Возраст не может быть отрицательным",
+            })}
+          />
+        </div>
+
+        <div className={styles.inputWrap}>
+          <label htmlFor="payment_periods">Периодичность выплат</label>
+          <DropdownList
+            options={paymentPeriodOptions}
+            value={watch("payment_periods")}
+            onSelect={(value) => setValue("payment_periods", value as string[])}
+            isMulti
+          />
+        </div>
+
+        <div className={styles.inputWrap}>
           <label htmlFor="salary_periods">Период оплаты</label>
           <DropdownList
             options={salaryPeriodOptions}
@@ -124,9 +180,9 @@ export const FilterMenuDriverVac = ({
           <label htmlFor="drive_experience">Опыт вождения</label>
           <DropdownList
             options={driveExperienceOptions}
-            value={watch("drive_experience")}
+            value={watch("required_experience")}
             onSelect={(value) =>
-              setValue("drive_experience", value as string[])
+              setValue("required_experience", value as string[])
             }
             isMulti
           />
@@ -158,7 +214,7 @@ export const FilterMenuDriverVac = ({
           <input
             type="checkbox"
             className="checkboxInput"
-            {...register("require_russian_citizenship")}
+            {...register("is_russian_citizenship")}
           />
           <span className="checkboxCustom" />
           <span className="checkboxLabel">Требуется гражданство РФ</span>
@@ -172,7 +228,10 @@ export const FilterMenuDriverVac = ({
         <button
           type="button"
           className={`${styles.cleanBtn}`}
-          onClick={() => reset()}
+          onClick={() => {
+            reset();
+            setFilterValue(FILTER_KEYS.DRIVER_VAC_CITY, null);
+          }}
         >
           Сбросить все
         </button>

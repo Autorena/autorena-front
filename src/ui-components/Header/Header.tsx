@@ -29,7 +29,6 @@ export const Header = () => {
   const { setModalActive, setModalContent, setCrossSize } =
     useContext(ModalContext);
   const { location } = useContext(LocationContext);
-  const [showHeader, setShowHeader] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isMobile, setIsMobile] = useState(false);
@@ -49,46 +48,6 @@ export const Header = () => {
       setIsDropdownOpen(false);
     }, 200);
   };
-
-  useEffect(() => {
-    let lastScroll = window.scrollY;
-    let isMobileScreen = window.innerWidth <= 900;
-    let scrollTimeout: number;
-    const SCROLL_THRESHOLD = 80;
-
-    const handleScroll = () => {
-      if (!isMobileScreen) return;
-
-      const currentScroll = window.scrollY;
-      const scrollDiff = currentScroll - lastScroll;
-
-      if (scrollDiff > 0 && currentScroll > SCROLL_THRESHOLD) {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-          setShowHeader(false);
-        }, 100);
-      } else if (scrollDiff < 0) {
-        clearTimeout(scrollTimeout);
-        setShowHeader(true);
-      }
-
-      lastScroll = currentScroll;
-    };
-
-    const handleResize = () => {
-      isMobileScreen = window.innerWidth <= 900;
-      if (!isMobileScreen) setShowHeader(true);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
-      clearTimeout(scrollTimeout);
-    };
-  }, []);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -126,11 +85,7 @@ export const Header = () => {
 
   return (
     <>
-      <header
-        className={`${styles.header} ${
-          !showHeader && window.innerWidth <= 900 ? styles.hidden : ""
-        }`}
-      >
+      <header className={`${styles.header}`}>
         <div className={styles.header_top}>
           <div className={styles.header_top__wrap}>
             <ul>
@@ -263,7 +218,7 @@ export const Header = () => {
         <div
           className={`container ${styles.container} ${
             pathname === "/create-listing" ? styles.hide : ""
-          } ${!showHeader && window.innerWidth <= 900 ? styles.hidden : ""}`}
+          }`}
         >
           <div className={styles.header_bottom}>
             <Link

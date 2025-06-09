@@ -1,8 +1,9 @@
 import { FilterMenuDaily } from "./FilterMenuDaily";
 import { FilterMenuDriverVac } from "./FilterMenuDriverVac";
 import { FilterMenuRent } from "./FilterMenuRent";
-import { FilterMenuWantedRent } from "./FilterMenuWantedRent";
+import { FilterMenuCarSell } from "./FilterMenuCarSell";
 import { useEffect } from "react";
+import { FilterMenuWantedRent } from "./FilterMenuWantedRent";
 
 export type FilterMenuProps = {
   filterType:
@@ -11,7 +12,7 @@ export type FilterMenuProps = {
     | "BUY_AUTO"
     | "DRIVER_JOBS"
     | "AUTO_SERVICES"
-    | "SEARCH";
+    | "WANTED_RENT";
   isOpen: boolean;
   onClose: () => void;
 };
@@ -42,6 +43,8 @@ export const FilterMenu = ({
     };
   }, [isOpen]);
 
+  console.log(filterType);
+
   switch (filterType) {
     case "RENT_AUTO":
     case "AUTO_SERVICES":
@@ -49,9 +52,11 @@ export const FilterMenu = ({
     case "DAILY_RENT":
       return <FilterMenuDaily isOpen={isOpen} onClose={onClose} />;
     case "BUY_AUTO":
-      return <FilterMenuWantedRent isOpen={isOpen} onClose={onClose} />;
+      return <FilterMenuCarSell isOpen={isOpen} onClose={onClose} />;
     case "DRIVER_JOBS":
       return <FilterMenuDriverVac isOpen={isOpen} onClose={onClose} />;
+    case "WANTED_RENT":
+      return <FilterMenuWantedRent isOpen={isOpen} onClose={onClose} />;
     default:
       return null;
   }
