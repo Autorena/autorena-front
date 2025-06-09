@@ -10,13 +10,16 @@ import { useState } from "react";
 export const ActiveListing = ({ carData }: CarCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  if (!carData.listing.carRentListing) {
+    return null;
+  }
+
+  const { carRentListing } = carData.listing;
+
   return (
-    <Link
-      to={`/${carData.listing.carRentListing.id}`}
-      className={styles.listing}
-    >
+    <Link to={`/${carRentListing.id}`} className={styles.listing}>
       <img
-        src={carData.listing.carRentListing.carContent.photosUrl[0]}
+        src={carRentListing.carContent.photosUrl[0]}
         alt="Car photo"
         className={styles.listing_img}
       />
@@ -24,10 +27,9 @@ export const ActiveListing = ({ carData }: CarCardProps) => {
         <div className={styles.listing_info}>
           <p
             className={styles.listing_title}
-          >{`Аренда ${carData.listing.carRentListing.carContent.brandId} ${carData.listing.carRentListing.carContent.modelId}`}</p>
+          >{`Аренда ${carRentListing.carContent.brandId} ${carRentListing.carContent.modelId}`}</p>
           <p className={styles.listing_price}>
-            {carData.listing.carRentListing.pricePerDay.toLocaleString("ru-RU")}
-            ₽ за день
+            {carRentListing.pricePerDay.toLocaleString("ru-RU")}₽ за день
           </p>
           <p
             className={styles.listing_descr}
@@ -38,7 +40,7 @@ export const ActiveListing = ({ carData }: CarCardProps) => {
               overflow: "hidden",
             }}
           >
-            {carData.listing.carRentListing.additionalInfo}
+            {carRentListing.additionalInfo}
           </p>
           <button
             onClick={(e) => {
@@ -50,9 +52,7 @@ export const ActiveListing = ({ carData }: CarCardProps) => {
           >
             {isExpanded ? "Скрыть" : "Смотреть полностью"}
           </button>
-          <p className={styles.listing_address}>
-            г. {carData.listing.carRentListing.city}
-          </p>
+          <p className={styles.listing_address}>г. {carRentListing.city}</p>
         </div>
         <div className={styles.listing_statistic}>
           <p className={styles.listing_days}>Осталось 29 дней</p>

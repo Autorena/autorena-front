@@ -14,11 +14,25 @@ import { ModalContext } from "../../HOC/ModalProvider";
 export const CarCardLarge = ({ carData }: CarCardProps) => {
   const { openModal } = useModalWithHistory();
   const navigate = useNavigate();
+  const { isPhoneConfirmed } = useAppSelector((state) => state.user);
+  const { setModalContent, setModalActive } = useContext(ModalContext);
+  const { pathname } = useLocation();
+
+  if (!carData.listing.carRentListing) {
+    return null;
+  }
+
   const {
     listing: {
       id,
       carRentListing: {
-        carContent: { photosUrl, createdAt },
+        carContent: {
+          photosUrl,
+          createdAt,
+          brandId,
+          modelId,
+          yearOfCarProduction,
+        },
         pricePerDay,
         city,
         additionalInfo,
@@ -26,11 +40,7 @@ export const CarCardLarge = ({ carData }: CarCardProps) => {
     },
   } = carData;
 
-  const { isPhoneConfirmed } = useAppSelector((state) => state.user);
-  const { setModalContent, setModalActive } = useContext(ModalContext);
-  const { pathname } = useLocation();
-
-  const carTitle = `Аренда ${carData.listing.carRentListing.carContent.brandId} ${carData.listing.carRentListing.carContent.modelId} ${carData.listing.carRentListing.carContent.yearOfCarProduction}`;
+  const carTitle = `Аренда ${brandId} ${modelId} ${yearOfCarProduction}`;
 
   const getCurrentFilter = () => {
     if (pathname.startsWith("/filter/")) {
@@ -50,8 +60,8 @@ export const CarCardLarge = ({ carData }: CarCardProps) => {
         <img src={photosUrl[0]} alt="Car photo" />
       </div>
       <div className={styles.gallery}>
-        {photosUrl.map((photo: string) => (
-          <img src={photo} alt="Car photo" />
+        {photosUrl.map((photo: string, index: number) => (
+          <img key={index} src={photo} alt="Car photo" />
         ))}
       </div>
       <div className={styles.info}>

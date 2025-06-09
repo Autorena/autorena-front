@@ -69,17 +69,23 @@ export const CarDetails = ({
   const cars = useAppSelector((state) => state.cars.cars);
   const navigate = useNavigate();
 
-  const { carContent } = car.listing.carRentListing;
-
   const similarCars = useMemo(() => {
+    if (!car.listing.carRentListing) return [];
     return cars
-      .filter(
-        (c) =>
+      .filter((c) => {
+        if (!c.listing.carRentListing) return false;
+        return (
           c.listing.carRentListing.carContent.carCategory ===
-            carContent.carCategory && c.listing.id !== car.listing.id
-      )
+            car.listing.carRentListing?.carContent.carCategory &&
+          c.listing.id !== car.listing.id
+        );
+      })
       .slice(0, 8);
-  }, [cars, carContent.carCategory, car.listing.id]);
+  }, [
+    cars,
+    car.listing.carRentListing?.carContent.carCategory,
+    car.listing.id,
+  ]);
 
   const handlePhoneClick = useCallback(() => {
     setModalActive(true);
@@ -116,11 +122,18 @@ export const CarDetails = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
+  if (!car.listing.carRentListing) {
+    return null;
+  }
+
+  const { carRentListing } = car.listing;
+  const { carContent } = carRentListing;
+
   return (
     <div className={styles.car_left_bottom}>
       <div className={`${styles.car_info_term} ${styles.location}`}>
         <h3 className={styles.car_subtitle}>Расположение</h3>
-        <p>г. {car.listing.carRentListing.city}</p>
+        <p>г. {carRentListing.city}</p>
       </div>
       <div className={styles.car_info_term}>
         <h3 className={styles.car_subtitle}>Условия аренды</h3>
@@ -136,7 +149,7 @@ export const CarDetails = ({
           </li>
           <li>
             Минимальное количество суток:{" "}
-            <span>{car.listing.carRentListing.minimumRentalPeriod}</span>
+            <span>{carRentListing.minimumRentalPeriod}</span>
           </li>
           <li>
             Есть лимит пробега: <span>Нет</span>
@@ -225,9 +238,7 @@ export const CarDetails = ({
       </div>
       <div className={styles.car_info_term}>
         <h3 className={styles.car_subtitle}>Описание</h3>
-        <p>
-          {car.listing.carRentListing.additionalInfo || "Описание отсутствует"}
-        </p>
+        <p>{carRentListing.additionalInfo || "Описание отсутствует"}</p>
       </div>
       <div className={`${styles.car_reviews} ${styles.car_info_term}`}>
         <h3>Отзывы</h3>

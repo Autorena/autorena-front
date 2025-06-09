@@ -4,8 +4,14 @@ import { sortCars } from "../utils/sortCars";
 import { useAppSelector } from "../redux/hooks";
 import { CarCardType } from "../types";
 
+type Filters = {
+  price?: number;
+  car_class?: string;
+  [key: string]: unknown;
+};
+
 export const useSortedCars = (
-  filters: { [key: string]: any },
+  filters: Filters,
   sortOption: string,
   visibleCount: number
 ) => {
@@ -15,6 +21,8 @@ export const useSortedCars = (
   useEffect(() => {
     const filterCars = cars.filter((car) => {
       const { price, car_class } = filters;
+
+      if (!car.listing.carRentListing) return false;
 
       if (price && car.listing.carRentListing.pricePerDay > price) return false;
       if (

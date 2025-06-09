@@ -18,7 +18,7 @@ export const BlackList = () => {
         </button>
       </div>
       <iframe
-        src="/project7815970/page70106623.html"
+        src="project7815970/page70106623.html"
         style={{ width: "100%", height: "100%", border: "none" }}
       />
     </div>

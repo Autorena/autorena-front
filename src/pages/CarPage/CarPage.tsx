@@ -60,6 +60,7 @@ export const CarPage = () => {
   if (
     !car ||
     loading ||
+    !car.listing.carRentListing ||
     !car.listing.carRentListing.carContent.photosUrl ||
     car.listing.carRentListing.carContent.photosUrl.length === 0
   ) {
@@ -70,7 +71,8 @@ export const CarPage = () => {
     );
   }
 
-  const { carContent } = car.listing.carRentListing;
+  const { carRentListing } = car.listing;
+  const { carContent } = carRentListing;
   const carTitle = `Аренда ${carContent.brandId} ${carContent.modelId} ${carContent.yearOfCarProduction}`;
 
   const reviews = [
@@ -123,7 +125,7 @@ export const CarPage = () => {
                 title={carTitle}
                 text={`Арендуйте ${carContent.brandId} ${
                   carContent.modelId
-                } за ${car.listing.carRentListing.pricePerDay.toLocaleString(
+                } за ${carRentListing.pricePerDay.toLocaleString(
                   "ru-RU"
                 )}₽ в день`}
                 url={window.location.href}
@@ -146,16 +148,13 @@ export const CarPage = () => {
             <h3>{carTitle}</h3>
             <p className={styles.price}>
               {" "}
-              {car.listing.carRentListing.pricePerDay.toLocaleString("ru-RU")}₽
-              за день
+              {carRentListing.pricePerDay.toLocaleString("ru-RU")}₽ за день
             </p>
             <div className={styles.car_top_info}>
               <span className={styles.car_author_rate}>4.6</span>
               <span className={styles.reviews}>12 отзывов</span>
             </div>
-            <p className={styles.car_top_address}>
-              г. {car.listing.carRentListing.city}
-            </p>
+            <p className={styles.car_top_address}>г. {carRentListing.city}</p>
           </div>
           <CarDetails
             car={car}
@@ -168,8 +167,7 @@ export const CarPage = () => {
         <div className={styles.car_right}>
           <div className={styles.car_right_top}>
             <p className={styles.car_right_price}>
-              {car.listing.carRentListing.pricePerDay.toLocaleString("ru-RU")}₽
-              за день
+              {carRentListing.pricePerDay.toLocaleString("ru-RU")}₽ за день
             </p>
             <button
               className={styles.showBtn}
