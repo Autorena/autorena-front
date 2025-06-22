@@ -19,7 +19,7 @@ import { useAppSelector } from "../../redux/hooks";
 import { declineCity } from "../../utils/declineCity";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/userSlice";
-import { ReactComponent as Search } from "../../assets/input-search.svg";
+// import { ReactComponent as Search } from "../../assets/input-search.svg";
 import { SearchModal } from "../../components/modals/SearchModal/SearchModal";
 import { LargeSvgImage } from "../../components/LargeSvgImage";
 import { getLargeSvgPath } from "../../utils/largeSvgPaths";
@@ -267,7 +267,8 @@ export const Header = () => {
                   className={styles.header_searchBtn}
                   onClick={() => setIsSearchModalOpen(true)}
                 >
-                  <Search />
+                  <img src="/assets/input-search.svg" alt="" />
+                  {/* <Search /> */}
                 </button>
 
                 {/* <button

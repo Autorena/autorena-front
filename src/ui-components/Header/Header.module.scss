@@ -297,13 +297,6 @@
       }
     }
 
-    &_search::before {
-      width: 20px;
-      height: 20px;
-      background: url(../../assets/input-search.svg);
-      background-size: cover;
-    }
-
     .locationBtn_mob {
       display: block;
       flex-shrink: 0;

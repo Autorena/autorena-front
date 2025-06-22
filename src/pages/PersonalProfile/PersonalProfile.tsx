@@ -268,7 +268,6 @@ export const PersonalProfile = () => {
     <>
       <div className={styles.profile_headerMob}>
         <Link to="/" className={styles.logo}>
-          {/* <Logo /> */}
           <LargeSvgImage src={getLargeSvgPath("logo-1")} />
         </Link>
         <div className={styles.profile_headerMob_right}>
@@ -278,9 +277,9 @@ export const PersonalProfile = () => {
             url={window.location.href}
             className={styles.shareBtn}
           />
-          <button onClick={() => navigate("/develop")}>
+          <Link to="/notifications">
             <Notific />
-          </button>
+          </Link>
           <button onClick={() => navigate("/develop")}>
             <Settings />
           </button>

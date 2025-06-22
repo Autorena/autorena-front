@@ -13,6 +13,9 @@
   }
   &_searchWrap {
     margin: 24px 0 32px;
+    .searchIcon {
+      display: none;
+    }
   }
   &_searchWrap input {
     font-size: 16px;
@@ -206,16 +209,12 @@
     &_searchWrap {
       position: relative;
       margin: 32px 0 16px;
-      &::before {
-        content: "";
-        width: 20px;
-        height: 20px;
-        background: url("../../assets/input-search.svg");
+      .searchIcon {
+        display: block;
         position: absolute;
-        left: 12px;
         top: 50%;
+        left: 12px;
         transform: translateY(-50%);
-        background-size: cover;
       }
       input {
         padding: 10px 12px 10px 38px;

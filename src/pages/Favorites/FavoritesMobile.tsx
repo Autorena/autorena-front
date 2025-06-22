@@ -2,7 +2,7 @@ import styles from "./Favorites.module.scss";
 import { useAppSelector } from "../../redux/hooks";
 import { ReactComponent as Arrow } from "../../assets/arrowBack.svg";
 import { ReactComponent as More } from "../../assets/more-icon-2.svg";
-import { ReactComponent as Search } from "../../assets/input-search.svg";
+// import { ReactComponent as Search } from "../../assets/input-search.svg";
 import { HeaderMobile } from "../../ui-components/HeaderMobile/HeaderMobile";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -205,7 +205,8 @@ export const FavoritesMobile = () => {
             </div>
           </div>
           <div className={styles.favorites_search}>
-            <Search />
+            {/* <Search /> */}
+            <img src="/assets/input-search.svg" alt="Search" />
             <input
               type="text"
               placeholder="Поиск в избранном"
@@ -231,6 +232,8 @@ export const FavoritesMobile = () => {
               options={sortOptions}
               value={sortOption}
               onSelect={handleSortChange}
+              buttonStyles={{ fontSize: "14px" }}
+              listStyles={{ fontSize: "14px" }}
             />
           </div>
           <LargeSvgImage

@@ -5,7 +5,7 @@ import { ReactComponent as User } from "../../assets/user.svg";
 import { ReactComponent as ArrowSend } from "../../assets/arrow-send.svg";
 import { ReactComponent as ArrowRead } from "../../assets/arrow-read.svg";
 import { ReactComponent as More } from "../../assets/more-icon-2.svg";
-
+// import { ReactComponent as Search } from "../../assets/input-search.svg";
 import logo from "../../assets/logo-1.png";
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -189,6 +189,12 @@ export const Messages = () => {
           </div>
 
           <div className={styles.messages_searchWrap}>
+            {/* <Search className={styles.searchIcon} /> */}
+            <img
+              src="/assets/input-search.svg"
+              alt="Search"
+              className={styles.searchIcon}
+            />
             <input type="text" placeholder="Поиск по сообщениям" />
           </div>
           <div className={styles.messages_dropdown}>
