@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autorena-front
+  namespace: autorena
+  labels:
+    app: autorena-front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autorena-front
+  template:
+    metadata:
+      labels:
+        app: autorena-front
+    spec:
+      containers:
+        - name: autorena-front
+          image: localhost:5000/autorena-front:0.0.2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          startupProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5 
