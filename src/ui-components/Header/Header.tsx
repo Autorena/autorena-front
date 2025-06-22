@@ -267,7 +267,7 @@ export const Header = () => {
                   className={styles.header_searchBtn}
                   onClick={() => setIsSearchModalOpen(true)}
                 >
-                  <img src="/assets/input-search.svg" alt="" />
+                  <img src="assets/input-search.svg" alt="" />
                   {/* <Search /> */}
                 </button>
 

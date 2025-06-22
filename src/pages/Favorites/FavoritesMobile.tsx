@@ -206,7 +206,7 @@ export const FavoritesMobile = () => {
           </div>
           <div className={styles.favorites_search}>
             {/* <Search /> */}
-            <img src="/assets/input-search.svg" alt="Search" />
+            <img src="assets/input-search.svg" alt="Search" />
             <input
               type="text"
               placeholder="Поиск в избранном"

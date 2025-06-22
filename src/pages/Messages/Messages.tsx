@@ -191,7 +191,7 @@ export const Messages = () => {
           <div className={styles.messages_searchWrap}>
             {/* <Search className={styles.searchIcon} /> */}
             <img
-              src="/assets/input-search.svg"
+              src="assets/input-search.svg"
               alt="Search"
               className={styles.searchIcon}
             />
