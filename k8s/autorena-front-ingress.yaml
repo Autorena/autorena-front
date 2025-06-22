@@ -11,7 +11,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   rules:
-    - host: ""
+    - host: "autorena.ru"
       http:
         paths:
           - path: /(.*)
