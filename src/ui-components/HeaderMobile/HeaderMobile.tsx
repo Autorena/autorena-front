@@ -15,13 +15,10 @@ export const HeaderMobile = ({ className }: HeaderMobProps) => {
   const { isPhoneConfirmed } = useAppSelector((state) => state.user);
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  // const { setModalActive, setModalContent } = useContext(ModalContext);
 
   const handleClick = (path: string) => {
     if (isPhoneConfirmed) navigate(`/${path}`);
     else {
-      // setModalActive(true);
-      // setModalContent(<LoginModal />);
       navigate(`/unauthorized?action=${path}`);
     }
   };
@@ -44,7 +41,7 @@ export const HeaderMobile = ({ className }: HeaderMobProps) => {
         <Home />
       </NavLink>
       <button
-        onClick={() => handleClick("favorite")}
+        onClick={() => handleClick("favorites")}
         className={`${styles.header_mobile_item} ${
           isActive("favorites") ? styles.active : ""
         }`}

@@ -9,8 +9,6 @@ import { ReactComponent as Profile } from "../../assets/profile-icon-2.svg";
 import { ReactComponent as Listing } from "../../assets/listing.svg";
 import { ReactComponent as Settings } from "../../assets/settings.svg";
 import { ReactComponent as ProfileMenu } from "../../assets/profile-2.svg";
-import { ReactComponent as LocationIcon } from "../../assets/location-icon.svg";
-import { ReactComponent as Logo } from "../../assets/logo-1.svg";
 import { ReactComponent as Plus } from "../../assets/plus.svg";
 import { ReactComponent as Logout } from "../../assets/logout.svg";
 import { ModalContext } from "../../HOC/ModalProvider";
@@ -23,6 +21,8 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../redux/userSlice";
 import { ReactComponent as Search } from "../../assets/input-search.svg";
 import { SearchModal } from "../../components/modals/SearchModal/SearchModal";
+import { LargeSvgImage } from "../../components/LargeSvgImage";
+import { getLargeSvgPath } from "../../utils/largeSvgPaths";
 
 export const Header = () => {
   const user = useAppSelector((state) => state.user);
@@ -37,6 +37,13 @@ export const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   let closeTimeout: number;
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+
+  const hiddenOnMobile = [
+    "/messages",
+    "/favorites",
+    "/notifications",
+    "/profile",
+  ];
 
   const handleMouseEnter = () => {
     clearTimeout(closeTimeout);
@@ -79,8 +86,16 @@ export const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  if (isMobile && pathname !== "/" && !pathname.startsWith("/filter/")) {
-    return null;
+  if (isMobile) {
+    const hideHeader =
+      hiddenOnMobile.includes(pathname) ||
+      pathname.match(
+        /^\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/
+      );
+
+    if (hideHeader) {
+      return null;
+    }
   }
 
   return (
@@ -106,9 +121,6 @@ export const Header = () => {
               <button
                 className={`gray-btn ${styles.authBtn}`}
                 onClick={() => {
-                  // setModalActive(true);
-                  // setCrossSize(32);
-                  // setModalContent(<LoginModal />);
                   navigate("/unauthorized?action=profile&from=/");
                 }}
               >
@@ -117,15 +129,15 @@ export const Header = () => {
             ) : (
               <div className={styles.header_profileMenu}>
                 <div className={styles.header_profileMenu_left}>
-                  <a href="#">
+                  <Link to="/notifications">
                     <Notification />
-                  </a>
-                  <a href="#">
+                  </Link>
+                  <Link to="/messages">
                     <Message />
-                  </a>
-                  <a href="#">
+                  </Link>
+                  <Link to="/favorites">
                     <Favorites />
-                  </a>
+                  </Link>
                 </div>
                 <div
                   className={styles.header_profileWrapper}
@@ -229,7 +241,8 @@ export const Header = () => {
               }}
             >
               {" "}
-              <Logo />
+              {/* <Logo /> */}
+              <LargeSvgImage src={getLargeSvgPath("logo-1")} />
             </Link>
 
             <div className={`${styles.header_bottom} ${styles.wrap}`}>
@@ -291,7 +304,11 @@ export const Header = () => {
                 setModalContent(<LocationModal />);
               }}
             >
-              <LocationIcon />
+              <LargeSvgImage
+                src={getLargeSvgPath("location-icon")}
+                alt="Локация"
+              />
+              {/* <Location /> */}
               г. {location}
             </button>
           </div>

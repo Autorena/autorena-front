@@ -1,12 +1,13 @@
 import { useContext, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styles from "./Unauthorized.module.scss";
-import { ReactComponent as Img } from "../../assets/no-auth.svg";
 import { BottomSheet } from "../../ui-components/BottomSheet/BottomSheet";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { LoginModal } from "../../components/modals/LoginModal";
 import { RegistrationModal } from "../../components/modals/RegistrationModal";
 import { HeaderMobile } from "../../ui-components/HeaderMobile/HeaderMobile";
+import { LargeSvgImage } from "../../components/LargeSvgImage";
+import { getLargeSvgPath } from "../../utils/largeSvgPaths";
 
 type ActionConfig = {
   title: string;
@@ -15,7 +16,7 @@ type ActionConfig = {
 };
 
 const actionConfigs: Record<string, ActionConfig> = {
-  favorite: {
+  favorites: {
     title: "Избранное",
     text: "Войдите или зарегистрируйтесь, чтобы сохранять избранные объявления.",
     buttonText: "Войти / Зарегистрироваться",
@@ -51,7 +52,7 @@ export const Unauthorized = () => {
       <div className={styles.unauth}>
         <h3 className={styles.unauth_title}>{config.title}</h3>
         <div className={styles.unauth_content}>
-          <Img />
+          <LargeSvgImage src={getLargeSvgPath("no-auth")} />
           <p className={styles.unauth_text}>{config.text}</p>
           <button
             className={`red-btn ${styles.unauth_btn}`}

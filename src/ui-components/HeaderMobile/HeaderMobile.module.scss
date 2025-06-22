@@ -28,7 +28,8 @@
       width: 36px;
       height: 36px;
     }
-    &.active svg path {
+    &.active svg path,
+    &.active svg g rect {
       fill: $primary-black;
     }
   }

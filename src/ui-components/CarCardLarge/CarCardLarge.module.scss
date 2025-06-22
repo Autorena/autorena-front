@@ -67,6 +67,9 @@
       }
     }
   }
+  .like.full path {
+    fill: $red-color;
+  }
   .description {
     display: -webkit-box;
     margin: 8px 0;
@@ -110,6 +113,14 @@
   .gallery,
   .autor {
     display: none;
+  }
+}
+
+.carCard.favorite {
+  .titleWrap {
+    .likeBtn svg path {
+      fill: $red-color;
+    }
   }
 }
 

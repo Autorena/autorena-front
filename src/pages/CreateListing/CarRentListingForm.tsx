@@ -4,10 +4,17 @@ import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
 import { RadioButton } from "../../ui-components/RadioButton/RadioButton";
 import { useEffect, useState } from "react";
 import { ReactComponent as Plus } from "../../assets/plus.svg";
-import { Link } from "react-router-dom";
 import { useGetBrandsQuery } from "../../redux/brandsApi";
 import { useGetModelsQuery } from "../../redux/modelsApi";
 import { SearchableDropdown } from "../../ui-components/SearchableDropdown/SearchableDropdown";
+import {
+  carBodyTypeOptions,
+  carCategoryOptions,
+  fuelTypeOptions,
+  paymentPeriodOptions,
+  transmissionOptions,
+  vehicleSegmentOptions,
+} from "../../constants/filterOptions";
 
 type CarRentListingFormProps = {
   buyout: boolean;
@@ -28,7 +35,6 @@ type FormData = {
   car_category: string;
   color: string;
   allowed_for_taxi: boolean;
-  allowed_only_for_personal_use: boolean;
   require_russian_citizenship: boolean | undefined;
   buyout_possible: boolean;
   deposit_required: boolean | undefined;
@@ -40,61 +46,6 @@ type FormData = {
   rent_duration: string[];
 };
 
-const fuelOptions = [
-  { value: "FUEL_TYPE_GASOLINE", label: "Бензин" },
-  { value: "FUEL_TYPE_DIESEL", label: "Дизель" },
-  { value: "FUEL_TYPE_ELECTRIC", label: "Электро" },
-  { value: "FUEL_TYPE_HYBRID", label: "Гибрид" },
-];
-
-const transmissionOptions = [
-  { value: "TRANSMISSION_TYPE_MANUAL", label: "Механика" },
-  { value: "TRANSMISSION_TYPE_AUTOMATIC", label: "Автомат" },
-];
-
-const bodyTypeOptions = [
-  { value: "CAR_BODY_TYPE_SEDAN", label: "Седан" },
-  { value: "CAR_BODY_TYPE_HATCHBACK", label: "Хэтчбек" },
-  { value: "CAR_BODY_TYPE_LIFTBACK", label: "Лифтбэк" },
-  { value: "CAR_BODY_TYPE_WAGON", label: "Универсал" },
-  { value: "CAR_BODY_TYPE_CROSSOVER", label: "Кроссовер" },
-  { value: "CAR_BODY_TYPE_SUV", label: "Внедорожник" },
-  { value: "CAR_BODY_TYPE_MINIVAN", label: "Минивэн" },
-  { value: "CAR_BODY_TYPE_COUPE", label: "Купе" },
-  { value: "CAR_BODY_TYPE_PICKUP", label: "Пикап" },
-  { value: "CAR_BODY_TYPE_CONVERTIBLE", label: "Кабриолет" },
-  { value: "CAR_BODY_TYPE_ROADSTER", label: "Роадстер" },
-  { value: "CAR_BODY_TYPE_FASTBACK", label: "Фастбэк" },
-  { value: "CAR_BODY_TYPE_TARGA", label: "Тарга" },
-  { value: "CAR_BODY_TYPE_LIMOUSINE", label: "Лимузин" },
-];
-
-const vehicleSegmentOptions = [
-  { value: "VEHICLE_SEGMENT_A", label: "A — Мини" },
-  { value: "VEHICLE_SEGMENT_B", label: "B — Малый" },
-  { value: "VEHICLE_SEGMENT_C", label: "C — Компактный" },
-  { value: "VEHICLE_SEGMENT_D", label: "D — Средний" },
-  { value: "VEHICLE_SEGMENT_E", label: "E — Бизнес" },
-  { value: "VEHICLE_SEGMENT_F", label: "F — Премиум" },
-  { value: "VEHICLE_SEGMENT_S", label: "S — Спорт" },
-  { value: "VEHICLE_SEGMENT_M", label: "M — Минивэны" },
-  { value: "VEHICLE_SEGMENT_J", label: "J — SUV/Кроссоверы" },
-];
-
-const categoryOptions = [
-  { value: "CAR_CATEGORY_ECONOMY", label: "Эконом" },
-  { value: "CAR_CATEGORY_COMFORT", label: "Комфорт" },
-  { value: "CAR_CATEGORY_COMFORT_PLUS", label: "Комфорт +" },
-  { value: "CAR_CATEGORY_BUSINESS", label: "Бизнесс" },
-  { value: "CAR_CATEGORY_PREMIUM", label: "Премиум" },
-];
-
-const paymentPeriodOptions = [
-  { value: "PAYMENT_PERIOD_DAILY", label: "Ежедневно" },
-  { value: "PAYMENT_PERIOD_WEEKLY", label: "Еженедельно" },
-  { value: "PAYMENT_PERIOD_MONTHLY", label: "Ежемесячно" },
-];
-
 const rentDurationOptions = [
   { value: "RENT_DURATION_FROM_DAY", label: "От суток" },
   { value: "RENT_DURATION_FROM_WEEK", label: "От недели" },
@@ -102,7 +53,7 @@ const rentDurationOptions = [
 ];
 
 export const CarRentListingForm = ({
-  buyout,
+  // buyout,
   minimumRentalPeriod,
 }: CarRentListingFormProps) => {
   const [previews, setPreviews] = useState<string[]>([]);
@@ -135,9 +86,6 @@ export const CarRentListingForm = ({
       car_category: "",
       color: "",
       allowed_for_taxi: false,
-      allowed_only_for_personal_use: false,
-      require_russian_citizenship: undefined,
-      buyout_possible: buyout,
       deposit_required: undefined,
       payment_period: [],
       price_per_day: "",
@@ -176,9 +124,6 @@ export const CarRentListingForm = ({
           },
           listing_options: {
             allowed_for_taxi: data.allowed_for_taxi,
-            allowed_only_for_personal_use: data.allowed_only_for_personal_use,
-            require_russian_citizenship: data.require_russian_citizenship,
-            buyout_possible: data.buyout_possible,
           },
           deposit_required: data.deposit_required,
           payment_period: data.payment_period,
@@ -299,19 +244,12 @@ export const CarRentListingForm = ({
           name="fuel_type"
           control={control}
           render={({ field }) => (
-            <div className={styles.list}>
-              {fuelOptions.map((option) => (
-                <RadioButton
-                  key={option.value}
-                  name="fuel_type"
-                  value={option.value}
-                  label={option.label}
-                  checked={field.value === option.value}
-                  onChange={() => field.onChange(option.value)}
-                  labelStyle={{ paddingLeft: "36px" }}
-                />
-              ))}
-            </div>
+            <DropdownList
+              className={styles.dropdown}
+              options={fuelTypeOptions}
+              value={field.value}
+              onSelect={field.onChange}
+            />
           )}
         />{" "}
       </div>
@@ -322,19 +260,12 @@ export const CarRentListingForm = ({
           name="transmission"
           control={control}
           render={({ field }) => (
-            <div className={styles.list}>
-              {transmissionOptions.map((option) => (
-                <RadioButton
-                  key={option.value}
-                  name="transmission"
-                  value={option.value}
-                  label={option.label}
-                  checked={field.value === option.value}
-                  onChange={() => field.onChange(option.value)}
-                  labelStyle={{ paddingLeft: "36px" }}
-                />
-              ))}
-            </div>
+            <DropdownList
+              className={styles.dropdown}
+              options={transmissionOptions}
+              value={field.value}
+              onSelect={field.onChange}
+            />
           )}
         />{" "}
       </div>
@@ -347,7 +278,7 @@ export const CarRentListingForm = ({
           render={({ field }) => (
             <DropdownList
               className={styles.dropdown}
-              options={bodyTypeOptions}
+              options={carBodyTypeOptions}
               value={field.value}
               onSelect={field.onChange}
             />
@@ -435,7 +366,7 @@ export const CarRentListingForm = ({
           render={({ field }) => (
             <DropdownList
               className={styles.dropdown}
-              options={categoryOptions}
+              options={carCategoryOptions}
               value={field.value}
               onSelect={field.onChange}
             />
@@ -462,7 +393,7 @@ export const CarRentListingForm = ({
                 checked={field.value === true}
                 onChange={() => {
                   field.onChange(true);
-                  setValue("allowed_only_for_personal_use", false);
+                  // setValue("allowed_only_for_personal_use", false);
                 }}
                 labelStyle={{ paddingLeft: "36px" }}
               />
@@ -477,103 +408,6 @@ export const CarRentListingForm = ({
             </div>
           )}
         />
-      </div>
-
-      <div className={styles.inputWrap}>
-        <h3>Только для личного использования?</h3>
-        <Controller
-          name="allowed_only_for_personal_use"
-          control={control}
-          render={({ field }) => (
-            <div className={styles.list}>
-              <RadioButton
-                name="allowed_only_for_personal_use"
-                value="true"
-                label="Да"
-                checked={field.value === true}
-                onChange={() => {
-                  field.onChange(true);
-                  setValue("allowed_for_taxi", false);
-                }}
-                labelStyle={{ paddingLeft: "36px" }}
-              />
-              <RadioButton
-                name="allowed_only_for_personal_use"
-                value="false"
-                label="Нет"
-                checked={field.value === false}
-                onChange={() => field.onChange(false)}
-                labelStyle={{ paddingLeft: "36px" }}
-              />
-            </div>
-          )}
-        />
-      </div>
-
-      <div className={styles.inputWrap}>
-        <h3>Требуется гражданство РФ?</h3>
-        <Controller
-          name="require_russian_citizenship"
-          control={control}
-          render={({ field }) => (
-            <div className={styles.list}>
-              <RadioButton
-                name="require_russian_citizenship"
-                value="true"
-                label="Да"
-                checked={field.value === true}
-                onChange={() => field.onChange(true)}
-                labelStyle={{ paddingLeft: "36px" }}
-              />
-              <RadioButton
-                name="require_russian_citizenship"
-                value="false"
-                label="Нет"
-                checked={field.value === false}
-                onChange={() => field.onChange(false)}
-                labelStyle={{ paddingLeft: "36px" }}
-              />
-            </div>
-          )}
-        />
-      </div>
-
-      <div className={`${styles.inputWrap} ${styles.buyout}`}>
-        <h3>Возможность выкупить:</h3>
-        <Controller
-          name="buyout_possible"
-          control={control}
-          render={({ field }) => (
-            <div className={styles.list}>
-              <RadioButton
-                name="buyout_possible"
-                value="true"
-                label="Да"
-                checked={field.value === true}
-                onChange={() => field.onChange(true)}
-                labelStyle={{ paddingLeft: "36px" }}
-              />
-              <RadioButton
-                name="buyout_possible"
-                value="false"
-                label="Нет"
-                checked={field.value === false}
-                onChange={() => field.onChange(false)}
-                labelStyle={{ paddingLeft: "36px" }}
-              />
-            </div>
-          )}
-        />
-        {!buyout && (
-          <p className={styles.inputWrap_descr}>
-            Также вы можете разместить{" "}
-            <Link to="/create-listing?category=car_rent_listing&buyout=true">
-              отдельное объявление
-            </Link>{" "}
-            на <br />
-            выкуп чтобы пользователю было удобнее вас найти
-          </p>
-        )}
       </div>
 
       <div className={styles.inputWrap}>

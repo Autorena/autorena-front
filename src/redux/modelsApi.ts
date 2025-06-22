@@ -1,9 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { API_HOST } from "../constants/api";
 
 export const modelsApi = createApi({
   reducerPath: "modelsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://87.228.81.144/carcard/v1",
+    baseUrl: `${API_HOST}/carcard/v1`,
   }),
   endpoints: (builder) => ({
     getModels: builder.query({

@@ -1,22 +1,10 @@
 import styles from "./Home.module.scss";
-import { ReactComponent as Option1 } from "../../assets/filter_1.svg";
 import option2 from "../../assets/option_2.png";
-import { ReactComponent as Option3 } from "../../assets/filter_3.svg";
-import { ReactComponent as Option4 } from "../../assets/filter_4.svg";
-import { ReactComponent as Option5 } from "../../assets/filter_5.svg";
-import { ReactComponent as Option6 } from "../../assets/option_6.svg";
-import { ReactComponent as Option1_mob } from "../../assets/long-term-lease.svg";
-import { ReactComponent as Option2_mob } from "../../assets/daily-rent.svg";
-import { ReactComponent as Option3_mob } from "../../assets/buyout.svg";
-import { ReactComponent as Option4_mob } from "../../assets/driver-work.svg";
-import { ReactComponent as Option5_mob } from "../../assets/search.svg";
-import { ReactComponent as Option6_mob } from "../../assets/autoservices.svg";
-import { ReactComponent as Option7_mob } from "../../assets/help.svg";
-import { ReactComponent as StoryImg } from "../../assets/bail.svg";
+import { LargeSvgImage } from "../../components/LargeSvgImage";
+import { getLargeSvgPath } from "../../utils/largeSvgPaths";
 import { Stories } from "../../ui-components/Stories/Stories";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { LocationContext } from "../../HOC/LocationProvider";
-import { ReactComponent as Location } from "../../assets/location-icon-2.svg";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { LocationModal } from "../../components/modals/LocationModal";
 import { CarCard } from "../../ui-components/CarCard/CarCard";
@@ -123,7 +111,10 @@ export const Home = () => {
                     Долгосрочная
                     <br /> аренда
                   </h3>
-                  <Option1 />
+                  <LargeSvgImage
+                    src={getLargeSvgPath("filter_1")}
+                    alt="Долгосрочная аренда"
+                  />
                 </Link>
                 <Link
                   to="/filter/DAILY_RENT"
@@ -139,7 +130,11 @@ export const Home = () => {
                 <Link to="/filter/AUTO_SERVICES" className={styles.home_option}>
                   {" "}
                   <h3 className={styles.title}>Автосервисы</h3>
-                  <Option3 />
+                  {/* <Option3 /> */}
+                  <LargeSvgImage
+                    src={getLargeSvgPath("filter_3")}
+                    alt="Тип кузова"
+                  />
                 </Link>
                 <a
                   href="#"
@@ -147,7 +142,10 @@ export const Home = () => {
                 >
                   {" "}
                   <h3 className={styles.title}>Помощь на дороге</h3>
-                  <Option6 />
+                  <LargeSvgImage
+                    src={getLargeSvgPath("option_6")}
+                    alt="Помощь на дороге"
+                  />
                 </a>
               </div>
               <div className={styles.bottom_row}>
@@ -171,7 +169,10 @@ export const Home = () => {
                     Выкуп <br />
                     автомобилей
                   </h3>
-                  <Option4 />
+                  <LargeSvgImage
+                    src={getLargeSvgPath("filter_4")}
+                    alt="Выкуп автомобилей"
+                  />
                 </Link>
                 <Link
                   to="/filter/DRIVER_JOBS"
@@ -182,7 +183,10 @@ export const Home = () => {
                     Работа
                     <br /> водителям
                   </h3>
-                  <Option5 />
+                  <LargeSvgImage
+                    src={getLargeSvgPath("filter_5")}
+                    alt="Работа водителям"
+                  />
                 </Link>
               </div>
             </div>
@@ -192,7 +196,10 @@ export const Home = () => {
             >
               {" "}
               <h3 className={styles.title}>Помощь на дороге</h3>
-              <Option6 />
+              <LargeSvgImage
+                src={getLargeSvgPath("option_6")}
+                alt="Помощь на дороге"
+              />
             </a>
           </div>
           <div className={styles.home_options_mob}>
@@ -201,46 +208,64 @@ export const Home = () => {
               className={styles.home_options_mob_item}
             >
               <h4>Долгосрочная аренда</h4>
-              <Option1_mob />
+              <LargeSvgImage
+                src={getLargeSvgPath("long-term-lease")}
+                alt="Долгосрочная аренда"
+              />
             </Link>
             <Link
               to="/filter/DAILY_RENT"
               className={styles.home_options_mob_item}
             >
               <h4>Посуточная аренда</h4>
-              <Option2_mob />
+              <LargeSvgImage
+                src={getLargeSvgPath("daily-rent")}
+                alt="Посуточная аренда"
+              />
             </Link>
             <Link
               to="/filter/BUY_AUTO"
               className={styles.home_options_mob_item}
             >
               <h4>Выкуп автомобилей</h4>
-              <Option3_mob />
+              <LargeSvgImage
+                src={getLargeSvgPath("buyout")}
+                alt="Выкуп автомобилей"
+              />
             </Link>
             <Link
               to="/filter/DRIVER_JOBS"
               className={styles.home_options_mob_item}
             >
               <h4>Работа водителям</h4>
-              <Option4_mob style={{ right: "0" }} />
+              <LargeSvgImage
+                src={getLargeSvgPath("driver-work")}
+                alt="Работа водителям"
+              />
             </Link>
             <Link
               to="/filter/WANTED_RENT"
               className={styles.home_options_mob_item}
             >
               <h4>Поиск арендатора</h4>
-              <Option5_mob style={{ right: "0" }} />
+              <LargeSvgImage
+                src={getLargeSvgPath("search")}
+                alt="Поиск арендатора"
+              />
             </Link>
             <Link
               to="/filter/AUTO_SERVICES"
               className={styles.home_options_mob_item}
             >
               <h4>Автосервисы</h4>
-              <Option6_mob style={{ right: "0" }} />
+              <LargeSvgImage
+                src={getLargeSvgPath("autoservices")}
+                alt="Автосервисы"
+              />
             </Link>
             <Link to="/" className={styles.home_options_mob_item}>
               <h4>Помощь на дороге</h4>
-              <Option7_mob style={{ right: "0" }} />
+              <LargeSvgImage src={getLargeSvgPath("help")} alt="Залог" />
             </Link>
           </div>
           <div className={styles.home_stories}>
@@ -248,7 +273,7 @@ export const Home = () => {
               <h4>
                 Авторена внесет залог <span>за вас</span>
               </h4>
-              <StoryImg />
+              <LargeSvgImage src={getLargeSvgPath("bail")} alt="Залог" />
             </div>
             <Stories />
           </div>
@@ -264,7 +289,11 @@ export const Home = () => {
                   setModalContent(<LocationModal />);
                 }}
               >
-                <Location /> {location}
+                <LargeSvgImage
+                  src={getLargeSvgPath("location-icon-2")}
+                  alt="Локация"
+                />{" "}
+                {location}
               </button>
               <button
                 onClick={() => {

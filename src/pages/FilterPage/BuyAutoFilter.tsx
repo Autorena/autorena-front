@@ -1,5 +1,5 @@
 import { ReactComponent as Filters } from "../../assets/filters.svg";
-import { ReactComponent as Location } from "../../assets/location-icon-2.svg";
+// import { ReactComponent as Location } from "../../assets/location-icon-2.svg";
 import banner from "../../assets/banner-3.png";
 import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
 import { sortOptions } from "../../constants/sortOptions";
@@ -8,6 +8,8 @@ import { useContext } from "react";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { LocationModal } from "../../components/modals/LocationModal";
 import { useFilter } from "../../HOC/FilterContext";
+import { LargeSvgImage } from "../../components/LargeSvgImage";
+import { getLargeSvgPath } from "../../utils/largeSvgPaths";
 
 const FILTER_KEYS = {
   BRAND: "buy_auto_brand",
@@ -54,7 +56,8 @@ export const BuyAutoFilter = ({
               );
             }}
           >
-            <Location />{" "}
+            {/* <Location />{" "} */}
+            <LargeSvgImage src={getLargeSvgPath("location-icon-2")} />
             {getFilterValue<string>(FILTER_KEYS.CITY) || "Выберите город"}
           </button>
           <button

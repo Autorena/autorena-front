@@ -13,6 +13,9 @@ const filterTitles: Record<string, string> = {
 
 const pathTitles: Record<string, string> = {
   "choose-category": "Выбор категории",
+  favorites: "Избранное",
+  notifications: "Уведомления",
+  messages: "Сообщения",
 };
 
 export const Breadcrumbs = ({ className }: { className?: string }) => {

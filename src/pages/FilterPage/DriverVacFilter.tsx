@@ -1,6 +1,6 @@
 import { ReactComponent as Filters } from "../../assets/filters.svg";
-import { ReactComponent as Location } from "../../assets/location-icon-2.svg";
-import { ReactComponent as Banner } from "../../assets/profile-banner-1.svg";
+// import { ReactComponent as Location } from "../../assets/location-icon-2.svg";
+// import { ReactComponent as Banner } from "../../assets/profile-banner-1.svg";
 import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
 import { sortOptions } from "../../constants/sortOptions";
 import styles from "../Home/Home.module.scss";
@@ -9,6 +9,8 @@ import { ModalContext } from "../../HOC/ModalProvider";
 import { LocationModal } from "../../components/modals/LocationModal";
 import { useFilter } from "../../HOC/FilterContext";
 import { FILTER_KEYS } from "../../constants/filterKeys";
+import { LargeSvgImage } from "../../components/LargeSvgImage";
+import { getLargeSvgPath } from "../../utils/largeSvgPaths";
 
 export interface FilterProps {
   isFiltersOpen: boolean;
@@ -30,7 +32,10 @@ export const DriverVacFilter = ({
 
   return (
     <>
-      <Banner className={styles.home_info_banner} />
+      <LargeSvgImage
+        src={getLargeSvgPath("profile-banner-1")}
+        className={styles.home_info_banner}
+      />
       <div className={styles.home_info_points}>
         <div className={styles.home_info_points_top}>
           <button
@@ -49,7 +54,9 @@ export const DriverVacFilter = ({
               );
             }}
           >
-            <Location />{" "}
+            {/* <Location />{" "} */}
+            <LargeSvgImage src={getLargeSvgPath("location-icon-2")} />
+
             {getFilterValue<string>(FILTER_KEYS.DRIVER_VAC_CITY) ||
               "Выберите город"}
           </button>

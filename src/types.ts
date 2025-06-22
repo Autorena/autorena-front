@@ -137,3 +137,18 @@ export type RegFormData = {
   password: string;
   confirmPassword: string;
 };
+
+export type FavoriteFilterType =
+  | "all"
+  | "long_term_rent"
+  | "daily_rent"
+  | "buy_cars"
+  | "driver_jobs"
+  | "search_renter"
+  | "auto_services"
+  | "road_help";
+
+export type FavoriteFilter = {
+  type: FavoriteFilterType;
+  name: string;
+};

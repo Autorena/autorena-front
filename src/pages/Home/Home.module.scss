@@ -15,6 +15,10 @@
     box-shadow: 0px 2px 24px 0px rgba(0, 0, 0, 0.32);
     color: #fff;
     z-index: 100;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+
     &_text {
       display: inline;
       a {
@@ -48,9 +52,6 @@
       border-radius: 8px;
       color: $primary-black;
     }
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
 
     &.hiding {
       opacity: 0;
@@ -115,7 +116,8 @@
     &Visible {
       display: none;
     }
-    & svg {
+    & svg,
+    & img {
       position: absolute;
       bottom: 0;
       right: 0;
@@ -483,7 +485,7 @@
           font-size: 12px;
           line-height: 112%;
         }
-        svg {
+        img {
           position: absolute;
           right: 0;
           bottom: 0;

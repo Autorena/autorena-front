@@ -2,10 +2,9 @@ import styles from "./PersonalProfile.module.scss";
 import { ReactComponent as ChangePhoto } from "../../assets/change-photo.svg";
 import { ReactComponent as Settings } from "../../assets/settings.svg";
 import { ReactComponent as PlusProfile } from "../../assets/plus-profile.svg";
-import { ReactComponent as Logo } from "../../assets/logo-1.svg";
 import { ReactComponent as Notific } from "../../assets/notification.svg";
-import { ReactComponent as Banner1 } from "../../assets/profile-banner-1.svg";
-import { ReactComponent as Banner2 } from "../../assets/profile-banner-2.svg";
+import { LargeSvgImage } from "../../components/LargeSvgImage";
+import { getLargeSvgPath } from "../../utils/largeSvgPaths";
 import { StarRating } from "../../ui-components/StarRating/StarRating";
 import { JSX, useRef, useState } from "react";
 import { ReactComponent as Plus } from "../../assets/plus.svg";
@@ -201,8 +200,8 @@ export const PersonalProfile = () => {
 
   const secondaryLinks: MenuItem[] = [
     { to: "/develop", icon: Icons.Message, text: "Отзывы" },
-    { to: "/develop", icon: Icons.Favorite, text: "Избранное" },
-    { to: "/develop", icon: Icons.Notific, text: "Уведомления" },
+    { to: "/favorites", icon: Icons.Favorite, text: "Избранное" },
+    { to: "/notifications", icon: Icons.Notific, text: "Уведомления" },
     { to: "/develop", icon: Icons.Wallet, text: "Пополнить кошелек" },
     { to: "/develop", icon: Icons.Suitcase, text: "Autorena для бизнеса" },
   ];
@@ -269,7 +268,8 @@ export const PersonalProfile = () => {
     <>
       <div className={styles.profile_headerMob}>
         <Link to="/" className={styles.logo}>
-          <Logo />
+          {/* <Logo /> */}
+          <LargeSvgImage src={getLargeSvgPath("logo-1")} />
         </Link>
         <div className={styles.profile_headerMob_right}>
           <ShareBtn
@@ -362,7 +362,10 @@ export const PersonalProfile = () => {
                   setIsBannerSheetOpen(true);
                 }}
               >
-                <Banner1 className={styles.profile_banner} />
+                <LargeSvgImage
+                  src={getLargeSvgPath("profile-banner-1")}
+                  className={styles.profile_banner}
+                />
               </button>
               <div className={styles.profile_right}>
                 <div className={styles.profile_balanceInfo}>
@@ -375,8 +378,6 @@ export const PersonalProfile = () => {
                       className={styles.profile_replenish}
                       onClick={() => {
                         setIsSheetOpen(true);
-                        // setModalActive(true);
-                        // setModalContent(<FillWallet />);
                       }}
                     >
                       <Plus />
@@ -384,10 +385,6 @@ export const PersonalProfile = () => {
                     <button
                       className={styles.profile_replenishMob}
                       onClick={() => {
-                        // setModalActive(true);
-                        // setModalContent(<FillWallet />, {
-                        //   isRootModal: true,
-                        // });
                         setIsSheetOpen(true);
                       }}
                     >
@@ -413,7 +410,10 @@ export const PersonalProfile = () => {
                 {renderLinks(mainLinks)}
                 {renderLinks(secondaryLinks)}
                 <Link to="/develop">
-                  <Banner2 className={styles.profile_banner} />
+                  <LargeSvgImage
+                    src={getLargeSvgPath("profile-banner-2")}
+                    className={styles.profile_banner}
+                  />
                 </Link>
                 {renderLinks(footerLinks)}
                 <div className={styles.profile_footer}>

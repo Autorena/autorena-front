@@ -2,7 +2,7 @@ import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
 import styles from "../Home/Home.module.scss";
 import { FilterProps } from "./RentFilter";
 import { ReactComponent as Filters } from "../../assets/filters.svg";
-import { ReactComponent as Location } from "../../assets/location-icon-2.svg";
+// import { ReactComponent as Location } from "../../assets/location-icon-2.svg";
 import { ReactComponent as Search } from "../../assets/search-icon.svg";
 import { ReactComponent as Arrow } from "../../assets/swiper-arrow.svg";
 import { ReactComponent as Calendar } from "../../assets/calendar.svg";
@@ -19,6 +19,8 @@ import { useGetBrandsQuery } from "../../redux/brandsApi";
 import { useFilter } from "../../HOC/FilterContext";
 import { PriceRangePickerSheet } from "../../ui-components/PriceRangePicker/PriceRangePicker";
 import { BrandSearchModal } from "../../components/modals/BrandSearchModal/BrandSearchModal";
+import { LargeSvgImage } from "../../components/LargeSvgImage";
+import { getLargeSvgPath } from "../../utils/largeSvgPaths";
 
 const FILTER_KEYS = {
   BRAND: "rent_brand",
@@ -174,7 +176,9 @@ export const DailyRentFilter = ({
               );
             }}
           >
-            <Location />{" "}
+            {/* <Location />{" "} */}
+            <LargeSvgImage src={getLargeSvgPath("location-icon-2")} />
+
             {getFilterValue<string>(FILTER_KEYS.CITY) || "Выберите город"}
           </button>
           <button

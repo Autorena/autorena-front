@@ -6,71 +6,82 @@ import { ReactComponent as Tg } from "../../assets/telegram.svg";
 import { ReactComponent as Ok } from "../../assets/ok.svg";
 import logo from "../../assets/logo-1.png";
 import logoMobile from "../../assets/logo-mobile.png";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export const Footer = () => {
+  const location = useLocation();
+
+  const hiddenOnMobile = ["/messages", "/favorites", "/notifications"];
+
+  const isMobile = window.innerWidth <= 767;
+  const hideFooter = isMobile && hiddenOnMobile.includes(location.pathname);
+
+  if (hideFooter) return null;
+
   return (
-    <footer className={styles.footer}>
-      <div className={`container ${styles.container}`}>
-        <div className={styles.footer_left}>
-          <Link to="/" className={styles.footer_logo}>
-            <picture>
-              <source media="(max-width: 767px)" srcSet={logoMobile} />
-              <img src={logo} alt="Логотип" />
-            </picture>
-          </Link>
-          <div className={styles.footer_itemsWrap}>
-            <div className={styles.footer_items}>
-              <Link to="/">Долгосрочная аренда авто</Link>
-              <Link to="/">Аренда авто от суток</Link>
-              <Link to="/">Выкуп автомобилей</Link>
-              <Link to="/">Работа водителям</Link>
-              <Link to="/">Автосервисы</Link>
-              <Link to="/">Помощь на дороге</Link>
-            </div>
-            <div className={styles.footer_items}>
-              <Link to="/">Лизинг</Link>
-              <Link to="/">Запчасти</Link>
-              <Link to="/blacklist">База черного списка</Link>
-              <Link to="/">Размещение на Авторене</Link>
-              <Link to="/">Безопасность</Link>
-              <Link to="/">Техподдержка</Link>
+    <>
+      <footer className={styles.footer}>
+        <div className={`container ${styles.container}`}>
+          <div className={styles.footer_left}>
+            <Link to="/" className={styles.footer_logo}>
+              <picture>
+                <source media="(max-width: 767px)" srcSet={logoMobile} />
+                <img src={logo} alt="Логотип" />
+              </picture>
+            </Link>
+            <div className={styles.footer_itemsWrap}>
+              <div className={styles.footer_items}>
+                <Link to="/">Долгосрочная аренда авто</Link>
+                <Link to="/">Аренда авто от суток</Link>
+                <Link to="/">Выкуп автомобилей</Link>
+                <Link to="/">Работа водителям</Link>
+                <Link to="/">Автосервисы</Link>
+                <Link to="/">Помощь на дороге</Link>
+              </div>
+              <div className={styles.footer_items}>
+                <Link to="/">Лизинг</Link>
+                <Link to="/">Запчасти</Link>
+                <Link to="/blacklist">База черного списка</Link>
+                <Link to="/">Размещение на Авторене</Link>
+                <Link to="/">Безопасность</Link>
+                <Link to="/">Техподдержка</Link>
+              </div>
             </div>
           </div>
+          <div className={styles.footer_right}>
+            <ul className={styles.footer_socialMedia}>
+              <li>
+                <a href="#">
+                  <TikTok />
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <Vk />
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <Youtube />
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <Tg />
+                </a>
+              </li>
+              <li>
+                <a href="#">
+                  <Ok />
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div className={styles.footer_right}>
-          <ul className={styles.footer_socialMedia}>
-            <li>
-              <a href="#">
-                <TikTok />
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <Vk />
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <Youtube />
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <Tg />
-              </a>
-            </li>
-            <li>
-              <a href="#">
-                <Ok />
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>{" "}
-      <a href="#" className={styles.privacy}>
-        Политика конфиденциальности
-      </a>
-    </footer>
+        <a href="#" className={styles.privacy}>
+          Политика конфиденциальности
+        </a>
+      </footer>
+    </>
   );
 };

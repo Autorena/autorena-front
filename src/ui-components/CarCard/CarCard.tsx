@@ -3,12 +3,14 @@ import styles from "./CarCard.module.scss";
 import { ReactComponent as Favorite } from "../../assets/favorite.svg";
 import { ReactComponent as More } from "../../assets/more-icon.svg";
 import { CarCardProps } from "../../types";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { addToFavorites } from "../../redux/favoritesSlice";
 
 export const CarCard = ({ carData }: CarCardProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { isPhoneConfirmed } = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
 
   const {
     listing: { id, carRentListing, carSellListing },
@@ -80,8 +82,8 @@ export const CarCard = ({ carData }: CarCardProps) => {
             e.stopPropagation();
             if (!isPhoneConfirmed) {
               navigate("/unauthorized?action=favorite");
-              // setModalActive(true);
-              // setModalContent(<LoginModal />);
+            } else {
+              dispatch(addToFavorites(carData));
             }
           }}
         >

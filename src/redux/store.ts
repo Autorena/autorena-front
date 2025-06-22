@@ -4,6 +4,7 @@ import loaderReducer from "./loaderSlice";
 import userReduser from "./userSlice";
 import brandsReducer from "./brandsSlice";
 import listingsReducer from "./listingsSlice";
+import favoritesReducer from "./favoritesSlice";
 import { brandsApi } from "./brandsApi";
 import { modelsApi } from "./modelsApi";
 import { listingsApi } from "./listingsApi";
@@ -15,6 +16,7 @@ export const store = configureStore({
     user: userReduser,
     brands: brandsReducer,
     listings: listingsReducer,
+    favorites: favoritesReducer,
     [brandsApi.reducerPath]: brandsApi.reducer,
     [modelsApi.reducerPath]: modelsApi.reducer,
     [listingsApi.reducerPath]: listingsApi.reducer,

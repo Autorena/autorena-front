@@ -1,0 +1,190 @@
+@use "../../styles/colors" as *;
+
+.favorites {
+  display: flex;
+  gap: 61px;
+  padding: 24px 0 96px;
+
+  &_empty {
+    max-width: 300px;
+    margin: 60px auto 150px;
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    h4 {
+      font-size: 18px;
+      font-weight: 500;
+    }
+    p {
+      font-size: 14px;
+      font-weight: 300;
+    }
+  }
+  &_title {
+    margin: 0 0 40px;
+    font-size: 40px;
+    font-weight: 600;
+  }
+  &_main {
+    max-width: 871px;
+    width: 100%;
+  }
+  &_mob_header {
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    h3 {
+      font-size: 16px;
+      font-weight: 500;
+      text-align: center;
+    }
+  }
+  &_btnWrap {
+    position: relative;
+  }
+  &_menuMore {
+    position: absolute;
+    top: 38px;
+    right: 0;
+    display: flex;
+    width: 210px;
+    padding: 15px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 14px;
+    font-weight: 300;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0px -1px 8px -1px rgba(0, 0, 0, 0.12),
+      0px 4px 8px 0px rgba(0, 0, 0, 0.2);
+    z-index: 200;
+  }
+  &_search {
+    position: relative;
+    svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    input {
+      padding: 10px 10px 10px 38px;
+      font-size: 15px;
+      font-weight: 400;
+      border-radius: 12px;
+    }
+  }
+  &_filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin: 16px -20px;
+    padding: 0 20px;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  &_filter {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 300;
+    text-wrap: nowrap;
+    border-radius: 6px;
+    background: $light-gray;
+    &.active {
+      background: #dedede;
+    }
+  }
+  &_banner {
+    width: 100%;
+    margin: 16px 0;
+  }
+  &_mobile_wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+  }
+  &_mobile_similar {
+    padding-bottom: 73px;
+    h3 {
+      margin: 33px 0 20px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+  }
+}
+
+.favorites_carCard {
+  position: relative;
+  width: 100%;
+  display: flex;
+  gap: 16px;
+  &_right {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  &_title {
+    font-weight: 500;
+    color: $red-color;
+    font-size: 18px;
+  }
+  &_img {
+    width: 38.2%;
+    border-radius: 12px;
+    overflow: hidden;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  &_price {
+    font-weight: 600;
+  }
+  .small_text {
+    color: rgba(17, 17, 17, 0.4);
+    font-weight: 300;
+  }
+  &_like {
+    position: absolute;
+    right: 0;
+    svg {
+      width: 24px;
+      height: 22px;
+    }
+    &.full svg path {
+      fill: $red-color;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .favorites {
+    &_empty {
+      margin: 80px auto 150px;
+    }
+  }
+}
+
+@media (max-width: 550px) {
+  .favorites_carCard {
+    &_title {
+      font-size: 14px;
+    }
+    &_price {
+      font-size: 15px;
+    }
+    &_img {
+      width: 134px;
+      height: 101px;
+    }
+    .small_text {
+      font-size: 11px;
+    }
+  }
+}
