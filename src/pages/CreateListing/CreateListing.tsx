@@ -5,6 +5,7 @@ import { CarRentListingForm } from "./CarRentListingForm";
 import { categories } from "../../utils/categories";
 import { WantedRentListingForm } from "./WantedRentListingForm";
 import { DriverVacancyForm } from "./DriverVacancyForm";
+import { CarSellListingForm } from "./CarSellListingForm";
 
 export const CreateListing = () => {
   const location = useLocation();
@@ -24,6 +25,7 @@ export const CreateListing = () => {
 
     return isNameMatch && isBuyoutMatch && isMinPeriodMatch;
   });
+  console.log(category);
 
   return (
     <div className="container">
@@ -42,6 +44,7 @@ export const CreateListing = () => {
             minimumRentalPeriod={minimumRentalPeriod}
           />
         )}
+        {category === "car_sell_listing" && <CarSellListingForm />}
         {category === "wanted_car_rent_listing" && <WantedRentListingForm />}
         {category === "driver_vacancy" && <DriverVacancyForm />}
       </div>

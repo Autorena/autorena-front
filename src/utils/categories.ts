@@ -8,7 +8,7 @@ export const categories = [
     value: "Поиск авто",
   },
   {
-    name: "car_rent_listing",
+    name: "car_sell_listing",
     value: "Выкуп авто",
     extraOptions: { buyout_possible: true },
   },

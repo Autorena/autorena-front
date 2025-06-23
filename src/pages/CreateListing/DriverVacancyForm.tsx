@@ -2,41 +2,37 @@ import { Controller, useForm } from "react-hook-form";
 import styles from "./CreateListing.module.scss";
 import { RadioButton } from "../../ui-components/RadioButton/RadioButton";
 import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
+import {
+  driveExperienceOptions,
+  employmentTypeOptions,
+  paymentPeriodOptions,
+  salaryPeriodOptions,
+  workScheduleOptions,
+} from "../../constants/filterOptions";
+import { useCreateListingMutation } from "../../redux/listingsApi";
 
-const salaryPeriods = [
-  { value: "SALARY_PERIOD_PER_SHIFT", label: "За смену" },
-  { value: "SALARY_PERIOD_PER_HOUR", label: "За час" },
-  { value: "SALARY_PERIOD_PER_MOUNTH", label: "В месяц" },
-];
-
-const driveExperiences = [
-  { value: "DRIVE_EXPERIENCE_NO_EXPERIENCE", label: "Без стажа" },
-  { value: "DRIVE_EXPERIENCE_LESS_THAN_1_YEAR", label: "Меньше года" },
-  { value: "DRIVE_EXPERIENCE_1_TO_3_YEARS", label: "От 1 года до 3 лет" },
-  { value: "DRIVE_EXPERIENCE_3_TO_5_YEARS", label: "От 3 до 5 лет" },
-  { value: "DRIVE_EXPERIENCE_MORE_THAN_5_YEARS", label: "Больше 5 лет" },
-];
-
-const employmentTypes = [
-  { value: "EMPLOYMENT_TYPE_PART_TIME", label: "Частичная занятость" },
-  { value: "EMPLOYMENT_TYPE_FULL_TIME", label: "Полная занятость" },
-];
-
-const paymentPeriods = [
-  { value: "PAYMENT_PERIOD_DAILY", label: "Ежедневно" },
-  { value: "PAYMENT_PERIOD_WEEKLY", label: "Еженедельно" },
-  { value: "PAYMENT_PERIOD_BI_MONTHLY", label: "Два раза в месяц" },
-  { value: "PAYMENT_PERIOD_MONTHLY", label: "Ежемесячно" },
-];
-
-const workSchedules = [
-  { value: "WORK_SCHEDULE_FLEXIBLE", label: "Гибкий" },
-  { value: "WORK_SCHEDULE_FIVE_DAYS", label: "5 дней в неделю" },
-  { value: "WORK_SCHEDULE_TWO_TWO", label: "2 через 2" },
-];
+interface DriverVacancyFormData {
+  salary: string;
+  salary_periods: string[];
+  min_age: string;
+  max_age: string;
+  drive_experience: string[];
+  employment_type: string[];
+  payment_period: string[];
+  work_schedule: string;
+  allow_without_russian_passport?: boolean;
+  additional_info: string;
+  city: string;
+}
 
 export const DriverVacancyForm = () => {
-  const { register, handleSubmit, control } = useForm({
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+    watch,
+  } = useForm<DriverVacancyFormData>({
     defaultValues: {
       salary: "",
       salary_periods: [],
@@ -52,8 +48,34 @@ export const DriverVacancyForm = () => {
     },
   });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const [createListing, { isLoading: isCreating }] = useCreateListingMutation();
+  const minAge = watch("min_age");
+
+  const onSubmit = async (data: DriverVacancyFormData) => {
+    const payload = {
+      listing: {
+        driver_vacancy: {
+          salary: data.salary,
+          salary_periods: data.salary_periods,
+          min_age: data.min_age,
+          max_age: data.max_age,
+          drive_experience: data.drive_experience,
+          employment_type: data.employment_type,
+          payment_period: data.payment_period,
+          work_schedule: data.work_schedule,
+          allow_without_russian_passport: data.allow_without_russian_passport,
+          additional_info: data.additional_info,
+          city: data.city,
+        },
+      },
+    };
+
+    try {
+      await createListing(payload).unwrap();
+      console.log("Объявление успешно создано");
+    } catch (error) {
+      console.error("Ошибка при создании объявления:", error);
+    }
   };
 
   return (
@@ -71,7 +93,7 @@ export const DriverVacancyForm = () => {
           render={({ field }) => (
             <DropdownList
               className={styles.dropdown}
-              options={salaryPeriods}
+              options={salaryPeriodOptions}
               value={field.value}
               onSelect={field.onChange}
               listStyles={{ bottom: "-130px" }}
@@ -83,12 +105,25 @@ export const DriverVacancyForm = () => {
 
       <div className={styles.inputWrap}>
         <h3>Минимальный возраст</h3>
-        <input type="number" {...register("min_age", { required: true })} />
+        <input type="number" {...register("min_age")} />
       </div>
 
       <div className={styles.inputWrap}>
         <h3>Максимальный возраст</h3>
-        <input type="number" {...register("max_age", { required: true })} />
+        <input
+          type="number"
+          {...register("max_age", {
+            validate: (value) => {
+              if (minAge && parseInt(value) < parseInt(minAge)) {
+                return "Максимальный возраст не может быть меньше минимального";
+              }
+              return true;
+            },
+          })}
+        />
+        {errors.max_age && (
+          <span className={styles.error}>{errors.max_age.message}</span>
+        )}
       </div>
 
       <div className={`${styles.inputWrap}`}>
@@ -99,7 +134,7 @@ export const DriverVacancyForm = () => {
           render={({ field }) => (
             <DropdownList
               className={styles.dropdown}
-              options={driveExperiences}
+              options={driveExperienceOptions}
               value={field.value}
               onSelect={field.onChange}
               listStyles={{ bottom: "-190px" }}
@@ -117,7 +152,7 @@ export const DriverVacancyForm = () => {
           render={({ field }) => (
             <DropdownList
               className={styles.dropdown}
-              options={employmentTypes}
+              options={employmentTypeOptions}
               value={field.value}
               onSelect={field.onChange}
               listStyles={{ bottom: "-90px" }}
@@ -135,7 +170,7 @@ export const DriverVacancyForm = () => {
           render={({ field }) => (
             <DropdownList
               className={styles.dropdown}
-              options={paymentPeriods}
+              options={paymentPeriodOptions}
               value={field.value}
               onSelect={field.onChange}
               listStyles={{ bottom: "-160px" }}
@@ -152,7 +187,7 @@ export const DriverVacancyForm = () => {
           control={control}
           render={({ field }) => (
             <div className={styles.list}>
-              {workSchedules.map((option) => (
+              {workScheduleOptions.map((option) => (
                 <RadioButton
                   key={option.value}
                   name="work_schedule"
@@ -206,8 +241,12 @@ export const DriverVacancyForm = () => {
         <textarea {...register("additional_info")} rows={5} />
       </div>
 
-      <button type="submit" className={`red-btn ${styles.submitBtn}`}>
-        Разместить объявление
+      <button
+        type="submit"
+        className={`red-btn ${styles.submitBtn}`}
+        disabled={isCreating}
+      >
+        {isCreating ? "Создание..." : "Разместить объявление"}
       </button>
     </form>
   );

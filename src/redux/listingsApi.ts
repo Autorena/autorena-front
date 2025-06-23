@@ -14,8 +14,18 @@ export const listingsApi = createApi({
         body,
       }),
     }),
+    createListing: builder.mutation({
+      query: (body) => ({
+        url: "/",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useFilterListingsQuery, useLazyFilterListingsQuery } =
-  listingsApi;
+export const {
+  useFilterListingsQuery,
+  useLazyFilterListingsQuery,
+  useCreateListingMutation,
+} = listingsApi;

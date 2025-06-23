@@ -2,42 +2,39 @@ import { Controller, useForm } from "react-hook-form";
 import styles from "./CreateListing.module.scss";
 import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
 import { RadioButton } from "../../ui-components/RadioButton/RadioButton";
+import {
+  carCategoryOptions,
+  driveExperienceOptions,
+  rentDurationOptions,
+  rentTypesOptions,
+} from "../../constants/filterOptions";
+import { useCreateListingMutation } from "../../redux/listingsApi";
 
-const rentTypesOptions = [
-  { value: "RENT_TYPE_RENT", label: "Аренда" },
-  { value: "RENT_TYPE_BUYOUT", label: "Выкуп" },
-];
-
-const rentDurationOptions = [
-  { value: "RENT_DURATION_FROM_DAY", label: "От суток" },
-  { value: "RENT_DURATION_FROM_WEEK", label: "От недели" },
-  { value: "RENT_DURATION_FROM_MONTH", label: "От месяца" },
-];
-
-const categoryOptions = [
-  { value: "CAR_CATEGORY_ECONOMY", label: "Эконом" },
-  { value: "CAR_CATEGORY_COMFORT", label: "Комфорт" },
-  { value: "CAR_CATEGORY_COMFORT_PLUS", label: "Комфорт +" },
-  { value: "CAR_CATEGORY_BUSINESS", label: "Бизнесс" },
-  { value: "CAR_CATEGORY_PREMIUM", label: "Премиум" },
-];
-
-const driveExperiences = [
-  { value: "DRIVE_EXPERIENCE_NO_EXPERIENCE", label: "Без стажа" },
-  { value: "DRIVE_EXPERIENCE_LESS_THAN_1_YEAR", label: "Меньше года" },
-  { value: "DRIVE_EXPERIENCE_1_TO_3_YEARS", label: "От 1 года до 3 лет" },
-  { value: "DRIVE_EXPERIENCE_3_TO_5_YEARS", label: "От 3 до 5 лет" },
-  { value: "DRIVE_EXPERIENCE_MORE_THAN_5_YEARS", label: "Больше 5 лет" },
-];
+interface WantedRentListingFormData {
+  rent_types: string[];
+  age: string;
+  drive_experience: string;
+  deposit?: boolean;
+  rent_duration: string;
+  is_russian_citizenship?: boolean;
+  car_categories: string[];
+  additional_info: string;
+  city: string;
+}
 
 export const WantedRentListingForm = () => {
-  const { register, handleSubmit, control } = useForm({
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<WantedRentListingFormData>({
     defaultValues: {
       rent_types: [],
-      age: 0,
+      age: "",
       drive_experience: "",
       deposit: undefined,
-      rent_durations: "",
+      rent_duration: "",
       is_russian_citizenship: undefined,
       car_categories: [],
       additional_info: "",
@@ -45,7 +42,9 @@ export const WantedRentListingForm = () => {
     },
   });
 
-  const onSubmit = (data: any) => {
+  const [createListing, { isLoading: isCreating }] = useCreateListingMutation();
+
+  const onSubmit = async (data: WantedRentListingFormData) => {
     const payload = {
       listing: {
         wanted_car_rent_listing: {
@@ -53,7 +52,7 @@ export const WantedRentListingForm = () => {
           age: data.age,
           drive_experience: data.drive_experience,
           deposit: data.deposit,
-          rent_durations: data.rent_durations,
+          rent_duration: data.rent_duration,
           is_russian_citizenship: data.is_russian_citizenship,
           car_categories: data.car_categories,
           additional_info: data.additional_info,
@@ -62,7 +61,12 @@ export const WantedRentListingForm = () => {
       },
     };
 
-    console.log("Форма отправлена:", payload);
+    try {
+      await createListing(payload).unwrap();
+      console.log("Объявление успешно создано");
+    } catch (error) {
+      console.error("Ошибка при создании объявления:", error);
+    }
   };
 
   return (
@@ -88,7 +92,24 @@ export const WantedRentListingForm = () => {
 
       <div className={styles.inputWrap}>
         <h3>Возраст арендатора</h3>
-        <input type="number" {...register("age")} />
+        <input
+          type="number"
+          {...register("age", {
+            required: "Обязательное поле",
+            min: {
+              value: 0,
+              message: "Возраст не может быть отрицательным",
+            },
+            validate: (value) => {
+              const age = parseInt(value);
+              if (isNaN(age)) return "Введите корректный возраст";
+              return true;
+            },
+          })}
+        />
+        {errors.age && (
+          <span className={styles.error}>{errors.age.message}</span>
+        )}
       </div>
 
       <div className={styles.inputWrap}>
@@ -99,7 +120,7 @@ export const WantedRentListingForm = () => {
           render={({ field }) => (
             <DropdownList
               className={styles.dropdown}
-              options={driveExperiences}
+              options={driveExperienceOptions}
               value={field.value}
               onSelect={field.onChange}
               listStyles={{ bottom: "-190px" }}
@@ -139,7 +160,7 @@ export const WantedRentListingForm = () => {
       <div className={styles.inputWrap}>
         <h3>Срок аренды</h3>
         <Controller
-          name="rent_durations"
+          name="rent_duration"
           control={control}
           render={({ field }) => (
             <DropdownList
@@ -182,14 +203,14 @@ export const WantedRentListingForm = () => {
       </div>
 
       <div className={styles.inputWrap}>
-        <h3>Классы автомобилей</h3>
+        <h3>Класс автомобиля</h3>
         <Controller
           name="car_categories"
           control={control}
           render={({ field }) => (
             <DropdownList
               className={styles.dropdown}
-              options={categoryOptions}
+              options={carCategoryOptions}
               value={field.value}
               onSelect={field.onChange}
               listStyles={{ bottom: "-190px" }}
@@ -209,8 +230,12 @@ export const WantedRentListingForm = () => {
         <input type="text" {...register("city")} />
       </div>
 
-      <button className={`red-btn ${styles.submitBtn}`}>
-        Разместить объявление
+      <button
+        type="submit"
+        className={`red-btn ${styles.submitBtn}`}
+        disabled={isCreating}
+      >
+        {isCreating ? "Создание..." : "Разместить объявление"}
       </button>
     </form>
   );

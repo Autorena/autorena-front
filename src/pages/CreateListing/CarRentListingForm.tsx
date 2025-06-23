@@ -12,9 +12,11 @@ import {
   carCategoryOptions,
   fuelTypeOptions,
   paymentPeriodOptions,
+  rentDurationOptions,
   transmissionOptions,
   vehicleSegmentOptions,
 } from "../../constants/filterOptions";
+import { useCreateListingMutation } from "../../redux/listingsApi";
 
 type CarRentListingFormProps = {
   buyout: boolean;
@@ -46,19 +48,13 @@ type FormData = {
   rent_duration: string[];
 };
 
-const rentDurationOptions = [
-  { value: "RENT_DURATION_FROM_DAY", label: "От суток" },
-  { value: "RENT_DURATION_FROM_WEEK", label: "От недели" },
-  { value: "RENT_DURATION_FROM_MONTH", label: "От месяца" },
-];
-
 export const CarRentListingForm = ({
-  // buyout,
   minimumRentalPeriod,
 }: CarRentListingFormProps) => {
   const [previews, setPreviews] = useState<string[]>([]);
   const { data: brandsData } = useGetBrandsQuery("");
   const [selectedBrandId, setSelectedBrandId] = useState<string>("");
+  const [createListing, { isLoading: isCreating }] = useCreateListingMutation();
 
   const { data: modelsData, isLoading: isLoadingModels } = useGetModelsQuery(
     { brandId: selectedBrandId },
@@ -102,7 +98,7 @@ export const CarRentListingForm = ({
     }
   }, [minimumRentalPeriod, setValue]);
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     const payload = {
       listing: {
         car_rent_listing: {
@@ -136,7 +132,12 @@ export const CarRentListingForm = ({
       },
     };
 
-    console.log("Форма отправлена:", payload);
+    try {
+      await createListing(payload).unwrap();
+      console.log("Объявление успешно создано");
+    } catch (error) {
+      console.error("Ошибка при создании объявления:", error);
+    }
   };
 
   return (
@@ -522,8 +523,12 @@ export const CarRentListingForm = ({
         <textarea {...register("additional_info")} rows={5} />
       </div>
 
-      <button type="submit" className={`red-btn ${styles.submitBtn}`}>
-        Разместить объявление
+      <button
+        type="submit"
+        className={`red-btn ${styles.submitBtn}`}
+        disabled={isCreating}
+      >
+        {isCreating ? "Создание..." : "Разместить объявление"}
       </button>
     </form>
   );

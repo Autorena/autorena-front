@@ -218,7 +218,7 @@ export const PersonalProfile = () => {
       text: "Поддержка",
       dropdown: [
         { to: "/develop", text: "FAQ" },
-        { to: "/develop", text: "Связаться с поддержкой" },
+        { to: "https://t.me/autorena_911_bot", text: "Связаться с поддержкой" },
         { to: "/develop", text: "Оставить отзыв" },
       ],
     },
@@ -252,9 +252,20 @@ export const PersonalProfile = () => {
             <ul className={styles.profile_dropdown}>
               {dropdown.map((item, idx) => (
                 <li key={idx}>
-                  <Link to={item.to} className={styles.profile_dropdown_item}>
-                    {item.text}
-                  </Link>
+                  {item.to.startsWith("http") ? (
+                    <a
+                      href={item.to}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.profile_dropdown_item}
+                    >
+                      {item.text}
+                    </a>
+                  ) : (
+                    <Link to={item.to} className={styles.profile_dropdown_item}>
+                      {item.text}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
