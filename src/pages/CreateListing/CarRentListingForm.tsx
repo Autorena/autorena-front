@@ -104,7 +104,6 @@ export const CarRentListingForm = ({
     }
   }, [minimumRentalPeriod, setValue]);
 
-  // Например, после успешного запроса брендов
   useEffect(() => {
     if (brandsData) {
       localStorage.setItem("brands", JSON.stringify(brandsData));
@@ -154,8 +153,8 @@ export const CarRentListingForm = ({
       await createListing(payload).unwrap();
       console.log("Объявление успешно создано");
     } catch (error) {
-      console.error("Ошибка при создании объявления:", error);
-      setError(error?.data?.message || "Ошибка при создании объявления");
+      const err = error as { data?: { message?: string } };
+      setError(err.data?.message || "Ошибка при создании объявления");
     }
   };
 

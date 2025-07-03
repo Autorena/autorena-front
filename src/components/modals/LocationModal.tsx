@@ -6,7 +6,6 @@ import { ModalContext } from "../../HOC/ModalProvider";
 import { useForm } from "react-hook-form";
 import { useDebounce } from "../../hooks/debounce";
 import { useFilter } from "../../HOC/FilterContext";
-import { FILTER_KEYS } from "../../constants/filterKeys";
 
 type FormData = {
   searchValue: string;
