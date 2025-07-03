@@ -49,7 +49,12 @@ export const HeaderMobile = ({ className }: HeaderMobProps) => {
         <Like />
       </button>
       <NavLink
-        to="/choose-category"
+        onClick={() => handleClick("create_listing")}
+        to={
+          isPhoneConfirmed
+            ? "/my_listings"
+            : "/unauthorized?action=create_listing"
+        }
         className={({ isActive }) =>
           isActive
             ? `${styles.header_mobile_item} ${styles.active}`

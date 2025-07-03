@@ -9,6 +9,7 @@ const filterTitles: Record<string, string> = {
   AUTO_SERVICES: "Автосервисы",
   BUY_AUTO: "Выкуп автомобилей",
   DRIVER_JOBS: "Работа водителям",
+  WANTED_RENT: "Поиск арендатора",
 };
 
 const pathTitles: Record<string, string> = {

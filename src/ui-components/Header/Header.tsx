@@ -43,6 +43,7 @@ export const Header = () => {
     "/favorites",
     "/notifications",
     "/profile",
+    "/unauthorized",
   ];
 
   const handleMouseEnter = () => {

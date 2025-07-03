@@ -43,8 +43,6 @@ export const FilterMenu = ({
     };
   }, [isOpen]);
 
-  console.log(filterType);
-
   switch (filterType) {
     case "RENT_AUTO":
     case "AUTO_SERVICES":

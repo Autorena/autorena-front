@@ -1,4 +1,4 @@
-import { useEffect, useState, ReactNode } from "react";
+import { useEffect, useState, ReactNode, useRef } from "react";
 import styles from "./DropdownList.module.scss";
 import { ReactComponent as Arrow } from "../../assets/arrowList.svg";
 import { ReactComponent as Check } from "../../assets/check.svg";
@@ -49,6 +49,21 @@ export const DropdownList = (props: DropdownListProps) => {
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (
+        isOpen &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [isOpen]);
 
   useEffect(() => {
     if (autoSelectFirst && !value && options.length > 0) {
@@ -99,7 +114,7 @@ export const DropdownList = (props: DropdownListProps) => {
   };
 
   return (
-    <div className={`${styles.dropdownList}`}>
+    <div ref={dropdownRef} className={`${styles.dropdownList}`}>
       <button
         type="button"
         className={`${styles.dropdownList_title} ${className ? className : ""}`}

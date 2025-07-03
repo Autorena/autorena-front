@@ -5,6 +5,7 @@ import { Layout } from "./Layout";
 import { Modal } from "./ui-components/Modal/Modal";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { FilterProvider } from "./HOC/FilterContext";
+import { LocationProvider } from "./HOC/LocationProvider";
 import { Loader } from "./ui-components/Loader/Loader";
 
 const Home = lazy(() =>
@@ -82,30 +83,32 @@ export const App = () => {
   }
 
   return (
-    <FilterProvider>
-      <Modal />
-      <ScrollToTop />
-      <Suspense fallback={<Loader />}>
-        <Routes>
-          <Route path="/develop" element={<Develop />} />
-          <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="/blacklist" element={<BlackList />} />
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="/reg" element={<RegistrationModal />} />
-            <Route path="/filter/:filter" element={<FilterPage />} />
-            <Route path="/:id" element={<CarPage />} />
-            <Route path="/choose-category" element={<ChooseCategory />} />
-            <Route path="/create-listing" element={<CreateListing />} />
-            <Route path="/profile" element={<PersonalProfile />} />
-            <Route path="/my-listings" element={<MyListings />} />
-            <Route path="/favorites" element={<Favorites />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/messages" element={<Messages />} />
-          </Route>
-        </Routes>
-      </Suspense>
-    </FilterProvider>
+    <LocationProvider>
+      <FilterProvider>
+        <Modal />
+        <ScrollToTop />
+        <Suspense fallback={<Loader />}>
+          <Routes>
+            <Route path="/develop" element={<Develop />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
+            <Route path="/blacklist" element={<BlackList />} />
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="/reg" element={<RegistrationModal />} />
+              <Route path="/filter/:filter" element={<FilterPage />} />
+              <Route path="/:id" element={<CarPage />} />
+              <Route path="/choose-category" element={<ChooseCategory />} />
+              <Route path="/create-listing" element={<CreateListing />} />
+              <Route path="/profile" element={<PersonalProfile />} />
+              <Route path="/my_listings" element={<MyListings />} />
+              <Route path="/favorites" element={<Favorites />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/messages" element={<Messages />} />
+            </Route>
+          </Routes>
+        </Suspense>
+      </FilterProvider>
+    </LocationProvider>
   );
 };
 

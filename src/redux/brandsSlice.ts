@@ -13,7 +13,10 @@ type BrandsState = {
 };
 
 const initialState: BrandsState = {
-  brands: [],
+  brands: (() => {
+    const saved = localStorage.getItem("brands");
+    return saved ? JSON.parse(saved) : [];
+  })(),
   isLoading: false,
   error: null,
 };
@@ -33,6 +36,7 @@ const BrandsSlice = createSlice({
         (state, action) => {
           state.isLoading = false;
           state.brands = action.payload;
+          localStorage.setItem("brands", JSON.stringify(action.payload));
         }
       )
       .addMatcher(

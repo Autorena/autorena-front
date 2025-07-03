@@ -81,7 +81,7 @@ export const CarCard = ({ carData }: CarCardProps) => {
             e.preventDefault();
             e.stopPropagation();
             if (!isPhoneConfirmed) {
-              navigate("/unauthorized?action=favorite");
+              navigate("/unauthorized?action=favorites");
             } else {
               dispatch(addToFavorites(carData));
             }

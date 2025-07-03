@@ -10,6 +10,7 @@ import { LocationModal } from "../../components/modals/LocationModal";
 import { useFilter } from "../../HOC/FilterContext";
 import { LargeSvgImage } from "../../components/LargeSvgImage";
 import { getLargeSvgPath } from "../../utils/largeSvgPaths";
+import { LocationContext } from "../../HOC/LocationProvider";
 
 const FILTER_KEYS = {
   BRAND: "buy_auto_brand",
@@ -35,6 +36,9 @@ export const BuyAutoFilter = ({
 }: FilterProps) => {
   const { setModalActive, setModalContent } = useContext(ModalContext);
   const { getFilterValue } = useFilter();
+  const { location } = useContext(LocationContext);
+
+  const selectedCity = location || getFilterValue<string>(FILTER_KEYS.CITY);
 
   return (
     <>
@@ -47,28 +51,21 @@ export const BuyAutoFilter = ({
               setModalActive(true);
               setModalContent(
                 <LocationModal
-                  forFilters={true}
-                  initialCity={
-                    getFilterValue<string>(FILTER_KEYS.CITY) ?? undefined
-                  }
+                  initialCity={selectedCity ?? undefined}
                   cityKey={FILTER_KEYS.CITY}
                 />
               );
             }}
           >
-            {/* <Location />{" "} */}
             <LargeSvgImage src={getLargeSvgPath("location-icon-2")} />
-            {getFilterValue<string>(FILTER_KEYS.CITY) || "Выберите город"}
+            {selectedCity || "Выберите город"}
           </button>
           <button
             onClick={() => {
               setModalActive(true);
               setModalContent(
                 <LocationModal
-                  forFilters={true}
-                  initialCity={
-                    getFilterValue<string>(FILTER_KEYS.CITY) ?? undefined
-                  }
+                  initialCity={selectedCity ?? undefined}
                   cityKey={FILTER_KEYS.CITY}
                 />
               );

@@ -4,20 +4,30 @@ import {
   carBodyTypeOptions,
   carCategoryOptions,
   fuelTypeOptions,
+  paymentPeriodOptions,
   transmissionOptions,
 } from "../../constants/filterOptions";
-import { DropdownList } from "../DropdownList/DropdownList";
 import { ReactComponent as Cross } from "../../assets/cross.svg";
+import { ReactComponent as Arrow } from "../../assets/swiper-arrow.svg";
 import { useLazyFilterListingsQuery } from "../../redux/listingsApi";
 import { useAppDispatch } from "../../redux/hooks";
 import { setFilteredCars } from "../../redux/listingsSlice";
 import { useFilter } from "../../HOC/FilterContext";
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FILTER_KEYS } from "../../constants/filterKeys";
+import { LargeSvgImage } from "../../components/LargeSvgImage";
+import { getLargeSvgPath } from "../../utils/largeSvgPaths";
+import { ModalContext } from "../../HOC/ModalProvider";
+import { LocationContext } from "../../HOC/LocationProvider";
+import { LocationModal } from "../../components/modals/LocationModal";
+import { BottomSheet } from "../BottomSheet/BottomSheet";
+import { BottomSheetRadioFilter } from "../BottomSheet/BottomSheetRadioFilter";
+import { BottomSheetCheckboxFilter } from "../BottomSheet/BottomSheetCheckboxFilter";
+import { getSelectedLabel } from "./getSelectedLabel";
 
 export type RentFilterFormData = {
   city?: string;
-  deposit_required?: boolean;
+  without_deposit?: boolean;
   transmission_type?: string;
   fuel_type?: string;
   car_body_type?: string;
@@ -26,6 +36,13 @@ export type RentFilterFormData = {
   max_year?: number;
   min_price_per_day?: number;
   max_price_per_day?: number;
+  payment_options?: {
+    periods?: string[];
+  };
+  car_options?: {
+    has_air_conditioning?: boolean;
+    has_child_seat?: boolean;
+  };
 };
 
 type FilterMenuRentProps = {
@@ -33,10 +50,24 @@ type FilterMenuRentProps = {
   onClose: () => void;
 };
 
+export type FilterField = {
+  key: string;
+  label: string;
+  options?: { value: string; label: string }[];
+  sheet: string;
+  type: "radio" | "checkbox" | "custom";
+  filterKey?: keyof typeof FILTER_KEYS;
+};
+
 export const FilterMenuRent = ({ isOpen, onClose }: FilterMenuRentProps) => {
   const [trigger] = useLazyFilterListingsQuery();
   const dispatch = useAppDispatch();
-  const { getFilterValue, setFilterValue } = useFilter();
+  const { getFilterValue } = useFilter();
+  const { location } = useContext(LocationContext);
+  const { setModalContent, setModalActive } = useContext(ModalContext);
+  const [openSheet, setOpenSheet] = useState<
+    null | "transmission" | "fuel" | "body" | "category" | "year" | "price"
+  >(null);
   const {
     register,
     handleSubmit,
@@ -46,19 +77,66 @@ export const FilterMenuRent = ({ isOpen, onClose }: FilterMenuRentProps) => {
     setValue,
   } = useForm<RentFilterFormData>();
 
+  const filterFields: FilterField[] = [
+    {
+      key: "transmission_type",
+      label: "Тип трансмиссии",
+      options: transmissionOptions,
+      sheet: "transmission",
+      type: "radio",
+    },
+    {
+      key: "fuel_type",
+      label: "Тип топлива",
+      options: fuelTypeOptions,
+      sheet: "fuel",
+      type: "radio",
+    },
+    {
+      key: "car_body_type",
+      label: "Тип кузова",
+      options: carBodyTypeOptions,
+      sheet: "body",
+      type: "radio",
+    },
+    {
+      key: "car_category",
+      label: "Класс авто",
+      options: carCategoryOptions,
+      sheet: "category",
+      type: "radio",
+    },
+    {
+      key: "year",
+      label: "Год выпуска",
+      sheet: "year",
+      type: "custom",
+    },
+    {
+      key: "price",
+      label: "Цена",
+      sheet: "price",
+      type: "custom",
+    },
+    {
+      key: "payment_options",
+      label: "График платежей",
+      options: paymentPeriodOptions,
+      sheet: "payment_options",
+      type: "checkbox",
+    },
+  ];
+
   useEffect(() => {
-    const city = getFilterValue<string>(FILTER_KEYS.RENT_CITY);
+    const city = getFilterValue<string>(FILTER_KEYS.RENT_CITY) || location;
     if (city) {
       setValue("city", city);
     }
-  }, [getFilterValue, setValue]);
-
-  const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const city = e.target.value;
-    setFilterValue(FILTER_KEYS.RENT_CITY, city);
-  };
+  }, [getFilterValue, setValue, location]);
 
   const onSubmit = async (data: RentFilterFormData) => {
+    const selectedCity = data.city || location;
+
     const filterObject = {
       filter: {
         car_rent_listing: {
@@ -68,12 +146,14 @@ export const FilterMenuRent = ({ isOpen, onClose }: FilterMenuRentProps) => {
           fuel_type: data.fuel_type ? [data.fuel_type] : undefined,
           car_body_type: data.car_body_type ? [data.car_body_type] : undefined,
           car_category: data.car_category ? [data.car_category] : undefined,
-          city: data.city,
-          deposit_required: !data.deposit_required,
+          city: selectedCity,
+          without_deposit: data.without_deposit,
           min_year: data.min_year,
           max_year: data.max_year,
           min_price_per_day: data.min_price_per_day,
           max_price_per_day: data.max_price_per_day,
+          payment_options: data.payment_options,
+          car_options: data.car_options,
         },
       },
       pagination: {
@@ -81,6 +161,7 @@ export const FilterMenuRent = ({ isOpen, onClose }: FilterMenuRentProps) => {
         page_size: 20,
       },
     };
+    console.log(filterObject);
 
     try {
       const result = await trigger(filterObject);
@@ -107,144 +188,271 @@ export const FilterMenuRent = ({ isOpen, onClose }: FilterMenuRentProps) => {
         <Cross />
       </button>
       <h2 className={styles.filterMenu_title}>Фильтры</h2>
+      <label>Искать в городе:</label>
+      <div className={styles.cityWrap}>
+        <button
+          type="button"
+          className={styles.filterMenu_city}
+          onClick={() => {
+            setModalActive(true);
+            setModalContent(<LocationModal />);
+          }}
+        >
+          <LargeSvgImage
+            src={getLargeSvgPath("location-icon-2")}
+            alt="Локация"
+          />{" "}
+          {watch("city") || location}
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setModalActive(true);
+            setModalContent(<LocationModal />);
+          }}
+          style={{ padding: "0 8px" }}
+          className={styles.filterMenu_city_choose}
+        >
+          Изменить город
+        </button>
+      </div>
       <div className={styles.filterMenu_fields}>
-        <div className={styles.inputWrap}>
-          <label htmlFor="city">Город</label>
-          <input
-            type="text"
-            placeholder="Город"
-            {...register("city")}
-            onChange={(e) => {
-              register("city").onChange(e);
-              handleCityChange(e);
-            }}
-            value={
-              watch("city") ||
-              getFilterValue<string>(FILTER_KEYS.RENT_CITY) ||
-              ""
-            }
-          />
-        </div>
+        {filterFields.map((field) => {
+          const value = watch(field.key as keyof RentFilterFormData);
+          const selectedLabel = getSelectedLabel(field, value, watch);
+          return (
+            <button
+              key={field.key}
+              className={styles.filterMenu_field}
+              onClick={() =>
+                setOpenSheet(
+                  field.sheet as
+                    | "transmission"
+                    | "fuel"
+                    | "body"
+                    | "category"
+                    | "year"
+                    | "price"
+                )
+              }
+              type="button"
+            >
+              {selectedLabel ? (
+                <>
+                  <span>{selectedLabel}</span>
+                  <span
+                    className={styles.clearIcon}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (field.type === "custom" && field.key === "year") {
+                        setValue("min_year", undefined);
+                        setValue("max_year", undefined);
+                      } else if (
+                        field.type === "custom" &&
+                        field.key === "price"
+                      ) {
+                        setValue("min_price_per_day", undefined);
+                        setValue("max_price_per_day", undefined);
+                      } else {
+                        setValue(field.key as keyof RentFilterFormData, "");
+                      }
+                    }}
+                  >
+                    <Cross />
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span>{field.label}</span>
+                  <Arrow />
+                </>
+              )}
+            </button>
+          );
+        })}
 
-        <label className="checkboxWrapper" style={{ display: "flex" }}>
+        <label
+          className={`${styles.checkboxWrapper} ${styles.filterMenu_field}`}
+        >
+          <span className={styles.checkboxLabel}>Есть кондиционер</span>
           <input
             type="checkbox"
-            className="checkboxInput"
-            {...register("deposit_required")}
+            className={styles.checkboxInput}
+            {...register("car_options.has_air_conditioning")}
           />
-          <span className="checkboxCustom" />
-          <span className="checkboxLabel">Без депозита</span>
+          <span className={styles.checkboxCustom} />
         </label>
-
-        <div className={styles.inputWrap}>
-          <label htmlFor="transmission_type">Тип трансмиссии</label>
-          <DropdownList
-            options={transmissionOptions}
-            value={watch("transmission_type")}
-            onSelect={(value) => setValue("transmission_type", value as string)}
+        <label
+          className={`${styles.checkboxWrapper} ${styles.filterMenu_field}`}
+        >
+          <span className={styles.checkboxLabel}>Есть детское кресло</span>
+          <input
+            type="checkbox"
+            className={styles.checkboxInput}
+            {...register("car_options.has_child_seat")}
           />
-        </div>
-
-        <div className={styles.inputWrap}>
-          <label htmlFor="fuel_type">Тип топлива</label>
-          <DropdownList
-            options={fuelTypeOptions}
-            value={watch("fuel_type")}
-            onSelect={(value) => setValue("fuel_type", value as string)}
+          <span className={styles.checkboxCustom} />
+        </label>
+        <label
+          className={`${styles.checkboxWrapper} ${styles.filterMenu_field}`}
+        >
+          <span className={styles.checkboxLabel}>Без депозита</span>
+          <input
+            type="checkbox"
+            className={styles.checkboxInput}
+            {...register("without_deposit")}
           />
-        </div>
-
-        <div className={styles.inputWrap}>
-          <label htmlFor="car_body_type">Тип кузова</label>
-          <DropdownList
-            options={carBodyTypeOptions}
-            value={watch("car_body_type")}
-            onSelect={(value) => setValue("car_body_type", value as string)}
-          />
-        </div>
-
-        <div className={styles.inputWrap}>
-          <label htmlFor="car_category">Класс авто</label>
-          <DropdownList
-            options={carCategoryOptions}
-            value={watch("car_category")}
-            onSelect={(value) => setValue("car_category", value as string)}
-          />
-        </div>
-
-        <div className={styles.inputWrap}>
-          <label htmlFor="year">Год выпуска</label>
-          <div className={styles.fieldsWrap}>
-            <input
-              type="number"
-              placeholder="От"
-              className={`${styles.filterMenu_year} ${
-                errors.min_year ? "invalid" : ""
-              }`}
-              max={new Date().getFullYear()}
-              {...register("min_year", {
-                valueAsNumber: true,
-                min: 1900,
-                max: new Date().getFullYear(),
-              })}
-            />
-            <input
-              type="number"
-              placeholder="До"
-              className={`${styles.filterMenu_year} ${
-                errors.max_year ? "invalid" : ""
-              }`}
-              max={new Date().getFullYear()}
-              {...register("max_year", {
-                valueAsNumber: true,
-                min: 1900,
-                max: new Date().getFullYear(),
-              })}
-            />
-          </div>
-        </div>
-
-        <div className={styles.inputWrap}>
-          <label htmlFor="price">Цена, ₽</label>
-          <div className={styles.fieldsWrap}>
-            <input
-              type="number"
-              placeholder="От"
-              className={`${styles.filterMenu_price} ${
-                errors.min_price_per_day ? "invalid" : ""
-              }`}
-              {...register("min_price_per_day", {
-                valueAsNumber: true,
-                min: 0,
-              })}
-            />
-            <input
-              type="number"
-              placeholder="До"
-              className={`${styles.filterMenu_price} ${
-                errors.max_price_per_day ? "invalid" : ""
-              }`}
-              {...register("max_price_per_day", {
-                valueAsNumber: true,
-                min: 0,
-              })}
-            />
-          </div>
-        </div>
+          <span className={styles.checkboxCustom} />
+        </label>
       </div>
 
       <div className={styles.filterMenu_bottom}>
-        <button type="submit" className={`red-btn ${styles.submitBtn}`}>
-          Показать объявления
-        </button>
         <button
           type="button"
           className={`${styles.cleanBtn}`}
           onClick={() => reset()}
         >
-          Сбросить все
+          Сброс фильтров
+        </button>
+        <button type="submit" className={`red-btn ${styles.submitBtn}`}>
+          Применить фильтры
         </button>
       </div>
+
+      {filterFields.map((field) =>
+        openSheet === field.sheet ? (
+          <BottomSheet
+            key={field.key}
+            isOpen
+            onClose={() => setOpenSheet(null)}
+            defaultHeight="auto"
+          >
+            {field.type === "radio" && field.options && (
+              <BottomSheetRadioFilter
+                title={field.label}
+                options={field.options}
+                value={
+                  watch(field.key as keyof RentFilterFormData) as
+                    | string
+                    | number
+                    | boolean
+                }
+                onChange={(value) => {
+                  setValue(field.key as keyof RentFilterFormData, value);
+                }}
+              />
+            )}
+            {field.type === "checkbox" && field.options && (
+              <BottomSheetCheckboxFilter
+                title={field.label}
+                options={field.options}
+                values={
+                  field.key === "payment_options"
+                    ? watch("payment_options")?.periods || []
+                    : []
+                }
+                onChange={(values) => {
+                  if (field.key === "payment_options") {
+                    setValue("payment_options", { periods: values });
+                  }
+                }}
+                onReset={() => {
+                  if (field.key === "payment_options") {
+                    setValue("payment_options", { periods: [] });
+                  }
+                }}
+                onSubmit={() => setOpenSheet(null)}
+              />
+            )}
+            {field.type === "custom" && field.key === "year" && (
+              <div className={styles.inputWrap} style={{ marginBottom: 0 }}>
+                <label className={styles.fieldsWrap_title}>Год выпуска</label>
+                <div className={styles.fieldsWrap}>
+                  <input
+                    type="number"
+                    placeholder="От"
+                    className={`${styles.filterMenu_year} ${
+                      errors.min_year ? "invalid" : ""
+                    }`}
+                    max={new Date().getFullYear()}
+                    value={watch("min_year") || ""}
+                    onChange={(e) =>
+                      setValue(
+                        "min_year",
+                        e.target.value ? Number(e.target.value) : undefined
+                      )
+                    }
+                  />
+                  <input
+                    type="number"
+                    placeholder="До"
+                    className={`${styles.filterMenu_year} ${
+                      errors.max_year ? "invalid" : ""
+                    }`}
+                    max={new Date().getFullYear()}
+                    value={watch("max_year") || ""}
+                    onChange={(e) =>
+                      setValue(
+                        "max_year",
+                        e.target.value ? Number(e.target.value) : undefined
+                      )
+                    }
+                  />
+                </div>
+                <button
+                  className={styles.submitBtn}
+                  type="button"
+                  onClick={() => setOpenSheet(null)}
+                >
+                  Показать объявления
+                </button>
+              </div>
+            )}
+            {field.type === "custom" && field.key === "price" && (
+              <div className={styles.inputWrap} style={{ marginBottom: 0 }}>
+                <label className={styles.fieldsWrap_title}>Цена за сутки</label>
+                <div className={styles.fieldsWrap}>
+                  <input
+                    type="number"
+                    placeholder="От"
+                    className={`${styles.filterMenu_price} ${
+                      errors.min_price_per_day ? "invalid" : ""
+                    }`}
+                    value={watch("min_price_per_day") || ""}
+                    onChange={(e) =>
+                      setValue(
+                        "min_price_per_day",
+                        e.target.value ? Number(e.target.value) : undefined
+                      )
+                    }
+                  />
+                  <input
+                    type="number"
+                    placeholder="До"
+                    className={`${styles.filterMenu_price} ${
+                      errors.max_price_per_day ? "invalid" : ""
+                    }`}
+                    value={watch("max_price_per_day") || ""}
+                    onChange={(e) =>
+                      setValue(
+                        "max_price_per_day",
+                        e.target.value ? Number(e.target.value) : undefined
+                      )
+                    }
+                  />
+                </div>
+                <button
+                  className={styles.submitBtn}
+                  type="button"
+                  onClick={() => setOpenSheet(null)}
+                >
+                  Показать объявления
+                </button>
+              </div>
+            )}
+          </BottomSheet>
+        ) : null
+      )}
     </form>
   );
 };

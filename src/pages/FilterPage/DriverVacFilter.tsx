@@ -11,6 +11,7 @@ import { useFilter } from "../../HOC/FilterContext";
 import { FILTER_KEYS } from "../../constants/filterKeys";
 import { LargeSvgImage } from "../../components/LargeSvgImage";
 import { getLargeSvgPath } from "../../utils/largeSvgPaths";
+import { LocationContext } from "../../HOC/LocationProvider";
 
 export interface FilterProps {
   isFiltersOpen: boolean;
@@ -29,6 +30,10 @@ export const DriverVacFilter = ({
 }: FilterProps) => {
   const { setModalActive, setModalContent } = useContext(ModalContext);
   const { getFilterValue } = useFilter();
+  const { location } = useContext(LocationContext);
+
+  const selectedCity =
+    location || getFilterValue<string>(FILTER_KEYS.DRIVER_VAC_CITY);
 
   return (
     <>
@@ -44,32 +49,22 @@ export const DriverVacFilter = ({
               setModalActive(true);
               setModalContent(
                 <LocationModal
-                  forFilters={true}
-                  initialCity={
-                    getFilterValue<string>(FILTER_KEYS.DRIVER_VAC_CITY) ??
-                    undefined
-                  }
+                  initialCity={selectedCity ?? undefined}
                   cityKey={FILTER_KEYS.DRIVER_VAC_CITY}
                 />
               );
             }}
           >
-            {/* <Location />{" "} */}
             <LargeSvgImage src={getLargeSvgPath("location-icon-2")} />
 
-            {getFilterValue<string>(FILTER_KEYS.DRIVER_VAC_CITY) ||
-              "Выберите город"}
+            {selectedCity || "Выберите город"}
           </button>
           <button
             onClick={() => {
               setModalActive(true);
               setModalContent(
                 <LocationModal
-                  forFilters={true}
-                  initialCity={
-                    getFilterValue<string>(FILTER_KEYS.DRIVER_VAC_CITY) ??
-                    undefined
-                  }
+                  initialCity={selectedCity ?? undefined}
                   cityKey={FILTER_KEYS.DRIVER_VAC_CITY}
                 />
               );

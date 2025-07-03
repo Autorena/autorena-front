@@ -1,20 +1,27 @@
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import styles from "./FilterMenu.module.scss";
 import {
   carCategoryOptions,
   driveExperienceOptions,
+  rentDurationOptions,
   rentTypesOptions,
-  wantedRentDurationOptions,
 } from "../../constants/filterOptions";
-import { DropdownList } from "../DropdownList/DropdownList";
 import { ReactComponent as Cross } from "../../assets/cross.svg";
+import { ReactComponent as Arrow } from "../../assets/swiper-arrow.svg";
 import { useLazyFilterListingsQuery } from "../../redux/listingsApi";
 import { useAppDispatch } from "../../redux/hooks";
 import { setFilteredCars } from "../../redux/listingsSlice";
-import { useFilter } from "../../HOC/FilterContext";
-import { useEffect } from "react";
-import { RadioButton } from "../RadioButton/RadioButton";
-import { FILTER_KEYS } from "../../constants/filterKeys";
+import { useContext, useState } from "react";
+import { LocationContext } from "../../HOC/LocationProvider";
+import { ModalContext } from "../../HOC/ModalProvider";
+import { LocationModal } from "../../components/modals/LocationModal";
+import { LargeSvgImage } from "../../components/LargeSvgImage";
+import { getLargeSvgPath } from "../../utils/largeSvgPaths";
+import { BottomSheet } from "../BottomSheet/BottomSheet";
+import { BottomSheetRadioFilter } from "../BottomSheet/BottomSheetRadioFilter";
+import { BottomSheetCheckboxFilter } from "../BottomSheet/BottomSheetCheckboxFilter";
+import { FilterField } from "./FilterMenuRent";
+import { getSelectedLabel } from "./getSelectedLabel";
 
 type WantedRentFilterFormData = {
   rent_types: string;
@@ -39,7 +46,17 @@ export const FilterMenuWantedRent = ({
 }: FilterMenuWantedRentProps) => {
   const [trigger] = useLazyFilterListingsQuery();
   const dispatch = useAppDispatch();
-  const { getFilterValue, setFilterValue } = useFilter();
+  const { location } = useContext(LocationContext);
+  const { setModalContent, setModalActive } = useContext(ModalContext);
+  const [openSheet, setOpenSheet] = useState<
+    | null
+    | "rent_types"
+    | "age"
+    | "drive_experience"
+    | "deposit_required"
+    | "rent_durations"
+    | "car_category"
+  >(null);
   const {
     register,
     handleSubmit,
@@ -47,20 +64,44 @@ export const FilterMenuWantedRent = ({
     reset,
     watch,
     setValue,
-    control,
   } = useForm<WantedRentFilterFormData>();
 
-  useEffect(() => {
-    const city = getFilterValue<string>(FILTER_KEYS.WANTED_RENT_CITY);
-    if (city) {
-      setValue("city", city);
-    }
-  }, [getFilterValue, setValue]);
-
-  const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const city = e.target.value;
-    setFilterValue(FILTER_KEYS.WANTED_RENT_CITY, city);
-  };
+  const filterFields: FilterField[] = [
+    {
+      key: "rent_types",
+      label: "Тип аренды",
+      options: rentTypesOptions,
+      sheet: "rent_types",
+      type: "radio",
+    },
+    {
+      key: "age",
+      label: "Возраст арендатора",
+      sheet: "age",
+      type: "custom",
+    },
+    {
+      key: "drive_experience",
+      label: "Опыт вождения",
+      options: driveExperienceOptions,
+      sheet: "drive_experience",
+      type: "checkbox",
+    },
+    {
+      key: "rent_durations",
+      label: "Сроки аренды",
+      options: rentDurationOptions,
+      sheet: "rent_durations",
+      type: "checkbox",
+    },
+    {
+      key: "car_category",
+      label: "Класс авто",
+      options: carCategoryOptions,
+      sheet: "car_category",
+      type: "checkbox",
+    },
+  ];
 
   const onSubmit = async (data: WantedRentFilterFormData) => {
     const filterObject = {
@@ -74,7 +115,7 @@ export const FilterMenuWantedRent = ({
           rent_durations: data.rent_durations,
           require_russian_citizenship: data.require_russian_citizenship,
           car_category: data.car_category,
-          city: data.city,
+          city: location,
         },
       },
       pagination: {
@@ -107,141 +148,202 @@ export const FilterMenuWantedRent = ({
         <Cross />
       </button>
       <h2 className={styles.filterMenu_title}>Фильтры</h2>
+      <label>Искать в городе:</label>
+      <div className={styles.cityWrap}>
+        <button
+          type="button"
+          className={styles.filterMenu_city}
+          onClick={() => {
+            setModalActive(true);
+            setModalContent(<LocationModal />);
+          }}
+        >
+          <LargeSvgImage
+            src={getLargeSvgPath("location-icon-2")}
+            alt="Локация"
+          />{" "}
+          {watch("city") || location}
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setModalActive(true);
+            setModalContent(<LocationModal />);
+          }}
+          style={{ padding: "0 8px" }}
+          className={styles.filterMenu_city_choose}
+        >
+          Изменить город
+        </button>
+      </div>
       <div className={styles.filterMenu_fields}>
-        <div className={styles.inputWrap}>
-          <label htmlFor="rent_types">Тип аренды</label>
-          <Controller
-            name="rent_types"
-            control={control}
-            render={({ field }) => (
-              <div style={{ display: "flex", gap: "16px" }}>
-                {rentTypesOptions.map((option) => (
-                  <RadioButton
-                    key={option.value}
-                    name="rent_types"
-                    value={option.value}
-                    label={option.label}
-                    checked={field.value === option.value}
-                    onChange={() => field.onChange(option.value)}
-                    labelStyle={{ paddingLeft: "36px" }}
-                  />
-                ))}
-              </div>
-            )}
-          />
-        </div>
+        {filterFields.map((field) => {
+          const value = watch(field.key as keyof WantedRentFilterFormData);
+          const selectedLabel = getSelectedLabel(field, value, watch);
+          return (
+            <button
+              key={field.key}
+              className={styles.filterMenu_field}
+              onClick={() =>
+                setOpenSheet(
+                  field.sheet as
+                    | "rent_types"
+                    | "age"
+                    | "drive_experience"
+                    | "deposit_required"
+                    | "rent_durations"
+                    | "car_category"
+                )
+              }
+              type="button"
+            >
+              {selectedLabel ? (
+                <>
+                  <span>{selectedLabel}</span>
+                  <span
+                    className={styles.clearIcon}
+                    onClick={(e) => {
+                      e.stopPropagation();
 
-        <div className={styles.inputWrap}>
-          <label htmlFor="city">Город</label>
-          <input
-            type="text"
-            placeholder="Город"
-            {...register("city")}
-            onChange={(e) => {
-              register("city").onChange(e);
-              handleCityChange(e);
-            }}
-            value={
-              watch("city") ||
-              getFilterValue<string>(FILTER_KEYS.WANTED_RENT_CITY) ||
-              ""
-            }
-          />
-        </div>
-
-        <div className={styles.inputWrap}>
-          <label htmlFor="age">Возраст арендатора</label>
-          <div className={styles.fieldsWrap}>
-            <input
-              type="number"
-              placeholder="От"
-              className={`${styles.filterMenu_price} ${
-                errors.min_age ? "invalid" : ""
-              }`}
-              {...register("min_age", {
-                valueAsNumber: true,
-                min: 0,
-              })}
-            />
-            <input
-              type="number"
-              placeholder="До"
-              className={`${styles.filterMenu_price} ${
-                errors.max_age ? "invalid" : ""
-              }`}
-              {...register("max_age", {
-                valueAsNumber: true,
-                min: 0,
-              })}
-            />
-          </div>
-        </div>
-
-        <div className={styles.inputWrap}>
-          <label htmlFor="drive_experience">Опыт вождения</label>
-          <DropdownList
-            options={driveExperienceOptions}
-            value={watch("drive_experience")}
-            onSelect={(value) =>
-              setValue("drive_experience", value as string[])
-            }
-            isMulti
-          />
-        </div>
-
-        <div className={styles.inputWrap}>
-          <label htmlFor="rent_durations">Сроки аренды</label>
-          <DropdownList
-            options={wantedRentDurationOptions}
-            value={watch("rent_durations")}
-            onSelect={(value) => setValue("rent_durations", value as string[])}
-            isMulti
-          />
-        </div>
-
-        <label className="checkboxWrapper" style={{ display: "flex" }}>
+                      setValue(field.key as keyof WantedRentFilterFormData, "");
+                    }}
+                  >
+                    <Cross />
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span>{field.label}</span>
+                  <Arrow />
+                </>
+              )}
+            </button>
+          );
+        })}
+        <label
+          className={`${styles.checkboxWrapper} ${styles.filterMenu_field}`}
+        >
+          <span className={styles.checkboxLabel}>Требуется гражданство РФ</span>
           <input
             type="checkbox"
-            className="checkboxInput"
-            {...register("deposit_required")}
-          />
-          <span className="checkboxCustom" />
-          <span className="checkboxLabel">Без депозита</span>
-        </label>
-
-        <label className="checkboxWrapper" style={{ display: "flex" }}>
-          <input
-            type="checkbox"
-            className="checkboxInput"
+            className={styles.checkboxInput}
             {...register("require_russian_citizenship")}
           />
-          <span className="checkboxCustom" />
-          <span className="checkboxLabel">Требуется гражданство РФ</span>
+          <span className={styles.checkboxCustom} />
         </label>
-
-        <div className={styles.inputWrap}>
-          <label htmlFor="car_category">Класс авто</label>
-          <DropdownList
-            options={carCategoryOptions}
-            value={watch("car_category")}
-            onSelect={(value) => setValue("car_category", value as string[])}
-            isMulti
+        <label
+          className={`${styles.checkboxWrapper} ${styles.filterMenu_field}`}
+        >
+          <span className={styles.checkboxLabel}>Без депозита</span>
+          <input
+            type="checkbox"
+            className={styles.checkboxInput}
+            {...register("deposit_required")}
           />
-        </div>
+          <span className={styles.checkboxCustom} />
+        </label>
       </div>
 
       <div className={styles.filterMenu_bottom}>
-        <button type="submit" className={`red-btn ${styles.submitBtn}`}>
-          Показать объявления
-        </button>
         <button
           type="button"
           className={`${styles.cleanBtn}`}
           onClick={() => reset()}
         >
-          Сбросить все
+          Сброс фильтров
+        </button>
+        <button type="submit" className={`red-btn ${styles.submitBtn}`}>
+          Применить фильтры
         </button>
       </div>
+      {filterFields.map((field) =>
+        openSheet === field.sheet ? (
+          <BottomSheet
+            key={field.key}
+            isOpen
+            onClose={() => setOpenSheet(null)}
+            defaultHeight="auto"
+          >
+            {field.type === "radio" && field.options && (
+              <BottomSheetRadioFilter
+                title={field.label}
+                options={field.options}
+                value={
+                  watch(field.key as keyof WantedRentFilterFormData) as
+                    | string
+                    | number
+                    | boolean
+                }
+                onChange={(value) => {
+                  setValue(field.key as keyof WantedRentFilterFormData, value);
+                }}
+              />
+            )}
+            {field.type === "custom" && field.key === "age" && (
+              <div className={styles.inputWrap} style={{ marginBottom: 0 }}>
+                <label className={styles.fieldsWrap_title}>
+                  Возраст арендатора
+                </label>
+                <div className={styles.fieldsWrap}>
+                  <input
+                    type="number"
+                    placeholder="От"
+                    className={`${styles.filterMenu_year} ${
+                      errors.min_age ? "invalid" : ""
+                    }`}
+                    value={watch("min_age") || ""}
+                    onChange={(e) =>
+                      setValue(
+                        "min_age",
+                        e.target.value ? Number(e.target.value) : undefined
+                      )
+                    }
+                  />
+                  <input
+                    type="number"
+                    placeholder="До"
+                    className={`${styles.filterMenu_year} ${
+                      errors.max_age ? "invalid" : ""
+                    }`}
+                    value={watch("max_age") || ""}
+                    onChange={(e) =>
+                      setValue(
+                        "max_age",
+                        e.target.value ? Number(e.target.value) : undefined
+                      )
+                    }
+                  />
+                </div>
+                <button
+                  className={styles.submitBtn}
+                  type="button"
+                  onClick={() => setOpenSheet(null)}
+                >
+                  Показать объявления
+                </button>
+              </div>
+            )}
+            {field.type === "checkbox" && field.options && (
+              <BottomSheetCheckboxFilter
+                title={field.label}
+                options={field.options}
+                values={
+                  (watch(
+                    field.key as keyof WantedRentFilterFormData
+                  ) as string[]) || []
+                }
+                onChange={(values) =>
+                  setValue(field.key as keyof WantedRentFilterFormData, values)
+                }
+                onReset={() =>
+                  setValue(field.key as keyof WantedRentFilterFormData, [])
+                }
+                onSubmit={() => setOpenSheet(null)}
+              />
+            )}
+          </BottomSheet>
+        ) : null
+      )}
     </form>
   );
 };

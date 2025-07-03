@@ -24,12 +24,18 @@
   background-color: $light-gray;
   width: 100%;
   max-width: 540px;
+  max-height: 700px;
+  overflow-y: auto;
   border-radius: 16px 16px 0 0;
   padding: 20px 32px 60px;
   padding-bottom: 40px;
   transform: translateY(100%);
   animation: slideUp 0.3s ease forwards;
   z-index: 1000;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   &.closing {
     animation: slideDown 0.3s ease forwards;
@@ -50,6 +56,154 @@
 
 .content {
   height: 100%;
+}
+
+.sheetContent.radio {
+  .title {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .option {
+    display: flex;
+    justify-content: flex-start;
+    font-weight: 300;
+    padding: 14px 0;
+    border-bottom: 1px solid #fff;
+    margin: 0;
+    input {
+      width: auto;
+    }
+    input[type="radio"] {
+      display: none;
+      &:checked + .radio {
+        background: #ffff;
+      }
+
+      &:checked + .radio::after {
+        content: "";
+        display: block;
+        width: 12px;
+        height: 12px;
+        background: $red-color;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    .radio {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      border: 1px solid #dedede;
+      border-radius: 50%;
+      margin-right: 12px;
+      background: transparent;
+      display: inline-block;
+      transition: border-color 0.2s;
+    }
+  }
+}
+
+.sheetContent.checkbox {
+  .title {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+  .tabBtn {
+    padding: 6px 13px;
+    border-radius: 8px;
+    background: #dedede;
+    transition: background 0.2s ease;
+    &.active {
+      background: $primary-black;
+      color: #fff;
+    }
+    &.selected {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    &.selected.active .selectedCount {
+      background: $light-gray;
+      color: $primary-black;
+      font-weight: 500;
+    }
+  }
+  .topBar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+
+    .selectedCount {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      background: $primary-black;
+      color: #fff;
+      font-size: 12px;
+      border-radius: 50%;
+      transition: background 0.2s;
+    }
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 13px 0 17px;
+    border-bottom: 1px solid #fff;
+    font-size: 16px;
+    font-weight: 300;
+    input[type="checkbox"] {
+      display: none;
+    }
+    .checkbox {
+      width: 20px;
+      height: 20px;
+      border: 1px solid #dedede;
+      border-radius: 4px;
+      margin-right: 12px;
+      position: relative;
+      background: transparent;
+      display: inline-block;
+    }
+    input[type="checkbox"]:checked + .checkbox {
+      background: url(../../assets/checkbox-checked.svg);
+      background-size: cover;
+      border-color: $red-color;
+    }
+  }
+
+  .submitBtn {
+    width: 100%;
+    margin-top: 14px;
+    background: $primary-black;
+    color: #fff;
+    border-radius: 8px;
+    padding: 14px 0;
+    font-size: 16px;
+    font-weight: 500;
+  }
 }
 
 @keyframes slideUp {
@@ -85,5 +239,19 @@
   }
   to {
     opacity: 0;
+  }
+}
+
+@media (max-width: 550px) {
+  .sheetContent.checkbox {
+    .tabBtn {
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+    .selectedCount {
+      font-size: 10px;
+      min-width: 16px;
+      height: 16px;
+    }
   }
 }

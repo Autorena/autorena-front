@@ -9,7 +9,7 @@ import { ReactComponent as Calendar } from "../../assets/calendar.svg";
 import banner from "../../assets/banner-1.png";
 
 import { sortOptions } from "../../constants/sortOptions";
-import { useContext, useState, useRef } from "react";
+import { useContext, useState } from "react";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { LocationModal } from "../../components/modals/LocationModal";
 import { carBodyTypeOptions } from "../../constants/filterOptions";
@@ -21,6 +21,7 @@ import { PriceRangePickerSheet } from "../../ui-components/PriceRangePicker/Pric
 import { BrandSearchModal } from "../../components/modals/BrandSearchModal/BrandSearchModal";
 import { LargeSvgImage } from "../../components/LargeSvgImage";
 import { getLargeSvgPath } from "../../utils/largeSvgPaths";
+import { LocationContext } from "../../HOC/LocationProvider";
 
 const FILTER_KEYS = {
   BRAND: "rent_brand",
@@ -44,18 +45,16 @@ export const DailyRentFilter = ({
     null,
   ]);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-  const { watch, setValue } = useForm();
+  const { setValue } = useForm();
   const { data: brandsData } = useGetBrandsQuery("");
   const [isPriceSheetOpen, setIsPriceSheetOpen] = useState(false);
-  const [priceRange, setPriceRange] = useState<{
-    min: number | null;
-    max: number | null;
-  }>({
-    min: null,
-    max: null,
-  });
-  const priceButtonRef = useRef<HTMLButtonElement>(null);
+  const priceRange = getFilterValue(FILTER_KEYS.PRICE_RANGE) as
+    | [number | null, number | null]
+    | undefined;
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
+  const { location } = useContext(LocationContext);
+
+  const selectedCity = location || getFilterValue<string>(FILTER_KEYS.CITY);
 
   const isFilterActive = (key: string) => {
     const value = getFilterValue(key);
@@ -81,7 +80,6 @@ export const DailyRentFilter = ({
 
   const handlePriceSelect = (prices: [number | null, number | null]) => {
     setFilterValue(FILTER_KEYS.PRICE_RANGE, prices);
-    setPriceRange({ min: prices[0], max: prices[1] });
     setIsPriceSheetOpen(false);
   };
 
@@ -167,29 +165,22 @@ export const DailyRentFilter = ({
               setModalActive(true);
               setModalContent(
                 <LocationModal
-                  forFilters={true}
-                  initialCity={
-                    getFilterValue<string>(FILTER_KEYS.CITY) ?? undefined
-                  }
+                  initialCity={selectedCity ?? undefined}
                   cityKey={FILTER_KEYS.CITY}
                 />
               );
             }}
           >
-            {/* <Location />{" "} */}
             <LargeSvgImage src={getLargeSvgPath("location-icon-2")} />
 
-            {getFilterValue<string>(FILTER_KEYS.CITY) || "Выберите город"}
+            {selectedCity || "Выберите город"}
           </button>
           <button
             onClick={() => {
               setModalActive(true);
               setModalContent(
                 <LocationModal
-                  forFilters={true}
-                  initialCity={
-                    getFilterValue<string>(FILTER_KEYS.CITY) ?? undefined
-                  }
+                  initialCity={selectedCity ?? undefined}
                   cityKey={FILTER_KEYS.CITY}
                 />
               );
@@ -226,7 +217,7 @@ export const DailyRentFilter = ({
 
         <DropdownList
           options={carBodyTypeOptions}
-          value={watch("car_body_type")}
+          value={getFilterValue(FILTER_KEYS.CAR_BODY_TYPE) ?? undefined}
           onSelect={handleCarBodyTypeSelect}
           className={`${styles.home_filter} ${
             isFilterActive(FILTER_KEYS.CAR_BODY_TYPE) ? styles.active : ""
@@ -245,17 +236,16 @@ export const DailyRentFilter = ({
           )}
         </button>
 
-        <div style={{ width: "100%" }}>
+        <div style={{ width: "auto", position: "relative" }}>
           <button
-            ref={priceButtonRef}
             className={`${styles.home_filter} ${styles.filterBtn} ${
-              styles.priceButton
-            } ${isFilterActive(FILTER_KEYS.PRICE_RANGE) ? styles.active : ""}`}
+              isFilterActive(FILTER_KEYS.PRICE_RANGE) ? styles.active : ""
+            }`}
             onClick={() => setIsPriceSheetOpen(true)}
           >
-            {priceRange.min || priceRange.max ? (
+            {priceRange && (priceRange[0] || priceRange[1]) ? (
               <>
-                От {priceRange.min || 0} ₽ до {priceRange.max || "∞"} ₽
+                От {priceRange[0] || 0} ₽ до {priceRange[1] || "∞"} ₽
                 <Arrow className={styles.arrow} />
               </>
             ) : (
@@ -291,7 +281,7 @@ export const DailyRentFilter = ({
       <PriceRangePickerSheet
         isOpen={isPriceSheetOpen}
         onClose={() => setIsPriceSheetOpen(false)}
-        initialPrices={[priceRange.min, priceRange.max]}
+        initialPrices={priceRange ?? [null, null]}
         onPriceSelect={handlePriceSelect}
       />
 

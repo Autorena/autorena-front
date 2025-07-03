@@ -6,6 +6,7 @@ import { ModalContext } from "../../HOC/ModalProvider";
 import { useForm } from "react-hook-form";
 import { useDebounce } from "../../hooks/debounce";
 import { useFilter } from "../../HOC/FilterContext";
+import { FILTER_KEYS } from "../../constants/filterKeys";
 
 type FormData = {
   searchValue: string;
@@ -17,17 +18,12 @@ type LocationModalProps = {
   cityKey?: string;
 };
 
-export const LocationModal = ({
-  forFilters = false,
-  initialCity,
-  cityKey = "rent_city",
-}: LocationModalProps) => {
+export const LocationModal = ({ initialCity, cityKey }: LocationModalProps) => {
   const { setModalActive } = useContext(ModalContext);
   const { setLocation: setGlobalLocation } = useContext(LocationContext);
-  const [cities, setCities] = useState(citiesData);
   const { setFilterValue } = useFilter();
+  const [cities, setCities] = useState(citiesData);
   const [selectedCity, setSelectedCity] = useState(initialCity || "");
-
   const { register, reset, watch } = useForm<FormData>();
   const searchValue = watch("searchValue", "");
   const debouncedSearch = useDebounce(searchValue, 700);
@@ -42,10 +38,10 @@ export const LocationModal = ({
   const handleCitySelect = (cityName: string) => {
     setSelectedCity(cityName);
 
-    if (forFilters) {
+    setGlobalLocation(cityName);
+
+    if (cityKey) {
       setFilterValue(cityKey, cityName);
-    } else {
-      setGlobalLocation(cityName);
     }
 
     setModalActive(false);
@@ -64,9 +60,6 @@ export const LocationModal = ({
           {...register("searchValue", {
             required: "Поле обязательно",
           })}
-          placeholder={
-            forFilters ? "Поиск города для фильтра" : "Поиск по городам"
-          }
         />
         <button className={`red-btn ${styles.inputBtn}`} type="submit">
           Найти

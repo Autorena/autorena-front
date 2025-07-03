@@ -24,7 +24,6 @@ import { DriverVacFilter } from "./DriverVacFilter";
 
 export const FilterPage = () => {
   const { filter } = useParams<{ filter?: string }>();
-  console.log(filter);
   const dispatch = useAppDispatch();
   const { cars, loading } = useAppSelector((state) => state.cars);
   const filteredListings = useAppSelector(
@@ -196,7 +195,6 @@ export const FilterPage = () => {
         <div className={styles.home_main}>
           <div className={styles.home_info}>
             <h2 className="section-title">{filterTitle}</h2>
-            {/* <Banner className={styles.home_info_banner} /> */}
             {renderFilter()}
           </div>
           <div className={styles.home_recommends}>

@@ -6,6 +6,7 @@ import { categories } from "../../utils/categories";
 import { WantedRentListingForm } from "./WantedRentListingForm";
 import { DriverVacancyForm } from "./DriverVacancyForm";
 import { CarSellListingForm } from "./CarSellListingForm";
+import { useState } from "react";
 
 export const CreateListing = () => {
   const location = useLocation();
@@ -13,6 +14,7 @@ export const CreateListing = () => {
   const category = searchParams.get("category");
   const buyout = searchParams.get("buyout") === "true";
   const minimumRentalPeriod = Number(searchParams.get("minimum_rental_period"));
+  const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
@@ -38,10 +40,12 @@ export const CreateListing = () => {
 
           <h2>{matchedCategory?.value}</h2>
         </div>
+        {error && <div className={styles.error}>{error}</div>}
         {category === "car_rent_listing" && (
           <CarRentListingForm
             buyout={buyout}
             minimumRentalPeriod={minimumRentalPeriod}
+            setError={setError}
           />
         )}
         {category === "car_sell_listing" && <CarSellListingForm />}

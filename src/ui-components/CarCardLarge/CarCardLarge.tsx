@@ -62,7 +62,7 @@ export const CarCardLarge = ({
     e.stopPropagation();
 
     if (!isPhoneConfirmed) {
-      navigate("/unauthorized?action=favorite");
+      navigate("/unauthorized?action=favorites");
     } else {
       if (isFavoritePage) {
         dispatch(removeFromFavorites(id));

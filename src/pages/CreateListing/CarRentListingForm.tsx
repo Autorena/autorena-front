@@ -21,6 +21,7 @@ import { useCreateListingMutation } from "../../redux/listingsApi";
 type CarRentListingFormProps = {
   buyout: boolean;
   minimumRentalPeriod: number;
+  setError: (value: string) => void;
 };
 
 type FormData = {
@@ -50,13 +51,18 @@ type FormData = {
 
 export const CarRentListingForm = ({
   minimumRentalPeriod,
+  setError,
 }: CarRentListingFormProps) => {
   const [previews, setPreviews] = useState<string[]>([]);
-  const { data: brandsData } = useGetBrandsQuery("");
+  const { data: brandsData, error: isBrandsError } = useGetBrandsQuery("");
   const [selectedBrandId, setSelectedBrandId] = useState<string>("");
   const [createListing, { isLoading: isCreating }] = useCreateListingMutation();
 
-  const { data: modelsData, isLoading: isLoadingModels } = useGetModelsQuery(
+  const {
+    data: modelsData,
+    isLoading: isLoadingModels,
+    error: isModelsError,
+  } = useGetModelsQuery(
     { brandId: selectedBrandId },
     { skip: !selectedBrandId }
   );
@@ -98,6 +104,18 @@ export const CarRentListingForm = ({
     }
   }, [minimumRentalPeriod, setValue]);
 
+  // Например, после успешного запроса брендов
+  useEffect(() => {
+    if (brandsData) {
+      localStorage.setItem("brands", JSON.stringify(brandsData));
+    }
+  }, [brandsData]);
+
+  useEffect(() => {
+    if (isBrandsError) setError("Ошибка загрузки брендов");
+    if (isModelsError) setError("Ошибка загрузки моделей");
+  }, [isBrandsError, isModelsError, setError]);
+
   const onSubmit = async (data: FormData) => {
     const payload = {
       listing: {
@@ -137,6 +155,7 @@ export const CarRentListingForm = ({
       console.log("Объявление успешно создано");
     } catch (error) {
       console.error("Ошибка при создании объявления:", error);
+      setError(error?.data?.message || "Ошибка при создании объявления");
     }
   };
 

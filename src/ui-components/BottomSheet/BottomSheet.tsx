@@ -7,7 +7,7 @@ type BottomSheetProps = {
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
-  defaultHeight?: number;
+  defaultHeight?: number | "auto";
   className?: string;
   showHandle?: boolean;
   showCloseButton?: boolean;
@@ -29,13 +29,15 @@ export const BottomSheet = ({
   const sheetRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const updateSheetHeight = (height: number) => {
+  const updateSheetHeight = (height: number | "auto") => {
     if (!sheetRef.current) return;
-
-    const clampedHeight = Math.min(height, 700);
-    sheetRef.current.style.height = `${clampedHeight}px`;
+    if (height === "auto") {
+      sheetRef.current.style.height = "auto";
+    } else {
+      const clampedHeight = Math.min(height, 700);
+      sheetRef.current.style.height = `${clampedHeight}px`;
+    }
   };
-
   const handleClose = () => {
     setIsClosing(true);
     setTimeout(() => {
@@ -53,20 +55,19 @@ export const BottomSheet = ({
     const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
     setStartY(clientY);
     if (sheetRef.current) {
-      const height = parseInt(
-        sheetRef.current.style.height || `${defaultHeight}`
-      );
+      const height = sheetRef.current.getBoundingClientRect().height;
       setStartHeight(height);
     }
     sheetRef.current?.classList.add(styles.dragging);
   };
-
   const dragging = (e: MouseEvent | TouchEvent) => {
     if (!isDragging || !contentRef.current) return;
     const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
     const delta = startY - clientY;
-    const newHeight = Math.max(0, startHeight + delta);
-    updateSheetHeight(newHeight);
+    if (typeof startHeight === "number") {
+      const newHeight = Math.max(0, startHeight + delta);
+      updateSheetHeight(newHeight);
+    }
   };
 
   const dragStop = () => {

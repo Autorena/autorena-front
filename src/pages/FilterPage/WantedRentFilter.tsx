@@ -12,6 +12,7 @@ import { FilterProps } from "./RentFilter";
 import { FILTER_KEYS } from "../../constants/filterKeys";
 import { getLargeSvgPath } from "../../utils/largeSvgPaths";
 import { LargeSvgImage } from "../../components/LargeSvgImage";
+import { LocationContext } from "../../HOC/LocationProvider";
 
 export const WantedRentFilter = ({
   isFiltersOpen,
@@ -22,6 +23,10 @@ export const WantedRentFilter = ({
 }: FilterProps) => {
   const { setModalActive, setModalContent } = useContext(ModalContext);
   const { getFilterValue } = useFilter();
+  const { location } = useContext(LocationContext);
+
+  const selectedCity =
+    location || getFilterValue<string>(FILTER_KEYS.WANTED_RENT_CITY);
 
   return (
     <>
@@ -34,32 +39,22 @@ export const WantedRentFilter = ({
               setModalActive(true);
               setModalContent(
                 <LocationModal
-                  forFilters={true}
-                  initialCity={
-                    getFilterValue<string>(FILTER_KEYS.WANTED_RENT_CITY) ??
-                    undefined
-                  }
+                  initialCity={selectedCity ?? undefined}
                   cityKey={FILTER_KEYS.WANTED_RENT_CITY}
                 />
               );
             }}
           >
-            {/* <Location />{" "} */}
             <LargeSvgImage src={getLargeSvgPath("location-icon-2")} />
 
-            {getFilterValue<string>(FILTER_KEYS.WANTED_RENT_CITY) ||
-              "Выберите город"}
+            {selectedCity || "Выберите город"}
           </button>
           <button
             onClick={() => {
               setModalActive(true);
               setModalContent(
                 <LocationModal
-                  forFilters={true}
-                  initialCity={
-                    getFilterValue<string>(FILTER_KEYS.WANTED_RENT_CITY) ??
-                    undefined
-                  }
+                  initialCity={selectedCity ?? undefined}
                   cityKey={FILTER_KEYS.WANTED_RENT_CITY}
                 />
               );

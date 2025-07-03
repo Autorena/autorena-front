@@ -189,7 +189,7 @@ export const PersonalProfile = () => {
   };
 
   const mainLinks: MenuItem[] = [
-    { to: "/my-listings", icon: Icons.Listing, text: "Мои объявления" },
+    { to: "/my_listings", icon: Icons.Listing, text: "Мои объявления" },
     { to: "/develop", icon: Icons.Documents, text: "Мои документы" },
     { to: "/develop", icon: Icons.Wallet, text: "Способы оплаты" },
     { to: "/develop", icon: Icons.Car, text: "Парк автомобилей" },

@@ -8,6 +8,7 @@ import { RegistrationModal } from "../../components/modals/RegistrationModal";
 import { HeaderMobile } from "../../ui-components/HeaderMobile/HeaderMobile";
 import { LargeSvgImage } from "../../components/LargeSvgImage";
 import { getLargeSvgPath } from "../../utils/largeSvgPaths";
+import { Header } from "../../ui-components/Header/Header";
 
 type ActionConfig = {
   title: string;
@@ -48,52 +49,56 @@ export const Unauthorized = () => {
   const { setModalActive, setModalContent } = useContext(ModalContext);
 
   return (
-    <div className="container">
-      <div className={styles.unauth}>
-        <h3 className={styles.unauth_title}>{config.title}</h3>
-        <div className={styles.unauth_content}>
-          <LargeSvgImage src={getLargeSvgPath("no-auth")} />
-          <p className={styles.unauth_text}>{config.text}</p>
-          <button
-            className={`red-btn ${styles.unauth_btn}`}
-            onClick={() => setAuthSheetOpen(true)}
-          >
-            {config.buttonText}
-          </button>
+    <>
+      {" "}
+      <Header />
+      <div className="container">
+        <div className={styles.unauth}>
+          <h3 className={styles.unauth_title}>{config.title}</h3>
+          <div className={styles.unauth_content}>
+            <LargeSvgImage src={getLargeSvgPath("no-auth")} />
+            <p className={styles.unauth_text}>{config.text}</p>
+            <button
+              className={`red-btn ${styles.unauth_btn}`}
+              onClick={() => setAuthSheetOpen(true)}
+            >
+              {config.buttonText}
+            </button>
+          </div>
         </div>
-      </div>
 
-      <BottomSheet
-        isOpen={isAuthSheetOpen}
-        onClose={() => setAuthSheetOpen(false)}
-        defaultHeight={260}
-      >
-        <div className={styles.authContent}>
-          <button
-            className={styles.authButton}
-            onClick={() => {
-              setModalActive(true);
-              setModalContent(<LoginModal />);
-            }}
-          >
-            Войти через телефон или почту
-          </button>
-          <button
-            className={styles.registerBtn}
-            onClick={() => {
-              setModalActive(true);
-              setModalContent(<RegistrationModal />);
-            }}
-          >
-            Зарегистрироваться
-          </button>
-          <p className={styles.authAgreement}>
-            При регистрации и входе вы соглашаетесь с условиями использования
-            Авторена и политикой конфиденциальности.
-          </p>
-        </div>
-      </BottomSheet>
-      <HeaderMobile />
-    </div>
+        <BottomSheet
+          isOpen={isAuthSheetOpen}
+          onClose={() => setAuthSheetOpen(false)}
+          defaultHeight={260}
+        >
+          <div className={styles.authContent}>
+            <button
+              className={styles.authButton}
+              onClick={() => {
+                setModalActive(true);
+                setModalContent(<LoginModal />);
+              }}
+            >
+              Войти через телефон или почту
+            </button>
+            <button
+              className={styles.registerBtn}
+              onClick={() => {
+                setModalActive(true);
+                setModalContent(<RegistrationModal />);
+              }}
+            >
+              Зарегистрироваться
+            </button>
+            <p className={styles.authAgreement}>
+              При регистрации и входе вы соглашаетесь с условиями использования
+              Авторена и политикой конфиденциальности.
+            </p>
+          </div>
+        </BottomSheet>
+        <HeaderMobile />
+      </div>
+    </>
   );
 };
