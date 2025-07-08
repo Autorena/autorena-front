@@ -1,15 +1,9 @@
 import styles from "./Modals.module.scss";
-import { cities as citiesData } from "../../utils/cities";
 import { useContext, useEffect, useState } from "react";
 import { LocationContext } from "../../HOC/LocationProvider";
 import { ModalContext } from "../../HOC/ModalProvider";
-import { useForm } from "react-hook-form";
-import { useDebounce } from "../../hooks/debounce";
 import { useFilter } from "../../HOC/FilterContext";
-
-type FormData = {
-  searchValue: string;
-};
+import { City, useGetCitiesQuery } from "../../redux/citiesApi";
 
 type LocationModalProps = {
   forFilters?: boolean;
@@ -21,32 +15,41 @@ export const LocationModal = ({ initialCity, cityKey }: LocationModalProps) => {
   const { setModalActive } = useContext(ModalContext);
   const { setLocation: setGlobalLocation } = useContext(LocationContext);
   const { setFilterValue } = useFilter();
-  const [cities, setCities] = useState(citiesData);
   const [selectedCity, setSelectedCity] = useState(initialCity || "");
-  const { register, reset, watch } = useForm<FormData>();
-  const searchValue = watch("searchValue", "");
-  const debouncedSearch = useDebounce(searchValue, 700);
+  const [searchValue, setSearchValue] = useState("");
+  const [filteredCities, setFilteredCities] = useState<City[]>([]);
+
+  const { data: citiesData, isLoading } = useGetCitiesQuery("");
+  const cities: City[] = citiesData?.towns || [];
 
   useEffect(() => {
-    const filtered = citiesData.filter((city) =>
-      city.name.toLowerCase().includes(debouncedSearch.toLowerCase())
-    );
-    setCities(filtered);
-  }, [debouncedSearch]);
+    if (!searchValue) {
+      setFilteredCities(cities);
+    } else {
+      setFilteredCities(
+        cities.filter((city) =>
+          city.name.toLowerCase().includes(searchValue.toLowerCase())
+        )
+      );
+    }
+  }, [searchValue, cities]);
 
   const handleCitySelect = (cityName: string) => {
     setSelectedCity(cityName);
-
     setGlobalLocation(cityName);
-
     if (cityKey) {
       setFilterValue(cityKey, cityName);
     }
-
     setModalActive(false);
-    setCities(citiesData);
-    reset();
   };
+
+  if (isLoading) {
+    return (
+      <div className={`${styles.modal} ${styles.location}`}>
+        <div className={styles.loading}>Загрузка городов...</div>
+      </div>
+    );
+  }
 
   return (
     <form
@@ -56,18 +59,16 @@ export const LocationModal = ({ initialCity, cityKey }: LocationModalProps) => {
       <div className={styles.inputWrap}>
         <input
           type="text"
-          {...register("searchValue", {
-            required: "Поле обязательно",
-          })}
+          placeholder="Поиск по городам"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
         />
         <button className={`red-btn ${styles.inputBtn}`} type="submit">
           Найти
         </button>
       </div>
-      <div
-        className={`${styles.cities} ${debouncedSearch ? styles.search : ""}`}
-      >
-        {cities.map((city) => (
+      <div className={`${styles.cities} ${searchValue ? styles.search : ""}`}>
+        {filteredCities.map((city) => (
           <button
             key={city.id}
             className={`${styles.city} ${

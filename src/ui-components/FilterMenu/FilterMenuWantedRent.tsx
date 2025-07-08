@@ -21,10 +21,9 @@ import { BottomSheet } from "../BottomSheet/BottomSheet";
 import { BottomSheetRadioFilter } from "../BottomSheet/BottomSheetRadioFilter";
 import { BottomSheetCheckboxFilter } from "../BottomSheet/BottomSheetCheckboxFilter";
 import { FilterField } from "./FilterMenuRent";
-import { getSelectedLabel } from "./getSelectedLabel";
 
 type WantedRentFilterFormData = {
-  rent_types: string;
+  rent_types: string[];
   min_age?: number;
   max_age?: number;
   drive_experience: string[];
@@ -44,7 +43,7 @@ export const FilterMenuWantedRent = ({
   isOpen,
   onClose,
 }: FilterMenuWantedRentProps) => {
-  const [trigger] = useLazyFilterListingsQuery();
+  const [triggerFilter] = useLazyFilterListingsQuery();
   const dispatch = useAppDispatch();
   const { location } = useContext(LocationContext);
   const { setModalContent, setModalActive } = useContext(ModalContext);
@@ -72,7 +71,7 @@ export const FilterMenuWantedRent = ({
       label: "Тип аренды",
       options: rentTypesOptions,
       sheet: "rent_types",
-      type: "radio",
+      type: "checkbox",
     },
     {
       key: "age",
@@ -125,7 +124,7 @@ export const FilterMenuWantedRent = ({
     };
 
     try {
-      const result = await trigger(filterObject);
+      const result = await triggerFilter(filterObject).unwrap();
       if (result.data) {
         dispatch(setFilteredCars(result.data.listings));
         onClose();
@@ -177,68 +176,256 @@ export const FilterMenuWantedRent = ({
         </button>
       </div>
       <div className={styles.filterMenu_fields}>
-        {filterFields.map((field) => {
-          const value = watch(field.key as keyof WantedRentFilterFormData);
-          const selectedLabel = getSelectedLabel(field, value, watch);
-          return (
-            <button
-              key={field.key}
-              className={styles.filterMenu_field}
-              onClick={() =>
-                setOpenSheet(
-                  field.sheet as
-                    | "rent_types"
-                    | "age"
-                    | "drive_experience"
-                    | "deposit_required"
-                    | "rent_durations"
-                    | "car_category"
-                )
-              }
-              type="button"
-            >
-              {selectedLabel ? (
-                <>
-                  <span>{selectedLabel}</span>
-                  <span
-                    className={styles.clearIcon}
-                    onClick={(e) => {
-                      e.stopPropagation();
-
-                      setValue(field.key as keyof WantedRentFilterFormData, "");
-                    }}
-                  >
-                    <Cross />
-                  </span>
-                </>
-              ) : (
-                <>
-                  <span>{field.label}</span>
-                  <Arrow />
-                </>
-              )}
-            </button>
-          );
-        })}
         <label
-          className={`${styles.checkboxWrapper} ${styles.filterMenu_field}`}
-        >
-          <span className={styles.checkboxLabel}>Требуется гражданство РФ</span>
-          <input
-            type="checkbox"
-            className={styles.checkboxInput}
-            {...register("require_russian_citizenship")}
-          />
-          <span className={styles.checkboxCustom} />
-        </label>
-        <label
-          className={`${styles.checkboxWrapper} ${styles.filterMenu_field}`}
+          className={`${styles.checkboxWrapper} ${styles.filterMenu_field} ${styles.separated}`}
+          style={{ borderRadius: "8px", marginBottom: "20px" }}
         >
           <span className={styles.checkboxLabel}>Без депозита</span>
           <input
             type="checkbox"
             className={styles.checkboxInput}
             {...register("deposit_required")}
+          />
+          <span className={styles.checkboxCustom} />
+        </label>
+
+        <button
+          className={`${styles.filterMenu_field} ${styles.separated}`}
+          onClick={() => setOpenSheet("age")}
+          type="button"
+          style={{ borderRadius: "8px", marginBottom: "20px" }}
+        >
+          {(() => {
+            const minAge = watch("min_age");
+            const maxAge = watch("max_age");
+            if (minAge || maxAge) {
+              if (minAge && maxAge) {
+                return (
+                  <>
+                    <span>
+                      От {minAge} до {maxAge} лет
+                    </span>
+                    <span
+                      className={styles.clearIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue("min_age", undefined);
+                        setValue("max_age", undefined);
+                      }}
+                    >
+                      <Cross />
+                    </span>
+                  </>
+                );
+              } else if (minAge) {
+                return (
+                  <>
+                    <span>От {minAge} лет</span>
+                    <span
+                      className={styles.clearIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue("min_age", undefined);
+                        setValue("max_age", undefined);
+                      }}
+                    >
+                      <Cross />
+                    </span>
+                  </>
+                );
+              } else if (maxAge) {
+                return (
+                  <>
+                    <span>До {maxAge} лет</span>
+                    <span
+                      className={styles.clearIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue("min_age", undefined);
+                        setValue("max_age", undefined);
+                      }}
+                    >
+                      <Cross />
+                    </span>
+                  </>
+                );
+              }
+            }
+            return (
+              <>
+                <span>Возраст арендатора</span>
+                <Arrow />
+              </>
+            );
+          })()}
+        </button>
+
+        <button
+          className={styles.filterMenu_field}
+          onClick={() => setOpenSheet("rent_types")}
+          type="button"
+        >
+          {(() => {
+            const watchedValue = watch("rent_types");
+            if (Array.isArray(watchedValue) && watchedValue.length > 0) {
+              const selectedOptions = rentTypesOptions.filter((o) =>
+                watchedValue.includes(o.value)
+              );
+              if (selectedOptions.length > 0) {
+                return (
+                  <>
+                    <span>
+                      {selectedOptions.map((o) => o.label).join(", ")}
+                    </span>
+                    <span
+                      className={styles.clearIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue("rent_types", []);
+                      }}
+                    >
+                      <Cross />
+                    </span>
+                  </>
+                );
+              }
+            }
+            return (
+              <>
+                <span>Тип аренды</span>
+                <Arrow />
+              </>
+            );
+          })()}
+        </button>
+
+        <button
+          className={styles.filterMenu_field}
+          onClick={() => setOpenSheet("drive_experience")}
+          type="button"
+        >
+          {(() => {
+            const watchedValue = watch("drive_experience");
+            if (Array.isArray(watchedValue) && watchedValue.length > 0) {
+              const selectedOptions = driveExperienceOptions.filter((o) =>
+                watchedValue.includes(o.value)
+              );
+              if (selectedOptions.length > 0) {
+                return (
+                  <>
+                    <span>
+                      {selectedOptions.map((o) => o.label).join(", ")}
+                    </span>
+                    <span
+                      className={styles.clearIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue("drive_experience", []);
+                      }}
+                    >
+                      <Cross />
+                    </span>
+                  </>
+                );
+              }
+            }
+            return (
+              <>
+                <span>Опыт вождения</span>
+                <Arrow />
+              </>
+            );
+          })()}
+        </button>
+
+        <button
+          className={styles.filterMenu_field}
+          onClick={() => setOpenSheet("rent_durations")}
+          type="button"
+        >
+          {(() => {
+            const watchedValue = watch("rent_durations");
+            if (Array.isArray(watchedValue) && watchedValue.length > 0) {
+              const selectedOptions = rentDurationOptions.filter((o) =>
+                watchedValue.includes(o.value)
+              );
+              if (selectedOptions.length > 0) {
+                return (
+                  <>
+                    <span>
+                      {selectedOptions.map((o) => o.label).join(", ")}
+                    </span>
+                    <span
+                      className={styles.clearIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue("rent_durations", []);
+                      }}
+                    >
+                      <Cross />
+                    </span>
+                  </>
+                );
+              }
+            }
+            return (
+              <>
+                <span>Сроки аренды</span>
+                <Arrow />
+              </>
+            );
+          })()}
+        </button>
+
+        <button
+          className={styles.filterMenu_field}
+          onClick={() => setOpenSheet("car_category")}
+          type="button"
+          style={{ marginBottom: "20px", borderRadius: "0 0 8px 8px" }}
+        >
+          {(() => {
+            const watchedValue = watch("car_category");
+            if (Array.isArray(watchedValue) && watchedValue.length > 0) {
+              const selectedOptions = carCategoryOptions.filter((o) =>
+                watchedValue.includes(o.value)
+              );
+              if (selectedOptions.length > 0) {
+                return (
+                  <>
+                    <span>
+                      {selectedOptions.map((o) => o.label).join(", ")}
+                    </span>
+                    <span
+                      className={styles.clearIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue("car_category", []);
+                      }}
+                    >
+                      <Cross />
+                    </span>
+                  </>
+                );
+              }
+            }
+            return (
+              <>
+                <span>Класс авто</span>
+                <Arrow />
+              </>
+            );
+          })()}
+        </button>
+
+        <label
+          className={`${styles.checkboxWrapper} ${styles.filterMenu_field} ${styles.separated}`}
+          style={{ borderRadius: "8px" }}
+        >
+          <span className={styles.checkboxLabel}>Требуется гражданство РФ</span>
+          <input
+            type="checkbox"
+            className={styles.checkboxInput}
+            {...register("require_russian_citizenship")}
           />
           <span className={styles.checkboxCustom} />
         </label>
@@ -291,27 +478,47 @@ export const FilterMenuWantedRent = ({
                     className={`${styles.filterMenu_year} ${
                       errors.min_age ? "invalid" : ""
                     }`}
+                    {...register("min_age", {
+                      valueAsNumber: true,
+                      min: 0,
+                      validate: (value) => {
+                        const maxAge = watch("max_age");
+                        if (maxAge && value && Number(value) > Number(maxAge)) {
+                          return "Минимальный возраст не может быть больше максимального";
+                        }
+                        return true;
+                      },
+                    })}
                     value={watch("min_age") || ""}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setValue(
                         "min_age",
                         e.target.value ? Number(e.target.value) : undefined
-                      )
-                    }
+                      );
+                    }}
                   />
                   <input
                     type="number"
                     placeholder="До"
-                    className={`${styles.filterMenu_year} ${
-                      errors.max_age ? "invalid" : ""
-                    }`}
+                    className={`${errors.max_age ? "invalid" : ""}`}
                     value={watch("max_age") || ""}
-                    onChange={(e) =>
+                    {...register("max_age", {
+                      valueAsNumber: true,
+                      min: 0,
+                      validate: (value) => {
+                        const minAge = watch("min_age");
+                        if (minAge && value && Number(value) < Number(minAge)) {
+                          return "Максимальный возраст не может быть меньше минимального";
+                        }
+                        return true;
+                      },
+                    })}
+                    onChange={(e) => {
                       setValue(
                         "max_age",
                         e.target.value ? Number(e.target.value) : undefined
-                      )
-                    }
+                      );
+                    }}
                   />
                 </div>
                 <button

@@ -2,12 +2,10 @@ import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
 import styles from "../Home/Home.module.scss";
 import { FilterProps } from "./RentFilter";
 import { ReactComponent as Filters } from "../../assets/filters.svg";
-// import { ReactComponent as Location } from "../../assets/location-icon-2.svg";
 import { ReactComponent as Search } from "../../assets/search-icon.svg";
 import { ReactComponent as Arrow } from "../../assets/swiper-arrow.svg";
 import { ReactComponent as Calendar } from "../../assets/calendar.svg";
 import banner from "../../assets/banner-1.png";
-
 import { sortOptions } from "../../constants/sortOptions";
 import { useContext, useState } from "react";
 import { ModalContext } from "../../HOC/ModalProvider";
@@ -22,6 +20,8 @@ import { BrandSearchModal } from "../../components/modals/BrandSearchModal/Brand
 import { LargeSvgImage } from "../../components/LargeSvgImage";
 import { getLargeSvgPath } from "../../utils/largeSvgPaths";
 import { LocationContext } from "../../HOC/LocationProvider";
+import { BottomSheet } from "../../ui-components/BottomSheet/BottomSheet";
+import { BottomSheetCheckboxFilter } from "../../ui-components/BottomSheet/BottomSheetCheckboxFilter";
 
 const FILTER_KEYS = {
   BRAND: "rent_brand",
@@ -53,6 +53,10 @@ export const DailyRentFilter = ({
     | undefined;
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
   const { location } = useContext(LocationContext);
+  const [isCarBodySheetOpen, setIsCarBodySheetOpen] = useState(false);
+  const carBodyType = getFilterValue(FILTER_KEYS.CAR_BODY_TYPE) as
+    | string[]
+    | undefined;
 
   const selectedCity = location || getFilterValue<string>(FILTER_KEYS.CITY);
 
@@ -87,11 +91,6 @@ export const DailyRentFilter = ({
     setValue("brand", value);
     setFilterValue(FILTER_KEYS.BRAND, value);
     setIsBrandModalOpen(false);
-  };
-
-  const handleCarBodyTypeSelect = (value: string) => {
-    setValue("car_body_type", value);
-    setFilterValue(FILTER_KEYS.CAR_BODY_TYPE, value);
   };
 
   const handleApplyFilters = () => {
@@ -215,15 +214,24 @@ export const DailyRentFilter = ({
           {selectedBrand || "Марка авто"}
         </button>
 
-        <DropdownList
-          options={carBodyTypeOptions}
-          value={getFilterValue(FILTER_KEYS.CAR_BODY_TYPE) ?? undefined}
-          onSelect={handleCarBodyTypeSelect}
-          className={`${styles.home_filter} ${
+        <button
+          className={`${styles.home_filter} ${styles.filterBtn} ${
             isFilterActive(FILTER_KEYS.CAR_BODY_TYPE) ? styles.active : ""
           }`}
-          placeholder="Тип кузова"
-        />
+          onClick={() => setIsCarBodySheetOpen(true)}
+          type="button"
+        >
+          {carBodyType && carBodyType.length > 0
+            ? carBodyType
+                .map(
+                  (type) =>
+                    carBodyTypeOptions.find((o) => o.value === type)?.label ||
+                    type
+                )
+                .join(", ")
+            : "Тип кузова"}
+          <Arrow className={styles.arrow} />
+        </button>
 
         <button
           className={`${styles.home_filter} ${styles.count} ${
@@ -298,6 +306,29 @@ export const DailyRentFilter = ({
         initialDates={dateRange}
         onDateSelect={handleDateSelect}
       />
+
+      <BottomSheet
+        isOpen={isCarBodySheetOpen}
+        onClose={() => setIsCarBodySheetOpen(false)}
+        defaultHeight="auto"
+      >
+        <BottomSheetCheckboxFilter
+          title="Тип кузова"
+          options={carBodyTypeOptions}
+          values={
+            Array.isArray(getFilterValue(FILTER_KEYS.CAR_BODY_TYPE))
+              ? (getFilterValue(FILTER_KEYS.CAR_BODY_TYPE) as string[])
+              : []
+          }
+          onChange={(values) => {
+            setFilterValue(FILTER_KEYS.CAR_BODY_TYPE, values);
+          }}
+          onReset={() => {
+            setFilterValue(FILTER_KEYS.CAR_BODY_TYPE, []);
+          }}
+          onSubmit={() => setIsCarBodySheetOpen(false)}
+        />
+      </BottomSheet>
     </>
   );
 };

@@ -20,7 +20,6 @@ import { LargeSvgImage } from "../../components/LargeSvgImage";
 import { LocationModal } from "../../components/modals/LocationModal";
 import { getLargeSvgPath } from "../../utils/largeSvgPaths";
 import { BottomSheet } from "../BottomSheet/BottomSheet";
-import { BottomSheetRadioFilter } from "../BottomSheet/BottomSheetRadioFilter";
 import { FilterField } from "./FilterMenuRent";
 import { BottomSheetCheckboxFilter } from "../BottomSheet/BottomSheetCheckboxFilter";
 import { getSelectedLabel } from "./getSelectedLabel";
@@ -29,10 +28,10 @@ import { FILTER_KEYS } from "../../constants/filterKeys";
 type RentFilterFormData = {
   city?: string;
   without_deposit?: boolean;
-  transmission_type?: string;
-  fuel_type?: string;
-  car_body_type?: string;
-  car_category?: string;
+  transmission_type?: string[];
+  fuel_type?: string[];
+  car_body_type?: string[];
+  car_category?: string[];
   min_year?: number;
   max_year?: number;
   min_price_per_day?: number;
@@ -44,6 +43,12 @@ type RentFilterFormData = {
   car_options?: {
     has_air_conditioning?: boolean;
     has_child_seat?: boolean;
+  };
+  rent_listing_options?: {
+    allowed_for_taxi?: boolean;
+    allowed_only_for_personal_use?: boolean;
+    require_russian_citizenship?: boolean;
+    buyout_possible?: boolean;
   };
 };
 
@@ -66,7 +71,18 @@ export const FilterMenuDaily = ({ isOpen, onClose }: FilterMenuRentProps) => {
   const { location } = useContext(LocationContext);
   const { setModalContent, setModalActive } = useContext(ModalContext);
   const [openSheet, setOpenSheet] = useState<
-    null | "transmission" | "fuel" | "body" | "category" | "year" | "price"
+    | null
+    | "transmission"
+    | "fuel"
+    | "body"
+    | "category"
+    | "year"
+    | "price"
+    | "payment_options"
+    | "has_air_conditioning"
+    | "has_child_seat"
+    | "car_options"
+    | "rent_listing_options"
   >(null);
   const {
     register,
@@ -79,33 +95,10 @@ export const FilterMenuDaily = ({ isOpen, onClose }: FilterMenuRentProps) => {
 
   const filterFields: FilterField[] = [
     {
-      key: "transmission_type",
-      label: "Тип трансмиссии",
-      options: transmissionOptions,
-      sheet: "transmission",
-      type: "radio",
-    },
-    {
-      key: "fuel_type",
-      label: "Тип топлива",
-      options: fuelTypeOptions,
-      sheet: "fuel",
-      type: "radio",
-    },
-    {
-      key: "car_body_type",
-      label: "Тип кузова",
-      options: carBodyTypeOptions,
-      sheet: "body",
-      type: "radio",
-      filterKey: "CAR_BODY_TYPE",
-    },
-    {
-      key: "car_category",
-      label: "Класс авто",
-      options: carCategoryOptions,
-      sheet: "category",
-      type: "radio",
+      key: "price",
+      label: "Цена",
+      sheet: "price",
+      type: "custom",
     },
     {
       key: "year",
@@ -114,16 +107,63 @@ export const FilterMenuDaily = ({ isOpen, onClose }: FilterMenuRentProps) => {
       type: "custom",
     },
     {
-      key: "price",
-      label: "Цена",
-      sheet: "price",
-      type: "custom",
+      key: "transmission_type",
+      label: "Тип трансмиссии",
+      options: transmissionOptions,
+      sheet: "transmission",
+      type: "checkbox",
+    },
+    {
+      key: "fuel_type",
+      label: "Тип топлива",
+      options: fuelTypeOptions,
+      sheet: "fuel",
+      type: "checkbox",
+    },
+    {
+      key: "car_category",
+      label: "Класс авто",
+      options: carCategoryOptions,
+      sheet: "category",
+      type: "checkbox",
+    },
+    {
+      key: "car_body_type",
+      label: "Тип кузова",
+      options: carBodyTypeOptions,
+      sheet: "body",
+      type: "checkbox",
+      filterKey: "CAR_BODY_TYPE",
     },
     {
       key: "payment_options",
       label: "График платежей",
       options: paymentPeriodOptions,
       sheet: "payment_options",
+      type: "checkbox",
+    },
+    {
+      key: "car_options",
+      label: "Дополнительно",
+      options: [
+        { value: "has_air_conditioning", label: "Кондиционер" },
+        { value: "has_child_seat", label: "Детское кресло" },
+      ],
+      sheet: "car_options",
+      type: "checkbox",
+    },
+    {
+      key: "rent_listing_options",
+      label: "Условия аренды",
+      options: [
+        { value: "allowed_for_taxi", label: "Можно для такси" },
+        {
+          value: "allowed_only_for_personal_use",
+          label: "Только для личного пользования",
+        },
+        { value: "buyout_possible", label: "Возможен выкуп" },
+      ],
+      sheet: "rent_listing_options",
       type: "checkbox",
     },
   ];
@@ -140,8 +180,13 @@ export const FilterMenuDaily = ({ isOpen, onClose }: FilterMenuRentProps) => {
     if (typeof brand === "string") {
       setValue("brand", brand);
     }
-    if (typeof carBodyType === "string") {
-      setValue("car_body_type", carBodyType);
+    if (
+      Array.isArray(carBodyType) &&
+      carBodyType.every((v) => typeof v === "string")
+    ) {
+      setValue("car_body_type", carBodyType as string[]);
+    } else {
+      setValue("car_body_type", []);
     }
     if (Array.isArray(priceRange)) {
       setValue("min_price_per_day", priceRange[0] ?? undefined);
@@ -154,10 +199,6 @@ export const FilterMenuDaily = ({ isOpen, onClose }: FilterMenuRentProps) => {
       setValue("city", filterCity);
     }
   }, [filterState, setValue, getFilterValue, filterCity]);
-
-  function isFilterKey(key: string): key is keyof typeof FILTER_KEYS {
-    return key in FILTER_KEYS;
-  }
 
   const onSubmit = async (data: RentFilterFormData) => {
     const filterObject = {
@@ -177,6 +218,7 @@ export const FilterMenuDaily = ({ isOpen, onClose }: FilterMenuRentProps) => {
           max_price_per_day: data.max_price_per_day,
           payment_options: data.payment_options,
           car_options: data.car_options,
+          rent_listing_options: data.rent_listing_options,
         },
       },
       pagination: {
@@ -239,89 +281,390 @@ export const FilterMenuDaily = ({ isOpen, onClose }: FilterMenuRentProps) => {
         </button>
       </div>
       <div className={styles.filterMenu_fields}>
-        {filterFields.map((field) => {
-          const value = watch(field.key as keyof RentFilterFormData);
-          const selectedLabel = getSelectedLabel(field, value, watch);
-          return (
-            <button
-              key={field.key}
-              className={styles.filterMenu_field}
-              onClick={() =>
-                setOpenSheet(
-                  field.sheet as
-                    | "transmission"
-                    | "fuel"
-                    | "body"
-                    | "category"
-                    | "year"
-                    | "price"
-                )
-              }
-              type="button"
-            >
-              {selectedLabel ? (
-                <>
-                  <span>{selectedLabel}</span>
-                  <span
-                    className={styles.clearIcon}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (field.type === "custom" && field.key === "year") {
-                        setValue("min_year", undefined);
-                        setValue("max_year", undefined);
-                      } else if (
-                        field.type === "custom" &&
-                        field.key === "price"
-                      ) {
-                        setValue("min_price_per_day", undefined);
-                        setValue("max_price_per_day", undefined);
-                      } else {
-                        setValue(field.key as keyof RentFilterFormData, "");
-                      }
-                    }}
-                  >
-                    <Cross />
-                  </span>
-                </>
-              ) : (
-                <>
-                  <span>{field.label}</span>
-                  <Arrow />
-                </>
-              )}
-            </button>
-          );
-        })}
+        <div className={styles.groupedFields}>
+          <button
+            className={`
+              ${styles.filterMenu_field}
+              
+            `}
+            type="button"
+            onClick={() => setOpenSheet("price")}
+          >
+            {getSelectedLabel(
+              filterFields[0],
+              {
+                min_price: watch("min_price_per_day"),
+                max_price: watch("max_price_per_day"),
+              },
+              watch
+            ) ? (
+              <>
+                <span>
+                  {getSelectedLabel(
+                    filterFields[0],
+                    {
+                      min_price: watch("min_price_per_day"),
+                      max_price: watch("max_price_per_day"),
+                    },
+                    watch
+                  )}
+                </span>
+                <span
+                  className={styles.clearIcon}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setValue("min_price_per_day", undefined);
+                    setValue("max_price_per_day", undefined);
+                  }}
+                >
+                  <Cross />
+                </span>
+              </>
+            ) : (
+              <>
+                <span>Цена</span>
+                <Arrow />
+              </>
+            )}
+          </button>
+          <label
+            className={`${styles.checkboxWrapper} ${styles.filterMenu_field}`}
+          >
+            <span className={styles.checkboxLabel}>Без депозита</span>
+            <input
+              type="checkbox"
+              className={styles.checkboxInput}
+              {...register("without_deposit")}
+            />
+            <span className={styles.checkboxCustom} />
+          </label>
+        </div>
+
+        <button
+          className={`${styles.filterMenu_field} ${styles.separated}`}
+          type="button"
+          onClick={() => setOpenSheet("year")}
+          style={{ margin: "0 0 20px" }}
+        >
+          {getSelectedLabel(
+            filterFields[1],
+            {
+              min_year: watch("min_year"),
+              max_year: watch("max_year"),
+            },
+            watch
+          ) ? (
+            <>
+              <span>
+                {getSelectedLabel(
+                  filterFields[1],
+                  {
+                    min_year: watch("min_year"),
+                    max_year: watch("max_year"),
+                  },
+                  watch
+                )}
+              </span>
+              <span
+                className={styles.clearIcon}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setValue("min_year", undefined);
+                  setValue("max_year", undefined);
+                }}
+              >
+                <Cross />
+              </span>
+            </>
+          ) : (
+            <>
+              <span>Год выпуска</span>
+              <Arrow />
+            </>
+          )}
+        </button>
+
+        <button
+          className={styles.filterMenu_field}
+          type="button"
+          onClick={() => setOpenSheet("transmission")}
+          style={{ borderRadius: "8px 8px 0 0" }}
+        >
+          {getSelectedLabel(
+            filterFields[2],
+            watch("transmission_type"),
+            watch
+          ) ? (
+            <>
+              <span>
+                {getSelectedLabel(
+                  filterFields[2],
+                  watch("transmission_type"),
+                  watch
+                )}
+              </span>
+              <span
+                className={styles.clearIcon}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setValue("transmission_type", []);
+                }}
+              >
+                <Cross />
+              </span>
+            </>
+          ) : (
+            <>
+              <span>Тип трансмисии</span>
+              <Arrow />
+            </>
+          )}
+        </button>
+
+        <button
+          className={styles.filterMenu_field}
+          type="button"
+          onClick={() => setOpenSheet("fuel")}
+        >
+          {getSelectedLabel(filterFields[3], watch("fuel_type"), watch) ? (
+            <>
+              <span>
+                {getSelectedLabel(filterFields[3], watch("fuel_type"), watch)}
+              </span>
+              <span
+                className={styles.clearIcon}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setValue("fuel_type", []);
+                }}
+              >
+                <Cross />
+              </span>
+            </>
+          ) : (
+            <>
+              <span>Тип топлива</span>
+              <Arrow />
+            </>
+          )}
+        </button>
+
+        <button
+          className={styles.filterMenu_field}
+          type="button"
+          onClick={() => setOpenSheet("body")}
+        >
+          {getSelectedLabel(
+            filterFields[5],
+            Array.isArray(getFilterValue(FILTER_KEYS.CAR_BODY_TYPE))
+              ? (getFilterValue(FILTER_KEYS.CAR_BODY_TYPE) as string[])
+              : [],
+            watch
+          ) ? (
+            <>
+              <span>
+                {getSelectedLabel(
+                  filterFields[5],
+                  Array.isArray(getFilterValue(FILTER_KEYS.CAR_BODY_TYPE))
+                    ? (getFilterValue(FILTER_KEYS.CAR_BODY_TYPE) as string[])
+                    : [],
+                  watch
+                )}
+              </span>
+              <span
+                className={styles.clearIcon}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFilterValue(FILTER_KEYS.CAR_BODY_TYPE, []);
+                }}
+              >
+                <Cross />
+              </span>
+            </>
+          ) : (
+            <>
+              <span>Тип кузова</span>
+              <Arrow />
+            </>
+          )}
+        </button>
+
+        <button
+          className={styles.filterMenu_field}
+          type="button"
+          onClick={() => setOpenSheet("category")}
+        >
+          {getSelectedLabel(filterFields[4], watch("car_category"), watch) ? (
+            <>
+              <span>
+                {getSelectedLabel(
+                  filterFields[4],
+                  watch("car_category"),
+                  watch
+                )}
+              </span>
+              <span
+                className={styles.clearIcon}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setValue("car_category", []);
+                }}
+              >
+                <Cross />
+              </span>
+            </>
+          ) : (
+            <>
+              <span>Класс авто</span>
+              <Arrow />
+            </>
+          )}
+        </button>
+
+        <button
+          className={styles.filterMenu_field}
+          type="button"
+          onClick={() => setOpenSheet("payment_options")}
+          style={{ borderRadius: "0 0 8px 8px" }}
+        >
+          {getSelectedLabel(
+            filterFields[6],
+            watch("payment_options"),
+            watch
+          ) ? (
+            <>
+              <span>
+                {getSelectedLabel(
+                  filterFields[6],
+                  watch("payment_options"),
+                  watch
+                )}
+              </span>
+              <span
+                className={styles.clearIcon}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setValue("payment_options", { periods: [] });
+                }}
+              >
+                <Cross />
+              </span>
+            </>
+          ) : (
+            <>
+              <span>График платежей</span>
+              <Arrow />
+            </>
+          )}
+        </button>
+
+        <button
+          className={`${styles.filterMenu_field} ${styles.separated}`}
+          type="button"
+          onClick={() => setOpenSheet("car_options")}
+          style={{ margin: "20px 0" }}
+        >
+          {watch("car_options.has_air_conditioning") ||
+          watch("car_options.has_child_seat") ? (
+            <>
+              <span>
+                {[
+                  watch("car_options.has_air_conditioning")
+                    ? "Кондиционер"
+                    : null,
+                  watch("car_options.has_child_seat") ? "Детское кресло" : null,
+                ]
+                  .filter(Boolean)
+                  .join(", ")}
+              </span>
+              <span
+                className={styles.clearIcon}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setValue("car_options", {
+                    has_air_conditioning: false,
+                    has_child_seat: false,
+                  });
+                }}
+              >
+                <Cross />
+              </span>
+            </>
+          ) : (
+            <>
+              <span>Дополнительные опции</span>
+              <Arrow />
+            </>
+          )}
+        </button>
+
+        <button
+          className={`${styles.filterMenu_field} ${styles.separated}`}
+          type="button"
+          onClick={() => setOpenSheet("rent_listing_options")}
+          style={{ borderRadius: "8px", marginBottom: "20px" }}
+        >
+          {watch("rent_listing_options.allowed_for_taxi") ||
+          watch("rent_listing_options.allowed_only_for_personal_use") ||
+          watch("rent_listing_options.buyout_possible") ? (
+            <>
+              <span>
+                {[
+                  watch("rent_listing_options.allowed_for_taxi")
+                    ? "Можно для такси"
+                    : null,
+                  watch("rent_listing_options.allowed_only_for_personal_use")
+                    ? "Только для личного пользования"
+                    : null,
+                  watch("rent_listing_options.buyout_possible")
+                    ? "Возможен выкуп"
+                    : null,
+                ]
+                  .filter(Boolean)
+                  .join(", ")}
+              </span>
+              <span
+                className={styles.clearIcon}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setValue("rent_listing_options", {
+                    allowed_for_taxi: false,
+                    allowed_only_for_personal_use: false,
+                    buyout_possible: false,
+                    require_russian_citizenship: watch(
+                      "rent_listing_options.require_russian_citizenship"
+                    ),
+                  });
+                }}
+              >
+                <Cross />
+              </span>
+            </>
+          ) : (
+            <>
+              <span>Условия аренды</span>
+              <Arrow />
+            </>
+          )}
+        </button>
+
         <label
           className={`${styles.checkboxWrapper} ${styles.filterMenu_field}`}
+          style={{ borderRadius: "8px" }}
         >
-          <span className={styles.checkboxLabel}>Есть кондиционер</span>
+          <span className={styles.checkboxLabel}>Требуется гражданство РФ</span>
           <input
             type="checkbox"
             className={styles.checkboxInput}
-            {...register("car_options.has_air_conditioning")}
-          />
-          <span className={styles.checkboxCustom} />
-        </label>
-        <label
-          className={`${styles.checkboxWrapper} ${styles.filterMenu_field}`}
-        >
-          <span className={styles.checkboxLabel}>Есть детское кресло</span>
-          <input
-            type="checkbox"
-            className={styles.checkboxInput}
-            {...register("car_options.has_child_seat")}
-          />
-          <span className={styles.checkboxCustom} />
-        </label>
-        <label
-          className={`${styles.checkboxWrapper} ${styles.filterMenu_field}`}
-        >
-          <span className={styles.checkboxLabel}>Без депозита</span>
-          <input
-            type="checkbox"
-            className={styles.checkboxInput}
-            {...register("without_deposit")}
+            checked={
+              !!watch("rent_listing_options.require_russian_citizenship")
+            }
+            onChange={(e) =>
+              setValue("rent_listing_options", {
+                ...watch("rent_listing_options"),
+                require_russian_citizenship: e.target.checked,
+              })
+            }
           />
           <span className={styles.checkboxCustom} />
         </label>
@@ -341,33 +684,13 @@ export const FilterMenuDaily = ({ isOpen, onClose }: FilterMenuRentProps) => {
       </div>
 
       {filterFields.map((field) =>
-        openSheet === field.sheet ? (
+        openSheet === field.sheet && field.key !== "car_body_type" ? (
           <BottomSheet
             key={field.key}
             isOpen
             onClose={() => setOpenSheet(null)}
             defaultHeight="auto"
           >
-            {field.type === "radio" && field.options && (
-              <BottomSheetRadioFilter
-                title={field.label}
-                options={field.options}
-                value={
-                  watch(field.key as keyof RentFilterFormData) as
-                    | string
-                    | number
-                    | boolean
-                }
-                onChange={(value) => {
-                  setValue(field.key as keyof RentFilterFormData, value);
-                  if (field.filterKey && FILTER_KEYS[field.filterKey]) {
-                    setFilterValue(FILTER_KEYS[field.filterKey], value);
-                  } else if (isFilterKey(field.key)) {
-                    setFilterValue(FILTER_KEYS[field.key], value);
-                  }
-                }}
-              />
-            )}
             {field.type === "checkbox" && field.options && (
               <BottomSheetCheckboxFilter
                 title={field.label}
@@ -375,16 +698,65 @@ export const FilterMenuDaily = ({ isOpen, onClose }: FilterMenuRentProps) => {
                 values={
                   field.key === "payment_options"
                     ? watch("payment_options")?.periods || []
-                    : []
+                    : field.key === "car_options"
+                    ? Object.entries(watch("car_options") || {})
+                        .filter(([, v]) => v)
+                        .map(([key]) => key)
+                    : field.key === "rent_listing_options"
+                    ? Object.entries(watch("rent_listing_options") || {})
+                        .filter(
+                          ([key, v]) =>
+                            v && key !== "require_russian_citizenship"
+                        )
+                        .map(([key]) => key)
+                    : (watch(
+                        field.key as keyof RentFilterFormData
+                      ) as string[]) || []
                 }
                 onChange={(values) => {
                   if (field.key === "payment_options") {
                     setValue("payment_options", { periods: values });
+                  } else if (field.key === "car_options") {
+                    setValue("car_options", {
+                      has_air_conditioning: values.includes(
+                        "has_air_conditioning"
+                      ),
+                      has_child_seat: values.includes("has_child_seat"),
+                    });
+                  } else if (field.key === "rent_listing_options") {
+                    setValue("rent_listing_options", {
+                      allowed_for_taxi: values.includes("allowed_for_taxi"),
+                      allowed_only_for_personal_use: values.includes(
+                        "allowed_only_for_personal_use"
+                      ),
+                      buyout_possible: values.includes("buyout_possible"),
+                      require_russian_citizenship: watch(
+                        "rent_listing_options.require_russian_citizenship"
+                      ),
+                    });
+                  } else {
+                    setValue(field.key as keyof RentFilterFormData, values);
                   }
                 }}
                 onReset={() => {
                   if (field.key === "payment_options") {
                     setValue("payment_options", { periods: [] });
+                  } else if (field.key === "car_options") {
+                    setValue("car_options", {
+                      has_air_conditioning: false,
+                      has_child_seat: false,
+                    });
+                  } else if (field.key === "rent_listing_options") {
+                    setValue("rent_listing_options", {
+                      allowed_for_taxi: false,
+                      allowed_only_for_personal_use: false,
+                      buyout_possible: false,
+                      require_russian_citizenship: watch(
+                        "rent_listing_options.require_russian_citizenship"
+                      ),
+                    });
+                  } else {
+                    setValue(field.key as keyof RentFilterFormData, []);
                   }
                 }}
                 onSubmit={() => setOpenSheet(null)}
@@ -482,6 +854,31 @@ export const FilterMenuDaily = ({ isOpen, onClose }: FilterMenuRentProps) => {
             )}
           </BottomSheet>
         ) : null
+      )}
+      {/* Отдельный BottomSheet для типа кузова */}
+      {openSheet === "body" && (
+        <BottomSheet
+          isOpen
+          onClose={() => setOpenSheet(null)}
+          defaultHeight="auto"
+        >
+          <BottomSheetCheckboxFilter
+            title="Тип кузова"
+            options={carBodyTypeOptions}
+            values={
+              Array.isArray(getFilterValue(FILTER_KEYS.CAR_BODY_TYPE))
+                ? (getFilterValue(FILTER_KEYS.CAR_BODY_TYPE) as string[])
+                : []
+            }
+            onChange={(values) => {
+              setFilterValue(FILTER_KEYS.CAR_BODY_TYPE, values);
+            }}
+            onReset={() => {
+              setFilterValue(FILTER_KEYS.CAR_BODY_TYPE, []);
+            }}
+            onSubmit={() => setOpenSheet(null)}
+          />
+        </BottomSheet>
       )}
     </form>
   );

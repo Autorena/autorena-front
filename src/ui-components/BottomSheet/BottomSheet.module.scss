@@ -24,7 +24,7 @@
   background-color: $light-gray;
   width: 100%;
   max-width: 540px;
-  max-height: 700px;
+  max-height: calc(100vh - 100px);
   overflow-y: auto;
   border-radius: 16px 16px 0 0;
   padding: 20px 32px 60px;
@@ -56,6 +56,10 @@
 
 .content {
   height: 100%;
+  .title {
+    font-size: 16px;
+    font-weight: 500;
+  }
 }
 
 .sheetContent.radio {

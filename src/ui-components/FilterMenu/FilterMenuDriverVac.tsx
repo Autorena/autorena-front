@@ -64,56 +64,6 @@ export const FilterMenuDriverVac = ({
     setValue,
   } = useForm<DriverVacFilterFormData>();
 
-  const filterFields = [
-    {
-      key: "salary_periods",
-      label: "Периодичность выплат",
-      options: salaryPeriodOptions,
-      sheet: "salary_periods",
-      type: "checkbox",
-    },
-    {
-      key: "payment_periods",
-      label: "Период выплат",
-      options: paymentPeriodOptions,
-      sheet: "payment_periods",
-      type: "checkbox",
-    },
-    {
-      key: "required_experience",
-      label: "Опыт вождения",
-      options: driveExperienceOptions,
-      sheet: "required_experience",
-      type: "checkbox",
-    },
-    {
-      key: "employment_types",
-      label: "Тип занятости",
-      options: employmentTypeOptions,
-      sheet: "employment_types",
-      type: "checkbox",
-    },
-    {
-      key: "work_schedules",
-      label: "График работы",
-      options: workScheduleOptions,
-      sheet: "work_schedules",
-      type: "checkbox",
-    },
-    {
-      key: "salary",
-      label: "Зарплата",
-      sheet: "salary",
-      type: "custom",
-    },
-    {
-      key: "age",
-      label: "Возраст",
-      sheet: "age",
-      type: "custom",
-    },
-  ];
-
   const onSubmit = async (data: DriverVacFilterFormData) => {
     const filterObject = {
       filter: {
@@ -135,6 +85,8 @@ export const FilterMenuDriverVac = ({
         page_size: 20,
       },
     };
+
+    console.log(filterObject);
 
     try {
       const result = await trigger(filterObject);
@@ -191,92 +143,307 @@ export const FilterMenuDriverVac = ({
       </div>
 
       <div className={styles.filterMenu_fields}>
-        {filterFields.map((field) => {
-          const watchedValue = watch(
-            field.key as keyof DriverVacFilterFormData
-          );
-          let selectedLabel: string | undefined;
-          if (field.type === "custom" && field.key === "salary") {
+        <button
+          className={`${styles.filterMenu_field} ${styles.separated}`}
+          onClick={() => setOpenSheet("salary")}
+          type="button"
+          style={{ marginBottom: "20px" }}
+        >
+          {(() => {
             if (minSalary || maxSalary) {
               if (minSalary && maxSalary) {
-                selectedLabel = `От ${minSalary}₽ до ${maxSalary}₽`;
+                return (
+                  <>
+                    <span>
+                      От {minSalary}₽ до {maxSalary}₽
+                    </span>
+                    <span
+                      className={styles.clearIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue("min_salary", 0);
+                        setValue("max_salary", 0);
+                      }}
+                    >
+                      <Cross />
+                    </span>
+                  </>
+                );
               } else if (minSalary) {
-                selectedLabel = `От ${minSalary}₽`;
+                return (
+                  <>
+                    <span>От {minSalary}₽</span>
+                    <span
+                      className={styles.clearIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue("min_salary", 0);
+                        setValue("max_salary", 0);
+                      }}
+                    >
+                      <Cross />
+                    </span>
+                  </>
+                );
               } else if (maxSalary) {
-                selectedLabel = `До ${maxSalary}₽`;
+                return (
+                  <>
+                    <span>До {maxSalary}₽</span>
+                    <span
+                      className={styles.clearIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue("min_salary", 0);
+                        setValue("max_salary", 0);
+                      }}
+                    >
+                      <Cross />
+                    </span>
+                  </>
+                );
               }
             }
-          } else if (field.type === "custom" && field.key === "age") {
+            return (
+              <>
+                <span>Зарплата</span>
+                <Arrow />
+              </>
+            );
+          })()}
+        </button>
+
+        <button
+          className={`${styles.filterMenu_field} ${styles.separated}`}
+          onClick={() => setOpenSheet("age")}
+          type="button"
+          style={{ marginBottom: "20px" }}
+        >
+          {(() => {
             const age = watch("age");
             if (age) {
-              selectedLabel = `${age} лет`;
-            }
-          } else if (field.options) {
-            if (Array.isArray(watchedValue)) {
-              const selectedOptions = field.options.filter((o) =>
-                watchedValue.includes(o.value)
-              );
-              if (selectedOptions.length > 0) {
-                selectedLabel = selectedOptions.map((o) => o.label).join(", ");
-              }
-            } else if (watchedValue) {
-              selectedLabel = field.options.find(
-                (o) => o.value === watchedValue
-              )?.label;
-            }
-          }
-
-          return (
-            <button
-              key={field.key}
-              className={styles.filterMenu_field}
-              onClick={() =>
-                setOpenSheet(
-                  field.sheet as
-                    | "salary"
-                    | "age"
-                    | "salary_periods"
-                    | "payment_periods"
-                    | "employment_type"
-                    | "work_schedules"
-                    | "citizenship"
-                    | "experience"
-                )
-              }
-              type="button"
-            >
-              {selectedLabel ? (
+              return (
                 <>
-                  <span>{selectedLabel}</span>
+                  <span>{age} лет</span>
                   <span
                     className={styles.clearIcon}
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (field.type === "custom" && field.key === "salary") {
-                        setValue("min_salary", 0);
-                        setValue("max_salary", 0);
-                      } else {
-                        setValue(
-                          field.key as keyof DriverVacFilterFormData,
-                          ""
-                        );
-                      }
+                      setValue("age", 0);
                     }}
                   >
                     <Cross />
                   </span>
                 </>
-              ) : (
-                <>
-                  <span>{field.label}</span>
-                  <Arrow />
-                </>
-              )}
-            </button>
-          );
-        })}
+              );
+            }
+            return (
+              <>
+                <span>Возраст</span>
+                <Arrow />
+              </>
+            );
+          })()}
+        </button>
+
+        <button
+          className={styles.filterMenu_field}
+          onClick={() => setOpenSheet("salary_periods")}
+          type="button"
+        >
+          {(() => {
+            const watchedValue = watch("salary_periods");
+            if (Array.isArray(watchedValue) && watchedValue.length > 0) {
+              const selectedOptions = salaryPeriodOptions.filter((o) =>
+                watchedValue.includes(o.value)
+              );
+              if (selectedOptions.length > 0) {
+                return (
+                  <>
+                    <span>
+                      {selectedOptions.map((o) => o.label).join(", ")}
+                    </span>
+                    <span
+                      className={styles.clearIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue("salary_periods", []);
+                      }}
+                    >
+                      <Cross />
+                    </span>
+                  </>
+                );
+              }
+            }
+            return (
+              <>
+                <span>Периодичность выплат</span>
+                <Arrow />
+              </>
+            );
+          })()}
+        </button>
+
+        <button
+          className={styles.filterMenu_field}
+          onClick={() => setOpenSheet("payment_periods")}
+          type="button"
+        >
+          {(() => {
+            const watchedValue = watch("payment_periods");
+            if (Array.isArray(watchedValue) && watchedValue.length > 0) {
+              const selectedOptions = paymentPeriodOptions.filter((o) =>
+                watchedValue.includes(o.value)
+              );
+              if (selectedOptions.length > 0) {
+                return (
+                  <>
+                    <span>
+                      {selectedOptions.map((o) => o.label).join(", ")}
+                    </span>
+                    <span
+                      className={styles.clearIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue("payment_periods", []);
+                      }}
+                    >
+                      <Cross />
+                    </span>
+                  </>
+                );
+              }
+            }
+            return (
+              <>
+                <span>Период выплат</span>
+                <Arrow />
+              </>
+            );
+          })()}
+        </button>
+
+        <button
+          className={styles.filterMenu_field}
+          onClick={() => setOpenSheet("experience")}
+          type="button"
+        >
+          {(() => {
+            const watchedValue = watch("required_experience");
+            if (Array.isArray(watchedValue) && watchedValue.length > 0) {
+              const selectedOptions = driveExperienceOptions.filter((o) =>
+                watchedValue.includes(o.value)
+              );
+              if (selectedOptions.length > 0) {
+                return (
+                  <>
+                    <span>
+                      {selectedOptions.map((o) => o.label).join(", ")}
+                    </span>
+                    <span
+                      className={styles.clearIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue("required_experience", []);
+                      }}
+                    >
+                      <Cross />
+                    </span>
+                  </>
+                );
+              }
+            }
+            return (
+              <>
+                <span>Опыт вождения</span>
+                <Arrow />
+              </>
+            );
+          })()}
+        </button>
+
+        <button
+          className={styles.filterMenu_field}
+          onClick={() => setOpenSheet("employment_type")}
+          type="button"
+        >
+          {(() => {
+            const watchedValue = watch("employment_types");
+            if (Array.isArray(watchedValue) && watchedValue.length > 0) {
+              const selectedOptions = employmentTypeOptions.filter((o) =>
+                watchedValue.includes(o.value)
+              );
+              if (selectedOptions.length > 0) {
+                return (
+                  <>
+                    <span>
+                      {selectedOptions.map((o) => o.label).join(", ")}
+                    </span>
+                    <span
+                      className={styles.clearIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue("employment_types", []);
+                      }}
+                    >
+                      <Cross />
+                    </span>
+                  </>
+                );
+              }
+            }
+            return (
+              <>
+                <span>Тип занятости</span>
+                <Arrow />
+              </>
+            );
+          })()}
+        </button>
+
+        <button
+          className={styles.filterMenu_field}
+          onClick={() => setOpenSheet("work_schedules")}
+          type="button"
+          style={{ borderRadius: "0 0 8px 8px", marginBottom: "20px" }}
+        >
+          {(() => {
+            const watchedValue = watch("work_schedules");
+            if (Array.isArray(watchedValue) && watchedValue.length > 0) {
+              const selectedOptions = workScheduleOptions.filter((o) =>
+                watchedValue.includes(o.value)
+              );
+              if (selectedOptions.length > 0) {
+                return (
+                  <>
+                    <span>
+                      {selectedOptions.map((o) => o.label).join(", ")}
+                    </span>
+                    <span
+                      className={styles.clearIcon}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setValue("work_schedules", []);
+                      }}
+                    >
+                      <Cross />
+                    </span>
+                  </>
+                );
+              }
+            }
+            return (
+              <>
+                <span>График работы</span>
+                <Arrow />
+              </>
+            );
+          })()}
+        </button>
+
         <label
-          className={`${styles.checkboxWrapper} ${styles.filterMenu_field}`}
+          className={`${styles.checkboxWrapper} ${styles.filterMenu_field} ${styles.separated}`}
+          style={{ borderRadius: "8px" }}
         >
           <span className={styles.checkboxLabel}>Требуется гражданство РФ</span>
           <input
@@ -300,105 +467,168 @@ export const FilterMenuDriverVac = ({
           Показать вакансии
         </button>
       </div>
-      {filterFields.map((field) =>
-        openSheet === field.sheet ? (
-          <BottomSheet
-            key={field.key}
-            isOpen
-            onClose={() => setOpenSheet(null)}
-            defaultHeight="auto"
-          >
-            {field.type === "custom" && field.key === "age" && (
-              <div className={styles.inputWrap} style={{ marginBottom: 0 }}>
-                <label className={styles.fieldsWrap_title}>Возраст</label>
-                <div className={styles.fieldsWrap}>
-                  <input
-                    type="number"
-                    className={`${styles.filterMenu_age} ${
-                      errors.age ? "invalid" : ""
-                    }`}
-                    value={watch("age") || ""}
-                    onChange={(e) => setValue("age", Number(e.target.value))}
-                  />
-                </div>
-                <button
-                  className={styles.submitBtn}
-                  type="button"
-                  onClick={() => setOpenSheet(null)}
-                >
-                  Показать объявления
-                </button>
-              </div>
-            )}
-            {field.type === "custom" && field.key === "salary" && (
-              <div className={styles.inputWrap} style={{ marginBottom: 0 }}>
-                <label className={styles.fieldsWrap_title}>Зарплата</label>
-                <div className={styles.fieldsWrap}>
-                  <input
-                    type="number"
-                    placeholder="От"
-                    className={`${styles.filterMenu_price} ${
-                      errors.min_salary ? "invalid" : ""
-                    }`}
-                    value={minSalary || ""}
-                    {...register("min_salary", {
-                      valueAsNumber: true,
-                      min: 0,
-                    })}
-                    onChange={(e) =>
-                      setValue("min_salary", Number(e.target.value))
-                    }
-                  />
-                  <input
-                    type="number"
-                    placeholder="До"
-                    className={`${styles.filterMenu_price} ${
-                      errors.max_salary ? "invalid" : ""
-                    }`}
-                    value={maxSalary || ""}
-                    {...register("max_salary", {
-                      valueAsNumber: true,
-                      min: 0,
-                      validate: (value) =>
-                        !minSalary ||
-                        !value ||
-                        Number(value) >= Number(minSalary),
-                    })}
-                    onChange={(e) =>
-                      setValue("max_salary", Number(e.target.value))
-                    }
-                  />
-                </div>
-
-                <button
-                  className={styles.submitBtn}
-                  type="button"
-                  onClick={() => setOpenSheet(null)}
-                >
-                  Показать объявления
-                </button>
-              </div>
-            )}
-            {field.type === "checkbox" && field.options && (
-              <BottomSheetCheckboxFilter
-                title={field.label}
-                options={field.options}
-                values={
-                  (watch(
-                    field.key as keyof DriverVacFilterFormData
-                  ) as string[]) || []
-                }
-                onChange={(values) =>
-                  setValue(field.key as keyof DriverVacFilterFormData, values)
-                }
-                onReset={() =>
-                  setValue(field.key as keyof DriverVacFilterFormData, [])
-                }
-                onSubmit={() => setOpenSheet(null)}
+      {openSheet === "age" && (
+        <BottomSheet
+          isOpen
+          onClose={() => setOpenSheet(null)}
+          defaultHeight="auto"
+        >
+          <div className={styles.inputWrap} style={{ marginBottom: 0 }}>
+            <label className={styles.fieldsWrap_title}>Возраст</label>
+            <div className={styles.fieldsWrap}>
+              <input
+                type="number"
+                className={`${styles.filterMenu_age} ${
+                  errors.age ? "invalid" : ""
+                }`}
+                value={watch("age") || ""}
+                onChange={(e) => setValue("age", Number(e.target.value))}
               />
-            )}
-          </BottomSheet>
-        ) : null
+            </div>
+            <button
+              className={styles.submitBtn}
+              type="button"
+              onClick={() => setOpenSheet(null)}
+            >
+              Показать объявления
+            </button>
+          </div>
+        </BottomSheet>
+      )}
+
+      {openSheet === "salary" && (
+        <BottomSheet
+          isOpen
+          onClose={() => setOpenSheet(null)}
+          defaultHeight="auto"
+        >
+          <div className={styles.inputWrap} style={{ marginBottom: 0 }}>
+            <label className={styles.fieldsWrap_title}>Зарплата</label>
+            <div className={styles.fieldsWrap}>
+              <input
+                type="number"
+                placeholder="От"
+                className={`${styles.filterMenu_price} ${
+                  errors.min_salary ? "invalid" : ""
+                }`}
+                value={minSalary || ""}
+                {...register("min_salary", {
+                  valueAsNumber: true,
+                  min: 0,
+                })}
+                onChange={(e) => setValue("min_salary", Number(e.target.value))}
+              />
+              <input
+                type="number"
+                placeholder="До"
+                className={`${styles.filterMenu_price} ${
+                  errors.max_salary ? "invalid" : ""
+                }`}
+                value={maxSalary || ""}
+                {...register("max_salary", {
+                  valueAsNumber: true,
+                  min: 0,
+                  validate: (value) =>
+                    !minSalary || !value || Number(value) >= Number(minSalary),
+                })}
+                onChange={(e) => setValue("max_salary", Number(e.target.value))}
+              />
+            </div>
+
+            <button
+              className={styles.submitBtn}
+              type="button"
+              onClick={() => setOpenSheet(null)}
+            >
+              Показать объявления
+            </button>
+          </div>
+        </BottomSheet>
+      )}
+
+      {openSheet === "salary_periods" && (
+        <BottomSheet
+          isOpen
+          onClose={() => setOpenSheet(null)}
+          defaultHeight="auto"
+        >
+          <BottomSheetCheckboxFilter
+            title="Периодичность выплат"
+            options={salaryPeriodOptions}
+            values={(watch("salary_periods") as string[]) || []}
+            onChange={(values) => setValue("salary_periods", values)}
+            onReset={() => setValue("salary_periods", [])}
+            onSubmit={() => setOpenSheet(null)}
+          />
+        </BottomSheet>
+      )}
+
+      {openSheet === "payment_periods" && (
+        <BottomSheet
+          isOpen
+          onClose={() => setOpenSheet(null)}
+          defaultHeight="auto"
+        >
+          <BottomSheetCheckboxFilter
+            title="Период выплат"
+            options={paymentPeriodOptions}
+            values={(watch("payment_periods") as string[]) || []}
+            onChange={(values) => setValue("payment_periods", values)}
+            onReset={() => setValue("payment_periods", [])}
+            onSubmit={() => setOpenSheet(null)}
+          />
+        </BottomSheet>
+      )}
+
+      {openSheet === "experience" && (
+        <BottomSheet
+          isOpen
+          onClose={() => setOpenSheet(null)}
+          defaultHeight="auto"
+        >
+          <BottomSheetCheckboxFilter
+            title="Опыт вождения"
+            options={driveExperienceOptions}
+            values={(watch("required_experience") as string[]) || []}
+            onChange={(values) => setValue("required_experience", values)}
+            onReset={() => setValue("required_experience", [])}
+            onSubmit={() => setOpenSheet(null)}
+          />
+        </BottomSheet>
+      )}
+
+      {openSheet === "employment_type" && (
+        <BottomSheet
+          isOpen
+          onClose={() => setOpenSheet(null)}
+          defaultHeight="auto"
+        >
+          <BottomSheetCheckboxFilter
+            title="Тип занятости"
+            options={employmentTypeOptions}
+            values={(watch("employment_types") as string[]) || []}
+            onChange={(values) => setValue("employment_types", values)}
+            onReset={() => setValue("employment_types", [])}
+            onSubmit={() => setOpenSheet(null)}
+          />
+        </BottomSheet>
+      )}
+
+      {openSheet === "work_schedules" && (
+        <BottomSheet
+          isOpen
+          onClose={() => setOpenSheet(null)}
+          defaultHeight="auto"
+        >
+          <BottomSheetCheckboxFilter
+            title="График работы"
+            options={workScheduleOptions}
+            values={(watch("work_schedules") as string[]) || []}
+            onChange={(values) => setValue("work_schedules", values)}
+            onReset={() => setValue("work_schedules", [])}
+            onSubmit={() => setOpenSheet(null)}
+          />
+        </BottomSheet>
       )}
     </form>
   );

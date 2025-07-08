@@ -12,6 +12,7 @@ type FilterValue =
   | boolean
   | [number | null, number | null]
   | [Date | null, Date | null]
+  | string[]
   | null
   | undefined;
 

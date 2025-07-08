@@ -35,7 +35,7 @@
 
     & .cities {
       display: grid;
-      grid-template-columns: repeat(3, max-content);
+      grid-template-columns: repeat(3, 1fr);
       gap: 8px 48px;
       max-height: 536px;
       height: 100%;

@@ -8,6 +8,7 @@ import favoritesReducer from "./favoritesSlice";
 import { brandsApi } from "./brandsApi";
 import { modelsApi } from "./modelsApi";
 import { listingsApi } from "./listingsApi";
+import { citiesApi } from "./citiesApi";
 
 export const store = configureStore({
   reducer: {
@@ -20,12 +21,14 @@ export const store = configureStore({
     [brandsApi.reducerPath]: brandsApi.reducer,
     [modelsApi.reducerPath]: modelsApi.reducer,
     [listingsApi.reducerPath]: listingsApi.reducer,
+    [citiesApi.reducerPath]: citiesApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       brandsApi.middleware,
       modelsApi.middleware,
-      listingsApi.middleware
+      listingsApi.middleware,
+      citiesApi.middleware
     ),
 });
 

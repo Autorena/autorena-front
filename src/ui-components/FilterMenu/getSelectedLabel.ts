@@ -22,8 +22,8 @@ export function getSelectedLabel(
     return undefined;
   }
   if (field.type === "custom" && field.key === "price") {
-    const minPrice = watch("min_price_per_day");
-    const maxPrice = watch("max_price_per_day");
+    const minPrice = watch("min_price_per_day") || watch("min_price");
+    const maxPrice = watch("max_price_per_day") || watch("max_price");
     if (minPrice || maxPrice) {
       if (minPrice && maxPrice) {
         return `От ${minPrice}₽ до ${maxPrice}₽`;
