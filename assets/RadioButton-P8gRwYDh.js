@@ -1,1 +1,0 @@
-import{j as e}from"./index-QVhdUJ9f.js";const x="_checkboxWrapper_eqgxc_2",s={checkboxWrapper:x},i=({label:r,name:c,value:o,checked:a,labelStyle:p,onChange:t})=>e.jsx("div",{className:s.checkboxWrapper,children:e.jsxs("label",{style:p,children:[r,e.jsx("input",{type:"radio",className:s.modernRadio,value:o,name:c,checked:a,onChange:t}),e.jsx("span",{})]})});export{i as R};
