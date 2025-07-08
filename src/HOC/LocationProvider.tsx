@@ -6,7 +6,6 @@ type LocationContextType = {
   setLocation: (city: string) => void;
   autoDetectCity: () => void;
   isDetecting: boolean;
-  detectionError: string | null;
   detectedCity: { name: string } | null;
 };
 
@@ -15,7 +14,6 @@ export const LocationContext = createContext<LocationContextType>({
   setLocation: () => {},
   autoDetectCity: () => {},
   isDetecting: false,
-  detectionError: null,
   detectedCity: null,
 });
 
@@ -25,7 +23,7 @@ export const LocationProvider = ({
   children: React.ReactNode;
 }) => {
   const [location, setLocation] = useState("Москва");
-  const { detectedCity, isDetecting, error, detectCity } = useAutoDetectCity();
+  const { detectedCity, isDetecting, detectCity } = useAutoDetectCity();
 
   useEffect(() => {
     detectCity();
@@ -50,7 +48,6 @@ export const LocationProvider = ({
         setLocation: handleSetLocation,
         autoDetectCity: detectCity,
         isDetecting,
-        detectionError: error,
         detectedCity,
       }}
     >
