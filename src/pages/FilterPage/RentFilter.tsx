@@ -1,5 +1,4 @@
 import { ReactComponent as Filters } from "../../assets/filters.svg";
-// import { ReactComponent as Location } from "../../assets/location-icon-2.svg";
 import banner from "../../assets/banner-2.png";
 import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
 import { sortOptions } from "../../constants/sortOptions";
@@ -38,7 +37,7 @@ export const RentFilter = ({
   return (
     <>
       <img src={banner} alt="" className={styles.home_info_banner} />
-      <div className={styles.home_info_points}>
+      <div className={styles.home_info_points} style={{ marginBottom: "20px" }}>
         <div className={styles.home_info_points_top}>
           <button
             className={`${styles.home_filter} ${styles.large}`}

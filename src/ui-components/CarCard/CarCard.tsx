@@ -3,24 +3,23 @@ import styles from "./CarCard.module.scss";
 import { ReactComponent as Favorite } from "../../assets/favorite.svg";
 import { ReactComponent as More } from "../../assets/more-icon.svg";
 import { CarCardProps } from "../../types";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { useAppDispatch } from "../../redux/hooks";
 import { addToFavorites } from "../../redux/favoritesSlice";
+import { useAuth } from "../../HOC/AuthProvider";
 
 export const CarCard = ({ carData }: CarCardProps) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { isPhoneConfirmed } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAuth();
 
-  const {
-    listing: { id, carRentListing, carSellListing },
-  } = carData;
+  const { id, carRentListing, carSellListing } = carData;
 
   const listingData = carRentListing || carSellListing;
   if (!listingData) return null;
 
   const {
-    carContent: { photosUrl, brandId, modelId, yearOfCarProduction },
+    carContent: { brandId, modelId, yearOfCarProduction },
     listingOptions: {
       allowedForTaxi,
       allowedOnlyForPersonalUse,
@@ -52,11 +51,13 @@ export const CarCard = ({ carData }: CarCardProps) => {
   return (
     <Link
       to={`/${id}?from=${currentFilter}`}
-      className={`${styles.carCard} ${carData.listing?.ads && styles.ads}`}
+      // className={`${styles.carCard} ${carData.listing?.ads && styles.ads}`}
+      className={`${styles.carCard}`}
     >
       <div className={styles.carCard_imgWrap}>
         <img
-          src={photosUrl[0]}
+          // src={photosUrl[0]}
+          src="car.svg"
           alt="Car photo"
           className={styles.carCard_img}
           loading="lazy"
@@ -80,7 +81,7 @@ export const CarCard = ({ carData }: CarCardProps) => {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            if (!isPhoneConfirmed) {
+            if (!isAuthenticated) {
               navigate("/unauthorized?action=favorites");
             } else {
               dispatch(addToFavorites(carData));
@@ -92,7 +93,7 @@ export const CarCard = ({ carData }: CarCardProps) => {
       </div>
       {carRentListing && (
         <p className={styles.carCard_buyOption}>
-          {buyoutPossible && "возможен выкуп"}
+          {buyoutPossible ? "возможен выкуп" : "выкуп невозможен"}
         </p>
       )}
       <div className={styles.carCard_bottom}>
@@ -102,7 +103,7 @@ export const CarCard = ({ carData }: CarCardProps) => {
             Для личного пользования: {allowedOnlyForPersonalUse ? "да" : "нет"}
           </li>
           <li>Для такси: {allowedForTaxi ? "да" : "нет"}</li>
-          {carRentListing && <li>Скидка за сроки: нет</li>}
+          <li>Скидка за сроки: нет</li>
         </ul>
       </div>
     </Link>

@@ -1,11 +1,10 @@
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from "./CarPage.module.scss";
 import modalStyles from "../../ui-components/Modal/Modal.module.scss";
 import { ReactComponent as Heart } from "../../assets/favorite.svg";
 import { ReactComponent as ArrowBack } from "../../assets/car-arrowBack.svg";
-import { useContext, useEffect, useState } from "react";
-import { fetchCarById, fetchCars, resetCar } from "../../redux/carsSlice";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { useContext, useState } from "react";
+import { useAppSelector } from "../../redux/hooks";
 import { Breadcrumbs } from "../../ui-components/Breadcrumbs/Breadcrumbs";
 import { Loader } from "../../ui-components/Loader/Loader";
 import { ModalContext } from "../../HOC/ModalProvider";
@@ -16,6 +15,7 @@ import { CarDetails } from "./CarDetails";
 import { CarPhoneModal } from "../../components/modals/CarPhoneModal";
 import { useModalWithHistory } from "../../hooks/useModalWithHistory";
 import { ShareBtn } from "../../ui-components/ShareBtn/ShareBtn";
+import { useGetListingByIdQuery } from "../../redux/listingsApi";
 
 export type ReviewType = {
   title: string;
@@ -30,50 +30,35 @@ export const CarPage = () => {
   const { openModal } = useModalWithHistory();
   const isAuth = useAppSelector((state) => state.user.isPhoneConfirmed);
   const { id } = useParams();
-  const { cars, car, loading } = useAppSelector((state) => state.cars);
-  // const car = useAppSelector((state) => state.cars.car);
+  const { data: carData, isLoading } = useGetListingByIdQuery(id);
+  console.log(carData);
   const { isPhoneConfirmed } = useAppSelector((state) => state.user);
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [showAllReviews, setShowAllReviews] = useState(false);
 
-  const [searchParams] = useSearchParams();
-  const fromFilter = searchParams.get("from") || "RENT_AUTO";
-  console.log("Перешли с фильтра:", fromFilter);
+  if (isLoading) return <Loader />;
 
-  useEffect(() => {
-    return () => {
-      dispatch(resetCar());
-    };
-  }, [dispatch]);
+  const {
+    carRentListing,
+    carSellListing,
+    carDriverVacancyListing,
+    carServiceListing,
+    carWantedRentListing,
+  } = carData.listing;
 
-  useEffect(() => {
-    if (!cars || cars.length === 0) {
-      dispatch(fetchCars());
-    }
-  }, []);
+  const listing =
+    carRentListing ||
+    carSellListing ||
+    carDriverVacancyListing ||
+    carServiceListing ||
+    carWantedRentListing;
 
-  useEffect(() => {
-    dispatch(fetchCarById(id!));
-  }, [id]);
+  if (!listing) return <div>Нет данных</div>;
+  console.log("listing:", listing);
 
-  if (
-    !car ||
-    loading ||
-    !car.listing.carRentListing ||
-    !car.listing.carRentListing.carContent.photosUrl ||
-    car.listing.carRentListing.carContent.photosUrl.length === 0
-  ) {
-    return (
-      <div className={styles.carPage}>
-        <Loader />
-      </div>
-    );
-  }
-
-  const { carRentListing } = car.listing;
-  const { carContent } = carRentListing;
+  const { carContent } = listing;
   const carTitle = `Аренда ${carContent.brandId} ${carContent.modelId} ${carContent.yearOfCarProduction}`;
+  const photos = ["car.svg", "car.svg", "car.svg"];
 
   const reviews = [
     {
@@ -106,7 +91,7 @@ export const CarPage = () => {
 
   return (
     <div className="container carPage">
-      <Breadcrumbs className={styles.car_breadcrumbs} />
+      <Breadcrumbs className={styles.car_breadcrumbs} car={carData} />
       <div className={styles.car_info}>
         <div className={styles.car_left}>
           <div className={styles.car_header}>
@@ -125,7 +110,7 @@ export const CarPage = () => {
                 title={carTitle}
                 text={`Арендуйте ${carContent.brandId} ${
                   carContent.modelId
-                } за ${carRentListing.pricePerDay.toLocaleString(
+                } за ${(listing.pricePerDay || listing.price)?.toLocaleString(
                   "ru-RU"
                 )}₽ в день`}
                 url={window.location.href}
@@ -143,21 +128,22 @@ export const CarPage = () => {
               </button>
             </div>
           </div>{" "}
-          <CarGallery photos={carContent.photosUrl} />
+          <CarGallery photos={photos} />
           <div className={styles.car_top_mobile}>
             <h3>{carTitle}</h3>
             <p className={styles.price}>
               {" "}
-              {carRentListing.pricePerDay.toLocaleString("ru-RU")}₽ за день
+              {(listing.pricePerDay || listing.price)?.toLocaleString("ru-RU")}₽
+              за день
             </p>
             <div className={styles.car_top_info}>
               <span className={styles.car_author_rate}>4.6</span>
               <span className={styles.reviews}>12 отзывов</span>
             </div>
-            <p className={styles.car_top_address}>г. {carRentListing.city}</p>
+            <p className={styles.car_top_address}>г. {listing.city}</p>
           </div>
           <CarDetails
-            car={car}
+            car={carData.listing}
             reviews={reviews}
             visibleReviews={visibleReviews}
             showAllReviews={showAllReviews}
@@ -167,7 +153,8 @@ export const CarPage = () => {
         <div className={styles.car_right}>
           <div className={styles.car_right_top}>
             <p className={styles.car_right_price}>
-              {carRentListing.pricePerDay.toLocaleString("ru-RU")}₽ за день
+              {(listing.pricePerDay || listing.price)?.toLocaleString("ru-RU")}₽
+              за день
             </p>
             <button
               className={styles.showBtn}

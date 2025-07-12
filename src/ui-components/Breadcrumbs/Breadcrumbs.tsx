@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
-import { useAppSelector } from "../../redux/hooks";
 import styles from "./Breadcrumbs.module.scss";
 import { ReactComponent as Arrow } from "../../assets/arrowBread.svg";
+import { CarPageType } from "../../types";
 
 const filterTitles: Record<string, string> = {
   RENT_AUTO: "Долгосрочная аренда",
@@ -19,13 +19,17 @@ const pathTitles: Record<string, string> = {
   messages: "Сообщения",
 };
 
-export const Breadcrumbs = ({ className }: { className?: string }) => {
+export const Breadcrumbs = ({
+  className,
+  car,
+}: {
+  className?: string;
+  car?: CarPageType;
+}) => {
   const location = useLocation();
-  const car = useAppSelector((state) => state.cars.car);
+  const pathSegments = location.pathname.split("/").filter(Boolean);
   const searchParams = new URLSearchParams(location.search);
   const fromFilter = searchParams.get("from") || "RENT_AUTO";
-  const pathSegments = location.pathname.split("/").filter(Boolean);
-
   const isCarPage = pathSegments.length === 1 && car !== null;
   const isFilterPage = pathSegments[0] === "filter" && pathSegments[1];
   const isChooseCategoryPage = pathSegments[0] === "choose-category";
@@ -43,18 +47,35 @@ export const Breadcrumbs = ({ className }: { className?: string }) => {
         {pathTitles["choose-category"]}
       </span>
     );
-  } else if (isCarPage && car?.listing.carRentListing) {
-    const { brandId, modelId } = car.listing.carRentListing.carContent;
-    breadcrumbs.push(
-      <Arrow key="arrow-filter" />,
-      <Link to={`/filter/${fromFilter}`} key="filter" className={styles.link}>
-        {filterTitles[fromFilter] || fromFilter}
-      </Link>,
-      <Arrow key="arrow-car" />,
-      <span key="car-title" className={styles.link}>
-        {`Аренда ${brandId} ${modelId}`}
-      </span>
-    );
+  } else if (isCarPage && car?.listing) {
+    const listing = car.listing;
+
+    const getCarContent = () => {
+      if (listing.carRentListing) return listing.carRentListing.carContent;
+      if (listing.carSellListing) return listing.carSellListing.carContent;
+      if (listing.driverJobListing) return listing.driverJobListing.carContent;
+      if (listing.autoServiceListing)
+        return listing.autoServiceListing.carContent;
+      if (listing.wantedCarRentListing)
+        return listing.wantedCarRentListing.carContent;
+      return null;
+    };
+
+    const carContent = getCarContent();
+
+    if (carContent) {
+      const { brandId, modelId } = carContent;
+      breadcrumbs.push(
+        <Arrow key="arrow-filter" />,
+        <Link to={`/filter/${fromFilter}`} key="filter" className={styles.link}>
+          {filterTitles[fromFilter] || fromFilter}
+        </Link>,
+        <Arrow key="arrow-car" />,
+        <span key="car-title" className={styles.link}>
+          {`Аренда ${brandId} ${modelId}`}
+        </span>
+      );
+    }
   } else if (isFilterPage) {
     const filter = pathSegments[1].toUpperCase();
     breadcrumbs.push(

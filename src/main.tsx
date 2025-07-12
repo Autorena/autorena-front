@@ -6,15 +6,18 @@ import { ModalProvider } from "./HOC/ModalProvider.tsx";
 import { LocationProvider } from "./HOC/LocationProvider.tsx";
 import { store } from "./redux/store.ts";
 import { Provider } from "react-redux";
+import { AuthProvider } from "./HOC/AuthProvider.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
     <HashRouter>
-      <LocationProvider>
-        <ModalProvider>
-          <App />
-        </ModalProvider>
-      </LocationProvider>
+      <AuthProvider>
+        <LocationProvider>
+          <ModalProvider>
+            <App />
+          </ModalProvider>
+        </LocationProvider>
+      </AuthProvider>
     </HashRouter>
   </Provider>
 );

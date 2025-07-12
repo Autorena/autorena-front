@@ -3,24 +3,24 @@ import { CarCardType } from "../types";
 export const sortCars = (cars: CarCardType[], sortOption: string) => {
   const sorted = [...cars].sort((a, b) => {
     const priceA = Number(
-      a.listing.carRentListing?.pricePerDay ??
-        a.listing.carSellListing?.price ??
-        a.listing.driverJobListing?.pricePerDay ??
-        a.listing.autoServiceListing?.pricePerDay ??
-        a.listing.carBuyListing?.pricePerDay ??
+      a.carRentListing?.pricePerDay ??
+        a.carSellListing?.price ??
+        a.driverJobListing?.pricePerDay ??
+        a.autoServiceListing?.pricePerDay ??
+        a.carBuyListing?.pricePerDay ??
         0
     );
     const priceB = Number(
-      b.listing.carRentListing?.pricePerDay ??
-        b.listing.carSellListing?.price ??
-        b.listing.driverJobListing?.pricePerDay ??
-        b.listing.autoServiceListing?.pricePerDay ??
-        b.listing.carBuyListing?.pricePerDay ??
+      b.carRentListing?.pricePerDay ??
+        b.carSellListing?.price ??
+        b.driverJobListing?.pricePerDay ??
+        b.autoServiceListing?.pricePerDay ??
+        b.carBuyListing?.pricePerDay ??
         0
     );
 
     const getDate = (item: CarCardType) => {
-      const listing = item.listing;
+      const listing = item;
       return new Date(
         listing.carRentListing?.carContent?.createdAt ??
           listing.carRentListing?.createdAt ??
@@ -52,8 +52,8 @@ export const sortCars = (cars: CarCardType[], sortOption: string) => {
       }
       case "salary-higher":
       case "salary-more": {
-        const salaryA = Number(a.listing.driverJobListing?.pricePerDay ?? 0);
-        const salaryB = Number(b.listing.driverJobListing?.pricePerDay ?? 0);
+        const salaryA = Number(a.driverJobListing?.pricePerDay ?? 0);
+        const salaryB = Number(b.driverJobListing?.pricePerDay ?? 0);
         return salaryB - salaryA;
       }
       default:

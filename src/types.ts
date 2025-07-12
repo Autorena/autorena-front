@@ -104,7 +104,7 @@ export type CarSellListing = {
   city: string;
 };
 
-export type Listing = {
+export type CarCardType = {
   id: string;
   size?: "large";
   ads?: boolean;
@@ -115,14 +115,13 @@ export type Listing = {
   autoServiceListing?: CarRentListing;
   wantedCarRentListing?: CarRentListing;
 };
-
-export type CarCardType = {
-  listing: Listing;
-};
-
 export interface CarCardProps {
   carData: CarCardType;
 }
+
+export type CarPageType = {
+  listing: CarCardType;
+};
 
 export type PaginationProps = {
   currentPage: number;

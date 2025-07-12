@@ -106,7 +106,7 @@ export const FilterMenuWantedRent = ({
     const filterObject = {
       filter: {
         wanted_car_rent_listing: {
-          rent_types: data.rent_types ? [data.rent_types] : undefined,
+          rent_types: data.rent_types ? data.rent_types : undefined,
           min_age: data.min_age,
           max_age: data.max_age,
           drive_experience: data.drive_experience,
@@ -125,12 +125,14 @@ export const FilterMenuWantedRent = ({
 
     try {
       const result = await triggerFilter(filterObject).unwrap();
+
       if (result.data) {
         dispatch(setFilteredCars(result.data.listings));
         onClose();
       }
     } catch (err) {
       console.error("Failed to filter listings:", err);
+      onClose();
     }
   };
 

@@ -46,9 +46,9 @@ export const BottomSheet = ({
     }, 300);
   };
 
-  const showBottomSheet = () => {
-    updateSheetHeight(defaultHeight);
-  };
+  // const showBottomSheet = () => {
+  //   updateSheetHeight(defaultHeight);
+  // };
 
   const dragStart = (e: React.MouseEvent | React.TouchEvent) => {
     setIsDragging(true);
@@ -108,14 +108,26 @@ export const BottomSheet = ({
 
   useEffect(() => {
     if (isOpen) {
-      showBottomSheet();
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.width = "100vw";
       document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
+      return () => {
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.left = "";
+        document.body.style.width = "";
+        document.body.style.overflow = "";
+        window.scrollTo(0, scrollY);
+      };
     }
-    return () => {
-      document.body.style.overflow = "";
-    };
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.left = "";
+    document.body.style.width = "";
+    document.body.style.overflow = "";
   }, [isOpen]);
 
   if (!isOpen) return null;

@@ -8,19 +8,18 @@ import { LocationContext } from "../../HOC/LocationProvider";
 import { ModalContext } from "../../HOC/ModalProvider";
 import { LocationModal } from "../../components/modals/LocationModal";
 import { CarCard } from "../../ui-components/CarCard/CarCard";
-import { fetchCars } from "../../redux/carsSlice";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { Loader } from "../../ui-components/Loader/Loader";
 import { HeaderMobile } from "../../ui-components/HeaderMobile/HeaderMobile";
-import { sortCars } from "../../utils/sortCars";
 import { Link } from "react-router-dom";
-import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
-import { useScrollPosition } from "../../hooks/useScrollPosition";
 import { HomeSlider } from "./HomeSlider";
 import { CookieNotific } from "./CookieNotific";
 import { declineCity } from "../../utils/declineCity";
+import { useFilterListingsQuery } from "../../redux/listingsApi";
 import { DropdownList } from "../../ui-components/DropdownList/DropdownList";
 import { sortOptions } from "../../constants/sortOptions";
+import { useAppDispatch } from "../../redux/hooks";
+import { setCars } from "../../redux/carsSlice";
+import { CarCardType } from "../../types";
 
 type ActiveFilter = {
   type: "price" | "carCategory" | "listingType" | null;
@@ -30,27 +29,17 @@ type ActiveFilter = {
 export const Home = () => {
   const { location } = useContext(LocationContext);
   const { setModalActive, setModalContent } = useContext(ModalContext);
-  const { cars, loading } = useAppSelector((state) => state.cars);
-  const dispatch = useAppDispatch();
-
-  const [visibleCount, setVisibleCount] = useState(20);
+  const { data, isLoading, error } = useFilterListingsQuery({
+    filter: { car_rent_listing: { city: location } },
+    pagination: { page: 1, page_size: 20 },
+  });
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>({
     type: null,
     value: null,
   });
   const [sortOption, setSortOption] = useState<string>("default");
-
-  useEffect(() => {
-    dispatch(fetchCars()).catch((error) => {
-      console.error("Error fetching cars:", error);
-    });
-  }, []);
-
-  useScrollPosition("homeScrollPosition");
-
-  useInfiniteScroll(() => {
-    setVisibleCount((prev) => prev + 20);
-  }, visibleCount < cars.length);
+  const listings = data?.listings || [];
+  const dispatch = useAppDispatch();
 
   const filterCars = (
     type: "price" | "carCategory" | "listingType",
@@ -68,31 +57,34 @@ export const Home = () => {
     setSortOption(value);
   };
 
-  const filteredCars = cars.filter((car) => {
-    const { type, value } = activeFilter;
-    const rentListing = car.listing.carRentListing;
-
-    if (!type || !value) return true;
-
-    switch (type) {
-      case "price":
-        return rentListing?.pricePerDay
-          ? rentListing.pricePerDay <= (value as number)
-          : false;
-      case "carCategory":
-        return rentListing?.carContent.carCategory === value;
-      case "listingType":
-        return value in car.listing;
-      default:
-        return true;
+  useEffect(() => {
+    if (data?.listings) {
+      dispatch(setCars(data.listings));
     }
-  });
+  }, [data, dispatch]);
 
-  const sortedFilteredCars = useMemo(() => {
-    return sortCars(filteredCars, sortOption);
-  }, [filteredCars, sortOption]);
-
-  const visibleCars = sortedFilteredCars.slice(0, visibleCount);
+  const filteredCars = useMemo(() => {
+    if (!activeFilter.type || activeFilter.value === null) return listings;
+    return listings.filter((car: CarCardType) => {
+      const rentListing = car.carRentListing;
+      if (!rentListing) return false;
+      switch (activeFilter.type) {
+        case "price":
+          return rentListing.pricePerDay
+            ? rentListing.pricePerDay <= (activeFilter.value as number)
+            : false;
+        case "carCategory":
+          return rentListing.carContent.carCategory === activeFilter.value;
+        case "listingType":
+          if (activeFilter.value === "DAILY_RENT") {
+            return rentListing.rentDuration?.includes("RENT_DURATION_FROM_DAY");
+          }
+          return !!car[activeFilter.value as keyof CarCardType];
+        default:
+          return true;
+      }
+    });
+  }, [listings, activeFilter]);
 
   return (
     <div className={`home container ${styles.homeWrap}`}>
@@ -130,7 +122,6 @@ export const Home = () => {
                 <Link to="/filter/AUTO_SERVICES" className={styles.home_option}>
                   {" "}
                   <h3 className={styles.title}>Автосервисы</h3>
-                  {/* <Option3 /> */}
                   <LargeSvgImage
                     src={getLargeSvgPath("filter_3")}
                     alt="Тип кузова"
@@ -373,10 +364,14 @@ export const Home = () => {
               </div>
             </div>
             <div className={styles.home_recommends_grid}>
-              {visibleCars.map((car) => (
-                <CarCard carData={car} key={car.listing.id} />
-              ))}{" "}
-              {loading && <Loader className={styles.load} />}
+              {isLoading && <Loader className={styles.load} />}
+              {error && <div>Ошибка загрузки</div>}
+              {listings.length === 0 && !isLoading && (
+                <div className={styles.home_empty}>Нет объявлений</div>
+              )}
+              {filteredCars.map((listing: CarCardType) => (
+                <CarCard carData={listing} key={listing.id} />
+              ))}
             </div>
           </div>
           <div className={styles.home_recommends}>
@@ -384,10 +379,14 @@ export const Home = () => {
               Рекомендации <span>для вас</span>
             </h2>
             <div className={styles.home_recommends_grid}>
-              {cars.map((car) => (
-                <CarCard carData={car} key={car.listing.id} />
-              ))}{" "}
-              {loading && <Loader className={styles.load} />}
+              {isLoading && <Loader className={styles.load} />}
+              {error && <div>Ошибка загрузки</div>}
+              {listings.length === 0 && !isLoading && (
+                <div className={styles.home_empty}>Нет объявлений</div>
+              )}
+              {filteredCars.map((listing: CarCardType) => (
+                <CarCard carData={listing} key={listing.id} />
+              ))}
             </div>
           </div>
         </div>

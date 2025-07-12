@@ -15,22 +15,19 @@ import { ModalContext } from "../../HOC/ModalProvider";
 import { LocationModal } from "../../components/modals/LocationModal";
 import { LocationContext } from "../../HOC/LocationProvider";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../redux/hooks";
 import { declineCity } from "../../utils/declineCity";
-import { useDispatch } from "react-redux";
-import { logout } from "../../redux/userSlice";
-// import { ReactComponent as Search } from "../../assets/input-search.svg";
 import { SearchModal } from "../../components/modals/SearchModal/SearchModal";
 import { LargeSvgImage } from "../../components/LargeSvgImage";
 import { getLargeSvgPath } from "../../utils/largeSvgPaths";
+import { useAuth } from "../../HOC/AuthProvider";
 
 export const Header = () => {
-  const user = useAppSelector((state) => state.user);
+  // const user = useAppSelector((state) => state.user);
+  const { isAuthenticated, logout } = useAuth();
   const { setModalActive, setModalContent, setCrossSize } =
     useContext(ModalContext);
   const { location } = useContext(LocationContext);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [isMobile, setIsMobile] = useState(false);
   const { pathname } = useLocation();
 
@@ -118,7 +115,7 @@ export const Header = () => {
                 <a href="#">Сотрудничество</a>
               </li>
             </ul>
-            {!user.isPhoneConfirmed ? (
+            {!isAuthenticated ? (
               <button
                 className={`gray-btn ${styles.authBtn}`}
                 onClick={() => {
@@ -214,7 +211,7 @@ export const Header = () => {
                       <button
                         className={styles.header_logout}
                         onClick={() => {
-                          dispatch(logout());
+                          logout();
                           setTimeout(() => navigate("/"), 0);
                         }}
                       >
@@ -288,7 +285,7 @@ export const Header = () => {
 
               <Link
                 to={`${
-                  user.isPhoneConfirmed
+                  isAuthenticated
                     ? "/choose-category"
                     : "/unauthorized?action=create_listing"
                 }`}

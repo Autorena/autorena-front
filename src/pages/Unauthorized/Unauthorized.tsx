@@ -1,14 +1,12 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import styles from "./Unauthorized.module.scss";
 import { BottomSheet } from "../../ui-components/BottomSheet/BottomSheet";
-import { ModalContext } from "../../HOC/ModalProvider";
-import { LoginModal } from "../../components/modals/LoginModal";
-import { RegistrationModal } from "../../components/modals/RegistrationModal";
 import { HeaderMobile } from "../../ui-components/HeaderMobile/HeaderMobile";
 import { LargeSvgImage } from "../../components/LargeSvgImage";
 import { getLargeSvgPath } from "../../utils/largeSvgPaths";
 import { Header } from "../../ui-components/Header/Header";
+import { CASDOOR_LOGIN_URL, CASDOOR_REG_URL } from "../../constants/api";
 
 type ActionConfig = {
   title: string;
@@ -46,7 +44,7 @@ export const Unauthorized = () => {
   // const from = searchParams.get("from") || "/";
   const [isAuthSheetOpen, setAuthSheetOpen] = useState(false);
   const config = actionConfigs[action] || actionConfigs.default;
-  const { setModalActive, setModalContent } = useContext(ModalContext);
+  // const { setModalActive, setModalContent } = useContext(ModalContext);
 
   return (
     <>
@@ -76,8 +74,9 @@ export const Unauthorized = () => {
             <button
               className={styles.authButton}
               onClick={() => {
-                setModalActive(true);
-                setModalContent(<LoginModal />);
+                // setModalActive(true);
+                // setModalContent(<LoginModal />);
+                window.location.href = CASDOOR_LOGIN_URL;
               }}
             >
               Войти через телефон или почту
@@ -85,8 +84,9 @@ export const Unauthorized = () => {
             <button
               className={styles.registerBtn}
               onClick={() => {
-                setModalActive(true);
-                setModalContent(<RegistrationModal />);
+                // setModalActive(true);
+                // setModalContent(<RegistrationModal />);
+                window.location.href = CASDOOR_REG_URL;
               }}
             >
               Зарегистрироваться

@@ -22,6 +22,9 @@ import { getLargeSvgPath } from "../../utils/largeSvgPaths";
 import { LocationContext } from "../../HOC/LocationProvider";
 import { BottomSheet } from "../../ui-components/BottomSheet/BottomSheet";
 import { BottomSheetCheckboxFilter } from "../../ui-components/BottomSheet/BottomSheetCheckboxFilter";
+import { useLazyFilterListingsQuery } from "../../redux/listingsApi";
+import { useAppDispatch } from "../../redux/hooks";
+import { setFilteredCars } from "../../redux/listingsSlice";
 
 const FILTER_KEYS = {
   BRAND: "rent_brand",
@@ -39,7 +42,9 @@ export const DailyRentFilter = ({
   filterType,
 }: FilterProps) => {
   const { setModalActive, setModalContent } = useContext(ModalContext);
-  const { setFilterValue, getFilterValue, applyFilters } = useFilter();
+  const { setFilterValue, getFilterValue } = useFilter();
+  const [trigger] = useLazyFilterListingsQuery();
+  const dispatch = useAppDispatch();
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
     null,
     null,
@@ -93,8 +98,49 @@ export const DailyRentFilter = ({
     setIsBrandModalOpen(false);
   };
 
-  const handleApplyFilters = () => {
-    applyFilters();
+  const handleApplyFilters = async () => {
+    const brand = getFilterValue<string>(FILTER_KEYS.BRAND);
+    const carBodyType = getFilterValue<string[]>(FILTER_KEYS.CAR_BODY_TYPE);
+    const priceRange = getFilterValue<[number | null, number | null]>(
+      FILTER_KEYS.PRICE_RANGE
+    );
+    const selectedCity = location || getFilterValue<string>(FILTER_KEYS.CITY);
+
+    const filterObject = {
+      filter: {
+        car_rent_listing: {
+          city: selectedCity,
+          brand: brand || undefined,
+          car_body_type:
+            carBodyType && carBodyType.length > 0 ? carBodyType : undefined,
+          min_price_per_day: priceRange?.[0] || undefined,
+          max_price_per_day: priceRange?.[1] || undefined,
+          rent_duration: ["RENT_DURATION_FROM_DAY"],
+        },
+      },
+      pagination: {
+        page: 1,
+        page_size: 100,
+      },
+    };
+
+    try {
+      const result = await trigger(filterObject);
+
+      if (result.error) {
+        if ("status" in result.error && result.error.status === 404) {
+          setIsFiltersOpen(false);
+        }
+        return;
+      }
+
+      if (result.data) {
+        dispatch(setFilteredCars(result.data.listings));
+      }
+    } catch (err) {
+      console.log(err);
+      setIsFiltersOpen(false);
+    }
   };
 
   const selectedBrand = getFilterValue<string>(FILTER_KEYS.BRAND);

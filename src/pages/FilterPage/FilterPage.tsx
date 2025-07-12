@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback, useContext } from "react";
 import { HeaderMobile } from "../../ui-components/HeaderMobile/HeaderMobile";
 import styles from "../Home/Home.module.scss";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
@@ -8,49 +8,70 @@ import { Breadcrumbs } from "../../ui-components/Breadcrumbs/Breadcrumbs";
 import { useParams } from "react-router-dom";
 import { filterNameMap } from "../../constants/filterMap";
 import { sortCars } from "../../utils/sortCars";
-import { fetchCars } from "../../redux/carsSlice";
 import {
   FilterMenu,
   FilterMenuProps,
 } from "../../ui-components/FilterMenu/FilterMenu";
-import { CarCardLarge } from "../../ui-components/CarCardLarge/CarCardLarge";
 import { CarCardType } from "../../types";
-import { setFilteredCars } from "../../redux/listingsSlice";
+import { resetFilter } from "../../redux/listingsSlice";
 import { RentFilter } from "./RentFilter";
 import { DailyRentFilter } from "./DailyRentFilter";
 import { BuyAutoFilter } from "./BuyAutoFilter";
 import { WantedRentFilter } from "./WantedRentFilter";
 import { DriverVacFilter } from "./DriverVacFilter";
+import { LocationContext } from "../../HOC/LocationProvider";
+import { useFilterListingsQuery } from "../../redux/listingsApi";
 
 export const FilterPage = () => {
   const { filter } = useParams<{ filter?: string }>();
+  const { location } = useContext(LocationContext);
+  console.log(filter);
   const dispatch = useAppDispatch();
-  const { cars, loading } = useAppSelector((state) => state.cars);
   const filteredListings = useAppSelector(
     (state) => state.listings.filteredListings
   );
+  const isFilterApplied = useAppSelector(
+    (state) => state.listings.isFilterApplied
+  );
+
+  const getFilterType = () => {
+    switch (filter?.toUpperCase()) {
+      case "BUY_AUTO":
+        return "car_sell_listing";
+      case "RENT_AUTO":
+      case "DAILY_RENT":
+      case "AUTO_SERVICES":
+      case "DRIVER_JOBS":
+      case "WANTED_RENT":
+      default:
+        return "car_rent_listing";
+    }
+  };
+
+  const {
+    data: serverData,
+    isLoading: serverLoading,
+    error: serverError,
+  } = useFilterListingsQuery({
+    filter: {
+      [getFilterType()]: {
+        city: location,
+      },
+    },
+    pagination: {
+      page: 1,
+      page_size: 100,
+    },
+  });
+
+  const serverListings = serverData?.listings || [];
 
   const filterTitle = filterNameMap[filter ?? "default"];
   const [sortOption, setSortOption] = useState("default");
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
-  const filterToListingMap: Record<string, keyof CarCardType["listing"]> = {
-    RENT_AUTO: "carRentListing",
-    DAILY_RENT: "carRentListing",
-    BUY_AUTO: "carRentListing",
-    DRIVER_JOBS: "carRentListing",
-    AUTO_SERVICES: "carRentListing",
-    SEARCH: "carRentListing",
-  };
-
   useEffect(() => {
-    dispatch(fetchCars()).catch((error) => {
-      console.error("Error fetching cars:", error);
-    });
-  }, []);
-
-  useEffect(() => {
-    dispatch(setFilteredCars([]));
+    dispatch(resetFilter());
   }, [filter, dispatch]);
 
   const handleSortChange = useCallback((value: string | string[]) => {
@@ -60,33 +81,12 @@ export const FilterPage = () => {
   }, []);
 
   const displayData = useMemo(() => {
-    if (filteredListings.length > 0) {
-      return filteredListings.map((listing) => ({ listing }));
+    if (isFilterApplied) {
+      return filteredListings;
     }
 
-    if (!filter) return cars;
-
-    const listingType = filterToListingMap[filter.toUpperCase()];
-    if (!listingType) return cars;
-
-    return cars.filter((car) => {
-      if (listingType === "carRentListing") {
-        if (filter.toUpperCase() === "BUY_AUTO") {
-          return (
-            car.listing.carRentListing?.listingOptions?.buyoutPossible === true
-          );
-        }
-
-        const isDailyRent = car.listing.carRentListing?.rentDuration?.includes(
-          "RENT_DURATION_FROM_DAY"
-        );
-        return filter.toUpperCase() === "DAILY_RENT"
-          ? isDailyRent
-          : !isDailyRent;
-      }
-      return !!car.listing[listingType];
-    });
-  }, [cars, filter, filteredListings]);
+    return serverListings;
+  }, [serverListings, filteredListings, isFilterApplied]);
 
   const sortedData = useMemo(() => {
     if (sortOption === "default") {
@@ -198,15 +198,34 @@ export const FilterPage = () => {
             {renderFilter()}
           </div>
           <div className={styles.home_recommends}>
-            <div className={styles.home_recommends_grid}>
-              {visibleData.map((item) =>
-                item.listing.size === "large" ? (
-                  <CarCardLarge key={item.listing.id} carData={item} />
+            {serverError && (
+              <div className={styles.empty}>
+                {"status" in serverError && serverError.status === 404 ? (
+                  "Объявлений не найдено"
                 ) : (
-                  <CarCard key={item.listing.id} carData={item} />
+                  <>
+                    Ошибка загрузки данных:{" "}
+                    {"message" in serverError
+                      ? serverError.message
+                      : "Неизвестная ошибка"}
+                  </>
+                )}
+              </div>
+            )}
+            {!serverLoading && !serverError && displayData.length === 0 && (
+              <div className={styles.empty}>Объявлений не найдено</div>
+            )}
+            <div className={styles.home_recommends_grid}>
+              {visibleData.map(
+                (item: CarCardType) => (
+                  // item.listing.size === "large" ? (
+                  //   <CarCardLarge key={item.listing.id} carData={item} />
+                  // ) : (
+                  <CarCard key={item.id} carData={item} />
                 )
+                // )
               )}
-              {loading && <Loader className={styles.load} />}
+              {serverLoading && <Loader className={styles.load} />}
             </div>
             {currentPage < totalPages && (
               <button

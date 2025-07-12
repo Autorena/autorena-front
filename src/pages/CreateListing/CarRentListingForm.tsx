@@ -21,7 +21,7 @@ import { useCreateListingMutation } from "../../redux/listingsApi";
 type CarRentListingFormProps = {
   buyout: boolean;
   minimumRentalPeriod: number;
-  setError: (value: string) => void;
+  setError?: (value: string) => void;
 };
 
 type FormData = {
@@ -38,7 +38,8 @@ type FormData = {
   car_category: string;
   color: string;
   allowed_for_taxi: boolean;
-  require_russian_citizenship: boolean | undefined;
+  allowed_only_for_personal_use: boolean;
+  require_russian_citizenship: boolean;
   buyout_possible: boolean;
   deposit_required: boolean | undefined;
   payment_period: string[];
@@ -51,18 +52,13 @@ type FormData = {
 
 export const CarRentListingForm = ({
   minimumRentalPeriod,
-  setError,
 }: CarRentListingFormProps) => {
   const [previews, setPreviews] = useState<string[]>([]);
-  const { data: brandsData, error: isBrandsError } = useGetBrandsQuery("");
+  const { data: brandsData } = useGetBrandsQuery("");
   const [selectedBrandId, setSelectedBrandId] = useState<string>("");
   const [createListing, { isLoading: isCreating }] = useCreateListingMutation();
 
-  const {
-    data: modelsData,
-    isLoading: isLoadingModels,
-    error: isModelsError,
-  } = useGetModelsQuery(
+  const { data: modelsData, isLoading: isLoadingModels } = useGetModelsQuery(
     { brandId: selectedBrandId },
     { skip: !selectedBrandId }
   );
@@ -75,6 +71,7 @@ export const CarRentListingForm = ({
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
+      // car_id: "",
       photos: [],
       brand_id: "",
       model_id: "",
@@ -88,10 +85,13 @@ export const CarRentListingForm = ({
       car_category: "",
       color: "",
       allowed_for_taxi: false,
-      deposit_required: undefined,
-      payment_period: [],
+      allowed_only_for_personal_use: false,
+      require_russian_citizenship: false,
+      buyout_possible: false,
+      deposit_required: false,
+      payment_period: [""],
       price_per_day: "",
-      minimum_rental_period: minimumRentalPeriod?.toString() || "",
+      // minimum_rental_period: minimumRentalPeriod?.toString() || "",
       additional_info: "",
       city: "",
       rent_duration: [""],
@@ -110,15 +110,11 @@ export const CarRentListingForm = ({
     }
   }, [brandsData]);
 
-  useEffect(() => {
-    if (isBrandsError) setError("Ошибка загрузки брендов");
-    if (isModelsError) setError("Ошибка загрузки моделей");
-  }, [isBrandsError, isModelsError, setError]);
-
   const onSubmit = async (data: FormData) => {
     const payload = {
       listing: {
         car_rent_listing: {
+          // car_id: data.car_id,
           car_creation: {
             brand_id: data.brand_id,
             model_id: data.model_id,
@@ -137,11 +133,14 @@ export const CarRentListingForm = ({
           },
           listing_options: {
             allowed_for_taxi: data.allowed_for_taxi,
+            allowed_only_for_personal_use: data.allowed_only_for_personal_use,
+            require_russian_citizenship: data.require_russian_citizenship,
+            buyout_possible: data.buyout_possible,
           },
           deposit_required: data.deposit_required,
           payment_period: data.payment_period,
           price_per_day: Number(data.price_per_day),
-          minimum_rental_period: Number(data.minimum_rental_period),
+          // minimum_rental_period: Number(data.minimum_rental_period),
           additional_info: data.additional_info,
           city: data.city,
           rent_duration: data.rent_duration,
@@ -154,7 +153,7 @@ export const CarRentListingForm = ({
       console.log("Объявление успешно создано");
     } catch (error) {
       const err = error as { data?: { message?: string } };
-      setError(err.data?.message || "Ошибка при создании объявления");
+      console.log(err.data?.message || "Ошибка при создании объявления");
     }
   };
 
@@ -249,7 +248,7 @@ export const CarRentListingForm = ({
 
       <div className={`${styles.inputWrap}`}>
         <h3>Цвет</h3>
-        <input type="text" {...register("color")} />
+        <input type="text" {...register("color")} required />
       </div>
 
       <div className={`${styles.inputWrap} ${styles.title}`}>
@@ -395,7 +394,7 @@ export const CarRentListingForm = ({
 
       <div className={styles.inputWrap}>
         <h3>Город</h3>
-        <input type="text" {...register("city")} />
+        <input type="text" {...register("city")} required />
       </div>
 
       <div className={`${styles.inputWrap}`}>
@@ -412,12 +411,92 @@ export const CarRentListingForm = ({
                 checked={field.value === true}
                 onChange={() => {
                   field.onChange(true);
-                  // setValue("allowed_only_for_personal_use", false);
                 }}
                 labelStyle={{ paddingLeft: "36px" }}
               />
               <RadioButton
                 name="allowed_for_taxi"
+                value="false"
+                label="Нет"
+                checked={field.value === false}
+                onChange={() => field.onChange(false)}
+                labelStyle={{ paddingLeft: "36px" }}
+              />
+            </div>
+          )}
+        />
+      </div>
+      <div className={styles.inputWrap}>
+        <h3>Только для личного пользования?</h3>
+        <Controller
+          name="allowed_only_for_personal_use"
+          control={control}
+          render={({ field }) => (
+            <div className={styles.list}>
+              <RadioButton
+                name="allowed_only_for_personal_use"
+                value="true"
+                label="Да"
+                checked={field.value === true}
+                onChange={() => field.onChange(true)}
+                labelStyle={{ paddingLeft: "36px" }}
+              />
+              <RadioButton
+                name="allowed_only_for_personal_use"
+                value="false"
+                label="Нет"
+                checked={field.value === false}
+                onChange={() => field.onChange(false)}
+                labelStyle={{ paddingLeft: "36px" }}
+              />
+            </div>
+          )}
+        />
+      </div>
+      <div className={styles.inputWrap}>
+        <h3>Требуется гражданство РФ?</h3>
+        <Controller
+          name="require_russian_citizenship"
+          control={control}
+          render={({ field }) => (
+            <div className={styles.list}>
+              <RadioButton
+                name="require_russian_citizenship"
+                value="true"
+                label="Да"
+                checked={field.value === true}
+                onChange={() => field.onChange(true)}
+                labelStyle={{ paddingLeft: "36px" }}
+              />
+              <RadioButton
+                name="require_russian_citizenship"
+                value="false"
+                label="Нет"
+                checked={field.value === false}
+                onChange={() => field.onChange(false)}
+                labelStyle={{ paddingLeft: "36px" }}
+              />
+            </div>
+          )}
+        />
+      </div>
+      <div className={styles.inputWrap}>
+        <h3>Возможен выкуп?</h3>
+        <Controller
+          name="buyout_possible"
+          control={control}
+          render={({ field }) => (
+            <div className={styles.list}>
+              <RadioButton
+                name="buyout_possible"
+                value="true"
+                label="Да"
+                checked={field.value === true}
+                onChange={() => field.onChange(true)}
+                labelStyle={{ paddingLeft: "36px" }}
+              />
+              <RadioButton
+                name="buyout_possible"
                 value="false"
                 label="Нет"
                 checked={field.value === false}
@@ -468,7 +547,7 @@ export const CarRentListingForm = ({
               options={paymentPeriodOptions}
               value={field.value}
               onSelect={field.onChange}
-              isMulti={true}
+              isMulti
             />
           )}
         />
@@ -476,10 +555,10 @@ export const CarRentListingForm = ({
 
       <div className={styles.inputWrap}>
         <h3>Цена в день</h3>
-        <input type="number" {...register("price_per_day")} />
+        <input type="number" {...register("price_per_day")} required />
       </div>
 
-      {minimumRentalPeriod !== 1 ? (
+      {/* {minimumRentalPeriod !== 1 ? (
         <div className={styles.inputWrap}>
           <h3>Минимальный срок аренды от:</h3>
           <Controller
@@ -515,26 +594,26 @@ export const CarRentListingForm = ({
             )}
           />
         </div>
-      ) : null}
+      ) : null} */}
 
-      {minimumRentalPeriod !== 1 ? (
-        <div className={styles.inputWrap}>
-          <h3>Срок аренды</h3>
-          <Controller
-            name="rent_duration"
-            control={control}
-            render={({ field }) => (
-              <DropdownList
-                className={styles.dropdown}
-                options={rentDurationOptions}
-                value={field.value || []}
-                onSelect={field.onChange}
-                isMulti={true}
-              />
-            )}
-          />
-        </div>
-      ) : null}
+      {/* {minimumRentalPeriod !== 1 ? ( */}
+      <div className={styles.inputWrap}>
+        <h3>Срок аренды</h3>
+        <Controller
+          name="rent_duration"
+          control={control}
+          render={({ field }) => (
+            <DropdownList
+              className={styles.dropdown}
+              options={rentDurationOptions}
+              value={field.value || []}
+              onSelect={field.onChange}
+              isMulti={true}
+            />
+          )}
+        />
+      </div>
+      {/* ) : null} */}
 
       <div className={styles.inputWrap}>
         <h3>Описание объявления</h3>

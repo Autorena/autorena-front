@@ -21,144 +21,14 @@ import { ShareBtn } from "../../ui-components/ShareBtn/ShareBtn";
 import { BottomSheet } from "../../ui-components/BottomSheet/BottomSheet";
 import { useForm } from "react-hook-form";
 
-export const profileTabs = [
-  {
-    id: 1,
-    label: "Активные",
-    content: (
-      <ActiveListingsTab
-        listings={[
-          {
-            listing: {
-              id: "d18ec707-8f7c-4e9e-a4c4-bf6d2429f896",
-              size: "large",
-              carRentListing: {
-                id: "4a1e9c2c-1e68-4e0c-90e4-4e210cf603ab",
-                carContent: {
-                  id: "aea9cbbe-93b7-4e88-906d-85cd38209c41",
-                  userId: "deadbeef-dead-beef-dead-beefdeadbeef",
-                  brandId: "TOYOTA",
-                  modelId: "Land Cruiser 200",
-                  yearOfCarProduction: 2024,
-                  fuelType: "FUEL_TYPE_DIESEL",
-                  transmission: "TRANSMISSION_TYPE_AUTOMATIC",
-                  carBodyType: "CAR_BODY_TYPE_SUV",
-                  vehicleSegment: "VEHICLE_SEGMENT_D",
-                  carOptions: {
-                    hasAirConditioning: true,
-                    hasChildSeat: true,
-                  },
-                  carCategory: "CAR_CATEGORY_BUSINESS",
-                  color: "Черный",
-                  photosUrl: [
-                    "car-large.svg",
-                    "car-large.svg",
-                    "car-large.svg",
-                    "car-large.svg",
-                    "car-large.svg",
-                  ],
-                  createdAt: "2025-03-15T12:34:56Z",
-                  updatedAt: "2025-03-15T12:34:56Z",
-                },
-                userId: "deadbeef-dead-beef-dead-beefdeadbeef",
-                listingOptions: {
-                  allowedForTaxi: false,
-                  allowedOnlyForPersonalUse: false,
-                  requireRussianCitizenship: false,
-                  buyoutPossible: true,
-                },
-                depositRequired: false,
-                paymentPeriod: ["PAYMENT_PERIOD_DAILY"],
-                pricePerDay: 12000,
-                minimumRentalPeriod: 1,
-                additionalInfo:
-                  "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д",
-                createdAt: "2025-03-15T12:34:56Z",
-                updatedAt: "2025-03-15T12:34:56Z",
-                city: "Новокузнецк",
-                rentDuration: ["RENT_DURATION_FROM_DAY"],
-              },
-            },
-          },
-          {
-            listing: {
-              id: "d18ec707-8f7c-4e9e-a4c4-bf6d2429f897",
-              carRentListing: {
-                id: "4a1e9c2c-1e68-4e0c-90e4-4e210cf603ac",
-                carContent: {
-                  id: "aea9cbbe-93b7-4e88-906d-85cd38209c42",
-                  userId: "deadbeef-dead-beef-dead-beefdeadbeef",
-                  brandId: "Li",
-                  modelId: "L7",
-                  yearOfCarProduction: 2024,
-                  fuelType: "FUEL_TYPE_DIESEL",
-                  transmission: "TRANSMISSION_TYPE_AUTOMATIC",
-                  carBodyType: "CAR_BODY_TYPE_SEDAN",
-                  vehicleSegment: "VEHICLE_SEGMENT_D",
-                  carOptions: {
-                    hasAirConditioning: true,
-                    hasChildSeat: true,
-                  },
-                  carCategory: "CAR_CATEGORY_COMFORT_PLUS",
-                  color: "Белый",
-                  photosUrl: ["car.svg"],
-                  createdAt: "2025-04-07T12:34:56Z",
-                  updatedAt: "2025-04-07T12:34:56Z",
-                },
-                userId: "deadbeef-dead-beef-dead-beefdeadbeef",
-                listingOptions: {
-                  allowedForTaxi: false,
-                  allowedOnlyForPersonalUse: false,
-                  requireRussianCitizenship: false,
-                  buyoutPossible: true,
-                },
-                depositRequired: false,
-                paymentPeriod: ["PAYMENT_PERIOD_DAILY"],
-                pricePerDay: 12000,
-                minimumRentalPeriod: 1,
-                additionalInfo:
-                  "Mашина aбcолютнo новaя комплектация Ultimаtе. Куплeна в 2024 гoду в сaлонe у официального дилеpa зa наличку, все чеки имеются. Машина на гарантии, русификация, полный пакет документов и.т. д",
-                createdAt: "2025-04-07T12:34:56Z",
-                updatedAt: "2025-04-07T12:34:56Z",
-                city: "Иркутск",
-                rentDuration: ["RENT_DURATION_FROM_DAY"],
-              },
-            },
-          },
-        ]}
-      />
-    ),
-  },
-  {
-    id: 2,
-    label: "Архив",
-    content: <div>aрхив</div>,
-  },
-];
-
-type DropdownItem = {
-  to: string;
-  text: string;
-};
-
-type MenuItem = {
-  to: string;
-  icon:
-    | React.ComponentType<React.SVGProps<SVGSVGElement>>
-    | (() => JSX.Element);
-  text: string;
-  dropdown?: DropdownItem[];
-};
-
 export const PersonalProfile = () => {
-  const carsData = useAppSelector((state) => state.cars.cars);
   const [profileImg, setProfileImg] = useState<string | null>(null);
   const navigate = useNavigate();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isBannerSheetOpen, setIsBannerSheetOpen] = useState(false);
   const { register } = useForm();
   const [openDropdowns, setOpenDropdowns] = useState<Set<string>>(new Set());
-
+  const { cars } = useAppSelector((state) => state.cars);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -186,6 +56,35 @@ export const PersonalProfile = () => {
       }
       return newSet;
     });
+  };
+
+  const userListings = cars.slice(0, 2);
+
+  const profileTabs = [
+    {
+      id: 1,
+      label: "Активные",
+      content: <ActiveListingsTab listings={userListings} />,
+    },
+    {
+      id: 2,
+      label: "Архив",
+      content: <div>aрхив</div>,
+    },
+  ];
+
+  type DropdownItem = {
+    to: string;
+    text: string;
+  };
+
+  type MenuItem = {
+    to: string;
+    icon:
+      | React.ComponentType<React.SVGProps<SVGSVGElement>>
+      | (() => JSX.Element);
+    text: string;
+    dropdown?: DropdownItem[];
   };
 
   const mainLinks: MenuItem[] = [
@@ -412,8 +311,8 @@ export const PersonalProfile = () => {
                 <div className={styles.profile_recommends}>
                   <h3>Возможно вам будет интересно</h3>
                   <div className={styles.profile_recommendsWrap}>
-                    {carsData.slice(0, 4).map((car) => (
-                      <CarCard carData={car} />
+                    {cars.slice(0, 4).map((car) => (
+                      <CarCard key={car.id} carData={car} />
                     ))}
                   </div>
                 </div>

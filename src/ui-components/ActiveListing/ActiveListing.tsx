@@ -10,16 +10,17 @@ import { useState } from "react";
 export const ActiveListing = ({ carData }: CarCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  if (!carData.listing.carRentListing) {
+  if (!carData.carRentListing) {
     return null;
   }
 
-  const { carRentListing } = carData.listing;
+  const { carRentListing } = carData;
 
   return (
-    <Link to={`/${carRentListing.id}`} className={styles.listing}>
+    <Link to={`/${carData.id}`} className={styles.listing}>
       <img
-        src={carRentListing.carContent.photosUrl[0]}
+        // src={carRentListing.carContent.photosUrl[0]}
+        src="car.svg"
         alt="Car photo"
         className={styles.listing_img}
       />

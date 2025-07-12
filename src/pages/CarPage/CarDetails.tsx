@@ -11,6 +11,11 @@ import { useNavigate } from "react-router-dom";
 import { LoginModal } from "../../components/modals/LoginModal";
 import { useModalWithHistory } from "../../hooks/useModalWithHistory";
 import { CarCardType } from "../../types";
+import {
+  carCategoryOptions,
+  fuelTypeOptions,
+  transmissionOptions,
+} from "../../constants/filterOptions";
 
 type ReviewType = {
   title: string;
@@ -18,33 +23,6 @@ type ReviewType = {
   date: string;
   rate: number;
   description: string;
-};
-
-const transmissionMap: Record<string, string> = {
-  TRANSMISSION_TYPE_MANUAL: "Механическая",
-  TRANSMISSION_TYPE_AUTOMATIC: "Автоматическая",
-  TRANSMISSION_TYPE_CVT: "Вариатор",
-  TRANSMISSION_TYPE_ROBOT: "Робот",
-  TRANSMISSION_TYPE_DCT: "Робот с двумя сцеплениями",
-};
-
-const fuelTypeMap: Record<string, string> = {
-  FUEL_TYPE_PETROL: "Бензин",
-  FUEL_TYPE_DIESEL: "Дизель",
-  FUEL_TYPE_HYBRID: "Гибрид",
-  FUEL_TYPE_ELECTRIC: "Электро",
-  FUEL_TYPE_GAS: "Газ",
-};
-
-const carCategoryMap: Record<string, string> = {
-  CAR_CATEGORY_ECONOMY: "Эконом",
-  CAR_CATEGORY_COMFORT: "Комфорт",
-  CAR_CATEGORY_BUSINESS: "Бизнес",
-  CAR_CATEGORY_PREMIUM: "Премиум",
-  CAR_CATEGORY_SUV: "Внедорожник",
-  CAR_CATEGORY_SPORT: "Спорт",
-  CAR_CATEGORY_VAN: "Минивэн",
-  CAR_CATEGORY_ELECTRIC: "Электро",
 };
 
 export const CarDetails = ({
@@ -70,22 +48,17 @@ export const CarDetails = ({
   const navigate = useNavigate();
 
   const similarCars = useMemo(() => {
-    if (!car.listing.carRentListing) return [];
+    if (!car.carRentListing) return [];
     return cars
       .filter((c) => {
-        if (!c.listing.carRentListing) return false;
+        if (!c.carRentListing) return false;
         return (
-          c.listing.carRentListing.carContent.carCategory ===
-            car.listing.carRentListing?.carContent.carCategory &&
-          c.listing.id !== car.listing.id
+          c.carRentListing.carContent.carCategory ===
+            car.carRentListing?.carContent.carCategory && c.id !== car.id
         );
       })
       .slice(0, 8);
-  }, [
-    cars,
-    car.listing.carRentListing?.carContent.carCategory,
-    car.listing.id,
-  ]);
+  }, [cars, car.carRentListing?.carContent.carCategory, car.id]);
 
   const handlePhoneClick = useCallback(() => {
     setModalActive(true);
@@ -122,18 +95,21 @@ export const CarDetails = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  if (!car.listing.carRentListing) {
+  const { carRentListing, carSellListing } = car;
+
+  const listing = carRentListing || carSellListing;
+
+  if (!listing) {
     return null;
   }
 
-  const { carRentListing } = car.listing;
-  const { carContent } = carRentListing;
+  const { carContent } = listing;
 
   return (
     <div className={styles.car_left_bottom}>
       <div className={`${styles.car_info_term} ${styles.location}`}>
         <h3 className={styles.car_subtitle}>Расположение</h3>
-        <p>г. {carRentListing.city}</p>
+        <p>г. {listing.city}</p>
       </div>
       <div className={styles.car_info_term}>
         <h3 className={styles.car_subtitle}>Условия аренды</h3>
@@ -147,10 +123,10 @@ export const CarDetails = ({
           <li>
             Страховка: <span>ОСАГО</span>
           </li>
-          <li>
+          {/* <li>
             Минимальное количество суток:{" "}
-            <span>{carRentListing.minimumRentalPeriod}</span>
-          </li>
+            <span>{listing.minimumRentalPeriod}</span>
+          </li> */}
           <li>
             Есть лимит пробега: <span>Нет</span>
           </li>
@@ -189,7 +165,8 @@ export const CarDetails = ({
           <li>
             Двигатель:{" "}
             <span>
-              {fuelTypeMap[carContent.fuelType] || carContent.fuelType}
+              {fuelTypeOptions.find((opt) => opt.value === carContent.fuelType)
+                ?.label || carContent.fuelType}
             </span>
           </li>
           <li>
@@ -198,8 +175,9 @@ export const CarDetails = ({
           <li>
             Коробка передач:{" "}
             <span>
-              {transmissionMap[carContent.transmission] ||
-                carContent.transmission}
+              {transmissionOptions.find(
+                (opt) => opt.value === carContent.transmission
+              )?.label || carContent.transmission}
             </span>
           </li>
           <li>
@@ -208,7 +186,9 @@ export const CarDetails = ({
           <li>
             Класс авто:{" "}
             <span>
-              {carCategoryMap[carContent.carCategory] || carContent.carCategory}
+              {carCategoryOptions.find(
+                (opt) => opt.value === carContent.carCategory
+              )?.label || carContent.carCategory}
             </span>
           </li>
           <li>
@@ -238,7 +218,7 @@ export const CarDetails = ({
       </div>
       <div className={styles.car_info_term}>
         <h3 className={styles.car_subtitle}>Описание</h3>
-        <p>{carRentListing.additionalInfo || "Описание отсутствует"}</p>
+        <p>{listing.additionalInfo || "Описание отсутствует"}</p>
       </div>
       <div className={`${styles.car_reviews} ${styles.car_info_term}`}>
         <h3>Отзывы</h3>
@@ -258,7 +238,7 @@ export const CarDetails = ({
       </div>
       <div className={styles.car_bottom_info}>
         <p>
-          Объявление №<span>{car.listing.id}</span>
+          Объявление №<span>{car.id}</span>
         </p>
         <p>
           {new Date(carContent.createdAt).toLocaleDateString("ru-RU", {
@@ -294,13 +274,13 @@ export const CarDetails = ({
         <h3>Похожие объявления</h3>
         <div className={styles.car_similarWrap}>
           {similarCars.map((similarCar) => (
-            <CarCard key={similarCar.listing.id} carData={similarCar} />
+            <CarCard key={similarCar.id} carData={similarCar} />
           ))}
         </div>
       </div>
       <div className={`${styles.car_bottom_info} ${styles.mobile}`}>
         <p>
-          Объявление №<span>{car.listing.id}</span>
+          Объявление №<span>{car.id}</span>
         </p>
         <p>{new Date(carContent.createdAt).toLocaleDateString("ru-RU")}</p>
         <p>800 просмотров</p>

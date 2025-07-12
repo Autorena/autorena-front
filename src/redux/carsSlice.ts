@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { cars } from "../utils/cars";
-import { CarCardType } from "../types";
+import { CarCardType, CarPageType } from "../types";
 
 type FilterState = {
   city?: string;
@@ -18,28 +18,10 @@ type FilterState = {
   buyoutPossible?: boolean;
 };
 
-export const fetchCars = createAsyncThunk<CarCardType[]>(
-  "cars/fetchCars",
-  async () => {
-    return new Promise<CarCardType[]>((resolve) => {
-      setTimeout(() => {
-        const typedCars = cars.map((car) => ({
-          ...car,
-          listing: {
-            ...car.listing,
-            size: car.listing.size as "large" | undefined,
-          },
-        })) as CarCardType[];
-        resolve(typedCars);
-      }, 500);
-    });
-  }
-);
-
-export const fetchCarById = createAsyncThunk<CarCardType, string>(
+export const fetchCarById = createAsyncThunk<CarPageType, string>(
   "cars/fetchCarById",
   async (id) => {
-    return new Promise<CarCardType>((resolve, reject) => {
+    return new Promise<CarPageType>((resolve, reject) => {
       setTimeout(() => {
         const foundCar = cars.find((car) => car.listing.id === id);
         if (foundCar) {
@@ -49,7 +31,7 @@ export const fetchCarById = createAsyncThunk<CarCardType, string>(
               ...foundCar.listing,
               size: foundCar.listing.size as "large" | undefined,
             },
-          } as CarCardType;
+          } as CarPageType;
           resolve(typedCar);
         } else {
           reject(new Error("Car not found"));
@@ -67,7 +49,13 @@ interface CarsState {
 }
 
 const initialState: CarsState = {
-  cars: [],
+  cars: cars.map((car) => ({
+    id: car.listing.id,
+    size: car.listing.size,
+    ads: car.listing.ads,
+    carRentListing: car.listing.carRentListing,
+    carSellListing: undefined,
+  })) as CarCardType[],
   car: null,
   loading: false,
   error: null,
@@ -81,15 +69,15 @@ const carsSlice = createSlice({
       const filters = action.payload;
 
       const typedCars = cars.map((car) => ({
-        ...car,
-        listing: {
-          ...car.listing,
-          size: car.listing.size as "large" | undefined,
-        },
+        id: car.listing.id,
+        size: car.listing.size,
+        ads: car.listing.ads,
+        carRentListing: car.listing.carRentListing,
+        carSellListing: undefined,
       })) as CarCardType[];
 
       state.cars = typedCars.filter((car) => {
-        const { carRentListing } = car.listing;
+        const { carRentListing } = car;
         if (!carRentListing) {
           return false;
         }
@@ -170,6 +158,9 @@ const carsSlice = createSlice({
         return true;
       });
     },
+    setCars: (state, action) => {
+      state.cars = action.payload;
+    },
     resetCar: (state) => {
       state.car = null;
       state.loading = true;
@@ -177,25 +168,19 @@ const carsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCars.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchCars.fulfilled, (state, action) => {
-        state.loading = false;
-        state.cars = action.payload;
-      })
-      .addCase(fetchCars.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message ?? "Failed to fetch cars";
-      })
       .addCase(fetchCarById.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchCarById.fulfilled, (state, action) => {
         state.loading = false;
-        state.car = action.payload;
+        state.car = {
+          id: action.payload.listing.id,
+          size: action.payload.listing.size,
+          ads: action.payload.listing.ads,
+          carRentListing: action.payload.listing.carRentListing,
+          carSellListing: action.payload.listing.carSellListing || undefined,
+        } as CarCardType;
       })
       .addCase(fetchCarById.rejected, (state, action) => {
         state.loading = false;
@@ -204,5 +189,5 @@ const carsSlice = createSlice({
   },
 });
 
-export const { filterCars, resetCar } = carsSlice.actions;
+export const { filterCars, resetCar, setCars } = carsSlice.actions;
 export default carsSlice.reducer;

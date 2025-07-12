@@ -205,11 +205,11 @@ export const FilterMenuDaily = ({ isOpen, onClose }: FilterMenuRentProps) => {
       filter: {
         car_rent_listing: {
           transmission_type: data.transmission_type
-            ? [data.transmission_type]
+            ? data.transmission_type
             : undefined,
-          fuel_type: data.fuel_type ? [data.fuel_type] : undefined,
-          car_body_type: data.car_body_type ? [data.car_body_type] : undefined,
-          car_category: data.car_category ? [data.car_category] : undefined,
+          fuel_type: data.fuel_type ? data.fuel_type : undefined,
+          car_body_type: data.car_body_type ? data.car_body_type : undefined,
+          car_category: data.car_category ? data.car_category : undefined,
           city: location,
           without_deposit: data.without_deposit,
           min_year: data.min_year,
@@ -230,12 +230,21 @@ export const FilterMenuDaily = ({ isOpen, onClose }: FilterMenuRentProps) => {
 
     try {
       const result = await trigger(filterObject);
+
+      if (result.error) {
+        if ("status" in result.error && result.error.status === 404) {
+          onClose();
+        }
+        return;
+      }
+
       if (result.data) {
         dispatch(setFilteredCars(result.data.listings));
         onClose();
       }
     } catch (err) {
       console.error("Failed to filter listings:", err);
+      onClose();
     }
   };
 

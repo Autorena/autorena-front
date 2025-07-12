@@ -168,11 +168,11 @@ export const FilterMenuCarSell = ({
       filter: {
         car_sell_listing: {
           transmission_type: data.transmission_type
-            ? [data.transmission_type]
+            ? data.transmission_type
             : undefined,
-          fuel_type: data.fuel_type ? [data.fuel_type] : undefined,
-          car_body_type: data.car_body_type ? [data.car_body_type] : undefined,
-          car_category: data.car_category ? [data.car_category] : undefined,
+          fuel_type: data.fuel_type ? data.fuel_type : undefined,
+          car_body_type: data.car_body_type ? data.car_body_type : undefined,
+          car_category: data.car_category ? data.car_category : undefined,
           city: selectedCity,
           without_deposit: data.without_deposit,
           min_year: data.min_year,
@@ -193,12 +193,20 @@ export const FilterMenuCarSell = ({
     try {
       const result = await trigger(filterObject);
 
+      if (result.error) {
+        if ("status" in result.error && result.error.status === 404) {
+          onClose();
+        }
+        return;
+      }
+
       if (result.data) {
         dispatch(setFilteredCars(result.data.listings));
         onClose();
       }
     } catch (err) {
       console.error("Failed to filter listings:", err);
+      onClose();
     }
   };
 
@@ -644,77 +652,75 @@ export const FilterMenuCarSell = ({
             onClose={() => setOpenSheet(null)}
             defaultHeight="auto"
           >
-            {field.type === "checkbox" &&
-              field.options &&
-              field.key !== "car_body_type" && (
-                <BottomSheetCheckboxFilter
-                  title={field.label}
-                  options={field.options || []}
-                  values={
-                    field.key === "payment_options"
-                      ? watch("payment_options")?.periods || []
-                      : field.key === "car_options"
-                      ? Object.entries(watch("car_options") || {})
-                          .filter(([, v]) => v)
-                          .map(([key]) => key)
-                      : field.key === "sell_listing_options"
-                      ? Object.entries(watch("sell_listing_options") || {})
-                          .filter(
-                            ([key, v]) =>
-                              v && key !== "require_russian_citizenship"
-                          )
-                          .map(([key]) => key)
-                      : (watch(
-                          field.key as keyof SellFilterFormData
-                        ) as string[]) || []
+            {field.type === "checkbox" && field.options && (
+              <BottomSheetCheckboxFilter
+                title={field.label}
+                options={field.options || []}
+                values={
+                  field.key === "payment_options"
+                    ? watch("payment_options")?.periods || []
+                    : field.key === "car_options"
+                    ? Object.entries(watch("car_options") || {})
+                        .filter(([, v]) => v)
+                        .map(([key]) => key)
+                    : field.key === "sell_listing_options"
+                    ? Object.entries(watch("sell_listing_options") || {})
+                        .filter(
+                          ([key, v]) =>
+                            v && key !== "require_russian_citizenship"
+                        )
+                        .map(([key]) => key)
+                    : (watch(
+                        field.key as keyof SellFilterFormData
+                      ) as string[]) || []
+                }
+                onChange={(values) => {
+                  if (field.key === "payment_options") {
+                    setValue("payment_options", { periods: values });
+                  } else if (field.key === "car_options") {
+                    setValue("car_options", {
+                      has_air_conditioning: values.includes(
+                        "has_air_conditioning"
+                      ),
+                      has_child_seat: values.includes("has_child_seat"),
+                    });
+                  } else if (field.key === "sell_listing_options") {
+                    setValue("sell_listing_options", {
+                      allowed_for_taxi: values.includes("allowed_for_taxi"),
+                      allowed_only_for_personal_use: values.includes(
+                        "allowed_only_for_personal_use"
+                      ),
+                      require_russian_citizenship: watch(
+                        "sell_listing_options.require_russian_citizenship"
+                      ),
+                    });
+                  } else {
+                    setValue(field.key as keyof SellFilterFormData, values);
                   }
-                  onChange={(values) => {
-                    if (field.key === "payment_options") {
-                      setValue("payment_options", { periods: values });
-                    } else if (field.key === "car_options") {
-                      setValue("car_options", {
-                        has_air_conditioning: values.includes(
-                          "has_air_conditioning"
-                        ),
-                        has_child_seat: values.includes("has_child_seat"),
-                      });
-                    } else if (field.key === "sell_listing_options") {
-                      setValue("sell_listing_options", {
-                        allowed_for_taxi: values.includes("allowed_for_taxi"),
-                        allowed_only_for_personal_use: values.includes(
-                          "allowed_only_for_personal_use"
-                        ),
-                        require_russian_citizenship: watch(
-                          "sell_listing_options.require_russian_citizenship"
-                        ),
-                      });
-                    } else {
-                      setValue(field.key as keyof SellFilterFormData, values);
-                    }
-                  }}
-                  onReset={() => {
-                    if (field.key === "payment_options") {
-                      setValue("payment_options", { periods: [] });
-                    } else if (field.key === "car_options") {
-                      setValue("car_options", {
-                        has_air_conditioning: false,
-                        has_child_seat: false,
-                      });
-                    } else if (field.key === "sell_listing_options") {
-                      setValue("sell_listing_options", {
-                        allowed_for_taxi: false,
-                        allowed_only_for_personal_use: false,
-                        require_russian_citizenship: watch(
-                          "sell_listing_options.require_russian_citizenship"
-                        ),
-                      });
-                    } else {
-                      setValue(field.key as keyof SellFilterFormData, []);
-                    }
-                  }}
-                  onSubmit={() => setOpenSheet(null)}
-                />
-              )}
+                }}
+                onReset={() => {
+                  if (field.key === "payment_options") {
+                    setValue("payment_options", { periods: [] });
+                  } else if (field.key === "car_options") {
+                    setValue("car_options", {
+                      has_air_conditioning: false,
+                      has_child_seat: false,
+                    });
+                  } else if (field.key === "sell_listing_options") {
+                    setValue("sell_listing_options", {
+                      allowed_for_taxi: false,
+                      allowed_only_for_personal_use: false,
+                      require_russian_citizenship: watch(
+                        "sell_listing_options.require_russian_citizenship"
+                      ),
+                    });
+                  } else {
+                    setValue(field.key as keyof SellFilterFormData, []);
+                  }
+                }}
+                onSubmit={() => setOpenSheet(null)}
+              />
+            )}
             {field.type === "custom" && field.key === "year" && (
               <div className={styles.inputWrap} style={{ marginBottom: 0 }}>
                 <label className={styles.fieldsWrap_title}>Год выпуска</label>

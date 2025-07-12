@@ -16,9 +16,15 @@ export const listingsApi = createApi({
     }),
     createListing: builder.mutation({
       query: (body) => ({
-        url: "/",
+        url: "",
         method: "POST",
         body,
+      }),
+    }),
+    getListingById: builder.query({
+      query: (id) => ({
+        url: `/${id}`,
+        method: "GET",
       }),
     }),
   }),
@@ -28,4 +34,5 @@ export const {
   useFilterListingsQuery,
   useLazyFilterListingsQuery,
   useCreateListingMutation,
+  useGetListingByIdQuery,
 } = listingsApi;

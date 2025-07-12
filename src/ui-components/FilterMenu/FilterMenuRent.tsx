@@ -185,11 +185,11 @@ export const FilterMenuRent = ({ isOpen, onClose }: FilterMenuRentProps) => {
       filter: {
         car_rent_listing: {
           transmission_type: data.transmission_type
-            ? [data.transmission_type]
+            ? data.transmission_type
             : undefined,
-          fuel_type: data.fuel_type ? [data.fuel_type] : undefined,
-          car_body_type: data.car_body_type ? [data.car_body_type] : undefined,
-          car_category: data.car_category ? [data.car_category] : undefined,
+          fuel_type: data.fuel_type ? data.fuel_type : undefined,
+          car_body_type: data.car_body_type ? data.car_body_type : undefined,
+          car_category: data.car_category ? data.car_category : undefined,
           city: selectedCity,
           without_deposit: data.without_deposit,
           min_year: data.min_year,
@@ -206,17 +206,27 @@ export const FilterMenuRent = ({ isOpen, onClose }: FilterMenuRentProps) => {
         page_size: 20,
       },
     };
-    console.log(filterObject);
 
     try {
       const result = await trigger(filterObject);
       console.log("Filter results:", result);
+
+      if (result.error) {
+        console.error("Filter error:", result.error);
+        if ("status" in result.error && result.error.status === 404) {
+          onClose();
+        }
+        return;
+      }
+
       if (result.data) {
         dispatch(setFilteredCars(result.data.listings));
         onClose();
       }
     } catch (err) {
       console.error("Failed to filter listings:", err);
+
+      onClose();
     }
   };
 

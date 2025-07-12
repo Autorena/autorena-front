@@ -269,6 +269,9 @@
       color: $red-color;
     }
   }
+  &_empty {
+    color: rgba(17, 17, 17, 0.4);
+  }
 }
 
 .filterPage {
@@ -316,6 +319,29 @@
   .home_info_banner,
   .filtersPanel {
     display: none;
+  }
+  .empty {
+    width: 100%;
+    padding: 40px 0 0;
+    text-align: center;
+    color: rgba(17, 17, 17, 0.4);
+
+    .closeFiltersBtn {
+      display: block;
+      margin: 16px auto 0;
+      padding: 8px 16px;
+      background: $red-color;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+
+      &:hover {
+        background: darken($red-color, 10%);
+      }
+    }
   }
 }
 
@@ -673,9 +699,6 @@
       }
     }
     &Wrap.filterPage {
-      .home_recommends {
-        padding-top: 0;
-      }
       .home_info_banner {
         width: calc(100% - 40px);
         display: block;

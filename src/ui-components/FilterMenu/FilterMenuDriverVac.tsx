@@ -10,6 +10,8 @@ import {
 import { ReactComponent as Cross } from "../../assets/cross.svg";
 import { ReactComponent as Arrow } from "../../assets/swiper-arrow.svg";
 import { useLazyFilterListingsQuery } from "../../redux/listingsApi";
+import { useAppDispatch } from "../../redux/hooks";
+import { setFilteredCars } from "../../redux/listingsSlice";
 import { useContext, useState } from "react";
 import { LocationContext } from "../../HOC/LocationProvider";
 import { ModalContext } from "../../HOC/ModalProvider";
@@ -42,6 +44,7 @@ export const FilterMenuDriverVac = ({
   onClose,
 }: FilterMenuDriverVacProps) => {
   const [trigger] = useLazyFilterListingsQuery();
+  const dispatch = useAppDispatch();
   const { location } = useContext(LocationContext);
   const { setModalContent, setModalActive } = useContext(ModalContext);
   const [openSheet, setOpenSheet] = useState<
@@ -90,10 +93,21 @@ export const FilterMenuDriverVac = ({
 
     try {
       const result = await trigger(filterObject);
-      console.log("Filter results:", result);
-      onClose();
+
+      if (result.error) {
+        if ("status" in result.error && result.error.status === 404) {
+          onClose();
+        }
+        return;
+      }
+
+      if (result.data) {
+        dispatch(setFilteredCars(result.data.listings));
+        onClose();
+      }
     } catch (err) {
       console.error("Failed to filter listings:", err);
+      onClose();
     }
   };
 

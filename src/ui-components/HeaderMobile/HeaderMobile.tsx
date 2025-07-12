@@ -5,19 +5,19 @@ import { ReactComponent as Listing } from "../../assets/new-listing.svg";
 import { ReactComponent as Message } from "../../assets/message.svg";
 import { ReactComponent as Profile } from "../../assets/profile-icon.svg";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../redux/hooks";
+import { useAuth } from "../../HOC/AuthProvider";
 
 type HeaderMobProps = {
   className?: string;
 };
 
 export const HeaderMobile = ({ className }: HeaderMobProps) => {
-  const { isPhoneConfirmed } = useAppSelector((state) => state.user);
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
   const handleClick = (path: string) => {
-    if (isPhoneConfirmed) navigate(`/${path}`);
+    if (isAuthenticated) navigate(`/${path}`);
     else {
       navigate(`/unauthorized?action=${path}`);
     }
@@ -51,7 +51,7 @@ export const HeaderMobile = ({ className }: HeaderMobProps) => {
       <NavLink
         onClick={() => handleClick("create_listing")}
         to={
-          isPhoneConfirmed
+          isAuthenticated
             ? "/my_listings"
             : "/unauthorized?action=create_listing"
         }
