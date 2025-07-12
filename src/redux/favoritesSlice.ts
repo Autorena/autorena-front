@@ -13,9 +13,7 @@ const favoritesSlice = createSlice({
   reducers: {
     addToFavorites: (state, action: PayloadAction<CarCardType>) => {
       const item = action.payload;
-      const exists = state.items.find(
-        (favorite) => favorite.listing.id === item.listing.id
-      );
+      const exists = state.items.find((favorite) => favorite.id === item.id);
 
       if (!exists) {
         state.items.push(item);
@@ -23,7 +21,7 @@ const favoritesSlice = createSlice({
     },
     removeFromFavorites: (state, action: PayloadAction<string>) => {
       const itemId = action.payload;
-      state.items = state.items.filter((item) => item.listing.id !== itemId);
+      state.items = state.items.filter((item) => item.id !== itemId);
     },
     clearFavorites: (state) => {
       state.items = [];

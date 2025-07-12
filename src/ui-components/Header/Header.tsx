@@ -22,7 +22,6 @@ import { getLargeSvgPath } from "../../utils/largeSvgPaths";
 import { useAuth } from "../../HOC/AuthProvider";
 
 export const Header = () => {
-  // const user = useAppSelector((state) => state.user);
   const { isAuthenticated, logout } = useAuth();
   const { setModalActive, setModalContent, setCrossSize } =
     useContext(ModalContext);

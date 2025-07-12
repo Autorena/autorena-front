@@ -22,12 +22,12 @@ export const useSortedCars = (
     const filterCars = cars.filter((car) => {
       const { price, car_class } = filters;
 
-      if (!car.listing.carRentListing) return false;
+      if (!car.carRentListing) return false;
 
-      if (price && car.listing.carRentListing.pricePerDay > price) return false;
+      if (price && car.carRentListing.pricePerDay > price) return false;
       if (
         car_class &&
-        car.listing.carRentListing.carContent.carCategory?.toLowerCase() !==
+        car.carRentListing.carContent.carCategory?.toLowerCase() !==
           car_class.toLowerCase()
       )
         return false;

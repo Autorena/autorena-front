@@ -24,7 +24,7 @@ export const FavoritesDesktop = () => {
           ) : (
             <div className={styles.favorites_wrap}>
               {items.map((i) => (
-                <CarCardLarge key={i.listing.id} carData={i} isFavoritePage />
+                <CarCardLarge key={i.id} carData={i} isFavoritePage />
               ))}
             </div>
           )}

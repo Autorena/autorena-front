@@ -64,7 +64,7 @@ export const FavoritesMobile = () => {
   const filterByCategory = (item: CarCardType): boolean => {
     if (activeFilter === "all") return true;
 
-    const listing = item.listing;
+    const listing = item;
 
     switch (activeFilter) {
       case "long_term_rent":
@@ -92,7 +92,7 @@ export const FavoritesMobile = () => {
   const filterBySearch = (item: CarCardType): boolean => {
     if (!searchQuery.trim()) return true;
 
-    const listing = item.listing;
+    const listing = item;
     const carContent =
       listing.carRentListing?.carContent ||
       listing.carSellListing?.carContent ||
@@ -150,14 +150,14 @@ export const FavoritesMobile = () => {
     if (items.length === 0 || !allCars) return [];
 
     const favoriteBrands = items
-      .map((item) => item.listing.carRentListing?.carContent?.brandId)
+      .map((item) => item.carRentListing?.carContent?.brandId)
       .filter(Boolean);
 
-    const favoriteIds = items.map((item) => item.listing.id);
+    const favoriteIds = items.map((item) => item.id);
     const similarCars = allCars.filter(
       (car) =>
-        !favoriteIds.includes(car.listing.id) &&
-        favoriteBrands.includes(car.listing.carRentListing?.carContent?.brandId)
+        !favoriteIds.includes(car.id) &&
+        favoriteBrands.includes(car.carRentListing?.carContent?.brandId)
     );
 
     return similarCars.slice(0, 3);
@@ -245,7 +245,7 @@ export const FavoritesMobile = () => {
               <div className={styles.favorites_empty_results}></div>
             ) : (
               processedItems.map((i) => (
-                <FavoriteCarCard key={i.listing.id} carData={i} />
+                <FavoriteCarCard key={i.id} carData={i} />
               ))
             )}
           </div>
@@ -255,11 +255,7 @@ export const FavoritesMobile = () => {
             <div className={styles.favorites_mobile_wrap}>
               {similarCars.length > 0
                 ? similarCars.map((car) => (
-                    <FavoriteCarCard
-                      key={car.listing.id}
-                      carData={car}
-                      isSimilar
-                    />
+                    <FavoriteCarCard key={car.id} carData={car} isSimilar />
                   ))
                 : null}
             </div>

@@ -31,31 +31,25 @@ export const CarCardLarge = ({
   const { pathname } = useLocation();
   const dispatch = useAppDispatch();
 
-  if (!carData.listing.carRentListing) {
+  if (!carData.carRentListing) {
     return null;
   }
 
   const {
-    listing: {
-      id,
-      carRentListing: {
-        carContent: {
-          photosUrl,
-          createdAt,
-          brandId,
-          modelId,
-          yearOfCarProduction,
-        },
-        pricePerDay,
-        city,
-        additionalInfo,
-      },
+    id,
+    carRentListing: {
+      carContent: { createdAt, brandId, modelId, yearOfCarProduction },
+      pricePerDay,
+      city,
+      additionalInfo,
     },
   } = carData;
 
+  const photos = ["car.svg", "car.svg", "car.svg"];
+
   const carTitle = `Аренда ${brandId} ${modelId} ${yearOfCarProduction}`;
 
-  const isFavorite = favorites.some((item) => item.listing.id === id);
+  const isFavorite = favorites.some((item) => item.id === id);
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -93,10 +87,17 @@ export const CarCardLarge = ({
       }`}
     >
       <div className={styles.imgWrap}>
-        <img src={photosUrl[0]} alt="Car photo" />
+        <img
+          src="car.svg"
+          // src={photosUrl[0]}
+          alt="Car photo"
+        />
       </div>
       <div className={styles.gallery}>
-        {photosUrl.map((photo: string, index: number) => (
+        {/* {photosUrl.map((photo: string, index: number) => (
+          <img key={index} src={photo} alt="Car photo" />
+        ))} */}
+        {photos.map((photo: string, index: number) => (
           <img key={index} src={photo} alt="Car photo" />
         ))}
       </div>

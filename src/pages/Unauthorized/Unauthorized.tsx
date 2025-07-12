@@ -44,7 +44,6 @@ export const Unauthorized = () => {
   // const from = searchParams.get("from") || "/";
   const [isAuthSheetOpen, setAuthSheetOpen] = useState(false);
   const config = actionConfigs[action] || actionConfigs.default;
-  // const { setModalActive, setModalContent } = useContext(ModalContext);
 
   return (
     <>

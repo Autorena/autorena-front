@@ -18,14 +18,14 @@ export const FavoriteCarCard = ({
   isSimilar,
 }: FavoriteCarCardProps) => {
   const dispatch = useDispatch();
-  const carContent = carData.listing.carRentListing?.carContent;
+  const carContent = carData.carRentListing?.carContent;
 
   if (!carContent) return null;
 
-  const { photosUrl, brandId, modelId } = carContent;
+  const { brandId, modelId } = carContent;
 
   return (
-    <Link to={`/${carData.listing.id}`} className={styles.favorites_carCard}>
+    <Link to={`/${carData.id}`} className={styles.favorites_carCard}>
       <button
         className={`${styles.favorites_carCard_like} ${
           !isSimilar ? styles.full : ""
@@ -34,7 +34,7 @@ export const FavoriteCarCard = ({
           e.preventDefault();
           e.stopPropagation();
 
-          if (!isSimilar) dispatch(removeFromFavorites(carData.listing.id));
+          if (!isSimilar) dispatch(removeFromFavorites(carData.id));
           else dispatch(addToFavorites(carData));
         }}
       >
@@ -42,7 +42,11 @@ export const FavoriteCarCard = ({
       </button>
       <div className={styles.favorites_carCard_img}>
         {" "}
-        <img src={photosUrl[0]} alt="Car photo" />
+        <img
+          src="car.svg"
+          // src={photosUrl[0]}
+          alt="Car photo"
+        />
       </div>
 
       <div className={styles.favorites_carCard_right}>
@@ -50,13 +54,11 @@ export const FavoriteCarCard = ({
           className={styles.favorites_carCard_title}
         >{`Аренда ${brandId} ${modelId}`}</p>
         <p className={styles.favorites_carCard_price}>
-          {carData.listing.carRentListing?.pricePerDay}₽ за день
+          {carData.carRentListing?.pricePerDay}₽ за день
         </p>
+        <p className={styles.small_text}>г. {carData.carRentListing?.city}</p>
         <p className={styles.small_text}>
-          г. {carData.listing.carRentListing?.city}
-        </p>
-        <p className={styles.small_text}>
-          {timeAgo(carData.listing.carRentListing?.createdAt ?? "")}
+          {timeAgo(carData.carRentListing?.createdAt ?? "")}
         </p>
       </div>
     </Link>
