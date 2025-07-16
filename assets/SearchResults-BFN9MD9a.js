@@ -1,0 +1,1 @@
+import{b as t,j as e,h as r}from"./index-D1oyuubM.js";const i=()=>{const{searchValue:s}=t();return e.jsx("div",{className:"container",children:e.jsx("div",{style:{height:"500px"},children:s?e.jsxs("p",{style:{fontSize:"15px",fontWeight:"300",opacity:"0.7"},children:["Результаты поиска: ",s]}):e.jsx(r,{})})})};export{i as SearchResults};
