@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import styles from "./FilterMenu.module.scss";
 import { useAppDispatch } from "../../redux/hooks";
-import { setFilteredCars } from "../../redux/listingsSlice";
+import { setFilteredCars, setFilterError } from "../../redux/listingsSlice";
 import { useLazyFilterListingsQuery } from "../../redux/listingsApi";
 import {
   carBodyTypeOptions,
@@ -189,11 +189,19 @@ export const FilterMenuCarSell = ({
         page_size: 20,
       },
     };
-    console.log(filterObject);
+
     try {
       const result = await trigger(filterObject);
 
       if (result.error) {
+        const errorMessage =
+          "status" in result.error && result.error.status === 404
+            ? "Объявлений не найдено"
+            : "Ошибка загрузки данных";
+
+        dispatch(setFilterError(errorMessage));
+        dispatch(setFilteredCars([]));
+
         if ("status" in result.error && result.error.status === 404) {
           onClose();
         }

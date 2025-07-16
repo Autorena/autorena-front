@@ -25,7 +25,6 @@ import { useFilterListingsQuery } from "../../redux/listingsApi";
 export const FilterPage = () => {
   const { filter } = useParams<{ filter?: string }>();
   const { location } = useContext(LocationContext);
-  console.log(filter);
   const dispatch = useAppDispatch();
   const filteredListings = useAppSelector(
     (state) => state.listings.filteredListings
@@ -33,6 +32,7 @@ export const FilterPage = () => {
   const isFilterApplied = useAppSelector(
     (state) => state.listings.isFilterApplied
   );
+  const filterError = useAppSelector((state) => state.listings.filterError);
 
   const getFilterType = () => {
     switch (filter?.toUpperCase()) {
@@ -48,21 +48,19 @@ export const FilterPage = () => {
     }
   };
 
-  const {
-    data: serverData,
-    isLoading: serverLoading,
-    error: serverError,
-  } = useFilterListingsQuery({
-    filter: {
-      [getFilterType()]: {
-        city: location,
+  const { data: serverData, isLoading: serverLoading } = useFilterListingsQuery(
+    {
+      filter: {
+        [getFilterType()]: {
+          city: location,
+        },
       },
-    },
-    pagination: {
-      page: 1,
-      page_size: 100,
-    },
-  });
+      pagination: {
+        page: 1,
+        page_size: 100,
+      },
+    }
+  );
 
   const serverListings = serverData?.listings || [];
 
@@ -101,19 +99,13 @@ export const FilterPage = () => {
 
   const ITEMS_PER_PAGE = 20;
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(sortedData.length / ITEMS_PER_PAGE);
 
   const visibleData = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     return sortedData.slice(start, start + ITEMS_PER_PAGE);
   }, [sortedData, currentPage]);
 
-  const handleLoadMore = useCallback(() => {
-    if (currentPage < totalPages) {
-      setCurrentPage((prev) => prev + 1);
-    }
-  }, [currentPage, totalPages]);
-
+  console.log(filteredListings.length === 0);
   const renderFilter = () => {
     switch (filter) {
       case "RENT_AUTO":
@@ -198,44 +190,19 @@ export const FilterPage = () => {
             {renderFilter()}
           </div>
           <div className={styles.home_recommends}>
-            {serverError && (
-              <div className={styles.empty}>
-                {"status" in serverError && serverError.status === 404 ? (
-                  "Объявлений не найдено"
-                ) : (
-                  <>
-                    Ошибка загрузки данных:{" "}
-                    {"message" in serverError
-                      ? serverError.message
-                      : "Неизвестная ошибка"}
-                  </>
-                )}
-              </div>
-            )}
-            {!serverLoading && !serverError && displayData.length === 0 && (
-              <div className={styles.empty}>Объявлений не найдено</div>
-            )}
             <div className={styles.home_recommends_grid}>
-              {visibleData.map(
-                (item: CarCardType) => (
-                  // item.listing.size === "large" ? (
-                  //   <CarCardLarge key={item.listing.id} carData={item} />
-                  // ) : (
+              {filterError ? (
+                <div className={styles.empty}>{filterError}</div>
+              ) : displayData.length === 0 ? (
+                <div className={styles.empty}>Объявлений нет</div>
+              ) : (
+                visibleData.map((item: CarCardType) => (
                   <CarCard key={item.id} carData={item} />
-                )
-                // )
+                ))
               )}
               {serverLoading && <Loader className={styles.load} />}
             </div>
-            {currentPage < totalPages && (
-              <button
-                className={`${styles.loadMore} red-btn`}
-                onClick={handleLoadMore}
-              >
-                Показать еще
-              </button>
-            )}
-            <div className={styles.home_ads}>
+            <div className={styles.home_right} style={{ gap: "24px" }}>
               <div className={styles.home_ad}>
                 <p>Здесь будет реклама</p>
               </div>

@@ -1,8 +1,6 @@
 import styles from "./Home.module.scss";
-import option2 from "../../assets/option_2.png";
 import { LargeSvgImage } from "../../components/LargeSvgImage";
 import { getLargeSvgPath } from "../../utils/largeSvgPaths";
-import { Stories } from "../../ui-components/Stories/Stories";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { LocationContext } from "../../HOC/LocationProvider";
 import { ModalContext } from "../../HOC/ModalProvider";
@@ -10,7 +8,7 @@ import { LocationModal } from "../../components/modals/LocationModal";
 import { CarCard } from "../../ui-components/CarCard/CarCard";
 import { Loader } from "../../ui-components/Loader/Loader";
 import { HeaderMobile } from "../../ui-components/HeaderMobile/HeaderMobile";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { HomeSlider } from "./HomeSlider";
 import { CookieNotific } from "./CookieNotific";
 import { declineCity } from "../../utils/declineCity";
@@ -20,6 +18,7 @@ import { sortOptions } from "../../constants/sortOptions";
 import { useAppDispatch } from "../../redux/hooks";
 import { setCars } from "../../redux/carsSlice";
 import { CarCardType } from "../../types";
+import { useSearch } from "../../HOC/SearchContext";
 
 type ActiveFilter = {
   type: "price" | "carCategory" | "listingType" | null;
@@ -33,6 +32,7 @@ export const Home = () => {
     filter: { car_rent_listing: { city: location } },
     pagination: { page: 1, page_size: 20 },
   });
+  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>({
     type: null,
     value: null,
@@ -40,6 +40,15 @@ export const Home = () => {
   const [sortOption, setSortOption] = useState<string>("default");
   const listings = data?.listings || [];
   const dispatch = useAppDispatch();
+  const { setSearchValue } = useSearch();
+
+  const searchRequests = [
+    "Аренда бизнес автомобиля для такси",
+    "Выкуп лада приора",
+    "Снять автомобиль на сутки в Казани",
+    "Аренда автомобиля с возможностью выкупа",
+    "Работа водителем Екатеринбург",
+  ];
 
   const filterCars = (
     type: "price" | "carCategory" | "listingType",
@@ -92,113 +101,18 @@ export const Home = () => {
       <div className={styles.home}>
         <div className={styles.home_main}>
           <HomeSlider />
+
+          <Link to="/filter/WANTED_RENT" className={styles.home_banner}></Link>
+
           <div className={styles.home_options}>
-            <div className={styles.home_optionsWrap}>
-              <div className={styles.top_row}>
-                <Link
-                  to="/filter/RENT_AUTO"
-                  className={`${styles.home_option} ${styles.big}`}
-                >
-                  <h3 className={styles.title}>
-                    Долгосрочная
-                    <br /> аренда
-                  </h3>
-                  <LargeSvgImage
-                    src={getLargeSvgPath("filter_1")}
-                    alt="Долгосрочная аренда"
-                  />
-                </Link>
-                <Link
-                  to="/filter/DAILY_RENT"
-                  className={`${styles.home_option} ${styles.home_optionHide}`}
-                >
-                  {" "}
-                  <h3 className={styles.title}>
-                    Аренда от
-                    <br /> суток
-                  </h3>
-                  <img src={option2} alt="" className={styles.option_img} />
-                </Link>
-                <Link to="/filter/AUTO_SERVICES" className={styles.home_option}>
-                  {" "}
-                  <h3 className={styles.title}>Автосервисы</h3>
-                  <LargeSvgImage
-                    src={getLargeSvgPath("filter_3")}
-                    alt="Тип кузова"
-                  />
-                </Link>
-                <a
-                  href="#"
-                  className={`${styles.home_option} ${styles.mobile}`}
-                >
-                  {" "}
-                  <h3 className={styles.title}>Помощь на дороге</h3>
-                  <LargeSvgImage
-                    src={getLargeSvgPath("option_6")}
-                    alt="Помощь на дороге"
-                  />
-                </a>
-              </div>
-              <div className={styles.bottom_row}>
-                <Link
-                  to="/filter/DAILY_RENT"
-                  className={`${styles.home_option} ${styles.home_optionVisible}`}
-                >
-                  {" "}
-                  <h3 className={styles.title}>
-                    Аренда от
-                    <br /> суток
-                  </h3>
-                  <img src={option2} alt="" className={styles.option_img} />
-                </Link>
-                <Link
-                  to="/filter/BUY_AUTO"
-                  className={`${styles.home_option} ${styles.big}`}
-                >
-                  {" "}
-                  <h3 className={styles.title}>
-                    Выкуп <br />
-                    автомобилей
-                  </h3>
-                  <LargeSvgImage
-                    src={getLargeSvgPath("filter_4")}
-                    alt="Выкуп автомобилей"
-                  />
-                </Link>
-                <Link
-                  to="/filter/DRIVER_JOBS"
-                  className={`${styles.home_option} ${styles.big} ${styles.resize}`}
-                >
-                  {" "}
-                  <h3 className={styles.title}>
-                    Работа
-                    <br /> водителям
-                  </h3>
-                  <LargeSvgImage
-                    src={getLargeSvgPath("filter_5")}
-                    alt="Работа водителям"
-                  />
-                </Link>
-              </div>
-            </div>
-            <a
-              href="#"
-              className={`${styles.home_option} ${styles.full_height}`}
-            >
-              {" "}
-              <h3 className={styles.title}>Помощь на дороге</h3>
-              <LargeSvgImage
-                src={getLargeSvgPath("option_6")}
-                alt="Помощь на дороге"
-              />
-            </a>
-          </div>
-          <div className={styles.home_options_mob}>
             <Link
               to="/filter/RENT_AUTO"
-              className={styles.home_options_mob_item}
+              className={`${styles.home_options_item} ${styles.rent}`}
             >
-              <h4>Долгосрочная аренда</h4>
+              <h4>
+                Долгосрочная
+                <br /> аренда
+              </h4>
               <LargeSvgImage
                 src={getLargeSvgPath("long-term-lease")}
                 alt="Долгосрочная аренда"
@@ -206,9 +120,12 @@ export const Home = () => {
             </Link>
             <Link
               to="/filter/DAILY_RENT"
-              className={styles.home_options_mob_item}
+              className={`${styles.home_options_item} ${styles.daily}`}
             >
-              <h4>Посуточная аренда</h4>
+              <h4>
+                Посуточная
+                <br /> аренда
+              </h4>
               <LargeSvgImage
                 src={getLargeSvgPath("daily-rent")}
                 alt="Посуточная аренда"
@@ -216,9 +133,12 @@ export const Home = () => {
             </Link>
             <Link
               to="/filter/BUY_AUTO"
-              className={styles.home_options_mob_item}
+              className={`${styles.home_options_item} ${styles.buyout}`}
             >
-              <h4>Выкуп автомобилей</h4>
+              <h4>
+                Выкуп
+                <br /> автомобилей
+              </h4>
               <LargeSvgImage
                 src={getLargeSvgPath("buyout")}
                 alt="Выкуп автомобилей"
@@ -226,9 +146,12 @@ export const Home = () => {
             </Link>
             <Link
               to="/filter/DRIVER_JOBS"
-              className={styles.home_options_mob_item}
+              className={`${styles.home_options_item} ${styles.driver_job}`}
             >
-              <h4>Работа водителям</h4>
+              <h4>
+                Работа
+                <br /> водителям
+              </h4>
               <LargeSvgImage
                 src={getLargeSvgPath("driver-work")}
                 alt="Работа водителям"
@@ -236,9 +159,12 @@ export const Home = () => {
             </Link>
             <Link
               to="/filter/WANTED_RENT"
-              className={styles.home_options_mob_item}
+              className={`${styles.home_options_item} ${styles.wanted_rent}`}
             >
-              <h4>Поиск арендатора</h4>
+              <h4>
+                Поиск
+                <br /> арендатора
+              </h4>
               <LargeSvgImage
                 src={getLargeSvgPath("search")}
                 alt="Поиск арендатора"
@@ -246,7 +172,7 @@ export const Home = () => {
             </Link>
             <Link
               to="/filter/AUTO_SERVICES"
-              className={styles.home_options_mob_item}
+              className={`${styles.home_options_item} ${styles.autoservices}`}
             >
               <h4>Автосервисы</h4>
               <LargeSvgImage
@@ -254,8 +180,14 @@ export const Home = () => {
                 alt="Автосервисы"
               />
             </Link>
-            <Link to="/" className={styles.home_options_mob_item}>
-              <h4>Помощь на дороге</h4>
+            <Link
+              to="/"
+              className={`${styles.home_options_item} ${styles.help}`}
+            >
+              <h4>
+                Помощь на
+                <br /> дороге
+              </h4>
               <LargeSvgImage src={getLargeSvgPath("help")} alt="Залог" />
             </Link>
           </div>
@@ -266,12 +198,9 @@ export const Home = () => {
               </h4>
               <LargeSvgImage src={getLargeSvgPath("bail")} alt="Залог" />
             </div>
-            <Stories />
           </div>
           <div className={styles.home_info}>
-            <h2>
-              Посмотрите объявления в <span>{declineCity(location)}</span>
-            </h2>
+            <h2>Посмотрите объявления в {declineCity(location)}</h2>
             <div className={styles.home_info_points}>
               <button
                 className={`${styles.home_filter} ${styles.large}`}
@@ -390,10 +319,40 @@ export const Home = () => {
             </div>
           </div>
         </div>
-        <div className={styles.home_ads}>
-          <div className={styles.home_ad}>
-            <p>Здесь будет реклама</p>
+        <div className={styles.home_right}>
+          <div className={styles.home_right_top}>
+            <h3>Популярные запросы сегодня:</h3>
+            <div className={styles.home_right_requests}>
+              {searchRequests.map((r) => (
+                <button
+                  className={styles.home_right_request}
+                  onClick={() => {
+                    setSearchValue(r);
+                    navigate("/search-results");
+                  }}
+                >
+                  {r}
+                </button>
+              ))}
+            </div>
+            <p className={styles.home_right_autorena}>
+              Авторена. Мы используем
+              <br />
+              <a href="#">рекомендательные технологии.</a>
+            </p>
+            <ul>
+              <li>
+                <a href="#">Правила сайта</a>
+              </li>
+              <li>
+                <a href="#">Политика конфиденциальности</a>
+              </li>
+              <li>
+                <a href="#">Сотрудничество</a>
+              </li>
+            </ul>
           </div>
+
           <div className={styles.home_ad}>
             <p>Здесь будет реклама</p>
           </div>

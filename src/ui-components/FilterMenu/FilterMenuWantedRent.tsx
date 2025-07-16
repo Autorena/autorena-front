@@ -10,7 +10,7 @@ import { ReactComponent as Cross } from "../../assets/cross.svg";
 import { ReactComponent as Arrow } from "../../assets/swiper-arrow.svg";
 import { useLazyFilterListingsQuery } from "../../redux/listingsApi";
 import { useAppDispatch } from "../../redux/hooks";
-import { setFilteredCars } from "../../redux/listingsSlice";
+import { setFilteredCars, setFilterError } from "../../redux/listingsSlice";
 import { useContext, useState } from "react";
 import { LocationContext } from "../../HOC/LocationProvider";
 import { ModalContext } from "../../HOC/ModalProvider";
@@ -124,14 +124,30 @@ export const FilterMenuWantedRent = ({
     };
 
     try {
-      const result = await triggerFilter(filterObject).unwrap();
+      const result = await triggerFilter(filterObject);
+
+      if (result.error) {
+        const errorMessage =
+          "status" in result.error && result.error.status === 404
+            ? "Объявлений не найдено"
+            : "Ошибка загрузки данных";
+
+        dispatch(setFilterError(errorMessage));
+        dispatch(setFilteredCars([]));
+
+        if ("status" in result.error && result.error.status === 404) {
+          onClose();
+        }
+        return;
+      }
 
       if (result.data) {
         dispatch(setFilteredCars(result.data.listings));
+        dispatch(setFilterError(null));
         onClose();
       }
     } catch (err) {
-      console.error("Failed to filter listings:", err);
+      console.error("FilterMenuWantedRent - error:", err);
       onClose();
     }
   };

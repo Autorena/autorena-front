@@ -11,7 +11,7 @@ import { ReactComponent as Cross } from "../../assets/cross.svg";
 import { ReactComponent as Arrow } from "../../assets/swiper-arrow.svg";
 import { useLazyFilterListingsQuery } from "../../redux/listingsApi";
 import { useAppDispatch } from "../../redux/hooks";
-import { setFilteredCars } from "../../redux/listingsSlice";
+import { setFilteredCars, setFilterError } from "../../redux/listingsSlice";
 import { useFilter } from "../../HOC/FilterContext";
 import { useContext, useEffect, useState } from "react";
 import { FILTER_KEYS } from "../../constants/filterKeys";
@@ -209,10 +209,16 @@ export const FilterMenuRent = ({ isOpen, onClose }: FilterMenuRentProps) => {
 
     try {
       const result = await trigger(filterObject);
-      console.log("Filter results:", result);
 
       if (result.error) {
-        console.error("Filter error:", result.error);
+        const errorMessage =
+          "status" in result.error && result.error.status === 404
+            ? "Объявлений не найдено"
+            : "Ошибка загрузки данных";
+
+        dispatch(setFilterError(errorMessage));
+        dispatch(setFilteredCars([]));
+
         if ("status" in result.error && result.error.status === 404) {
           onClose();
         }

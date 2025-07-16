@@ -24,7 +24,7 @@ import { BottomSheet } from "../../ui-components/BottomSheet/BottomSheet";
 import { BottomSheetCheckboxFilter } from "../../ui-components/BottomSheet/BottomSheetCheckboxFilter";
 import { useLazyFilterListingsQuery } from "../../redux/listingsApi";
 import { useAppDispatch } from "../../redux/hooks";
-import { setFilteredCars } from "../../redux/listingsSlice";
+import { setFilteredCars, setFilterError } from "../../redux/listingsSlice";
 
 const FILTER_KEYS = {
   BRAND: "rent_brand",
@@ -50,7 +50,7 @@ export const DailyRentFilter = ({
     null,
   ]);
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-  const { setValue } = useForm();
+  const { setValue, handleSubmit } = useForm();
   const { data: brandsData } = useGetBrandsQuery("");
   const [isPriceSheetOpen, setIsPriceSheetOpen] = useState(false);
   const priceRange = getFilterValue(FILTER_KEYS.PRICE_RANGE) as
@@ -98,7 +98,8 @@ export const DailyRentFilter = ({
     setIsBrandModalOpen(false);
   };
 
-  const handleApplyFilters = async () => {
+  const onSubmit = async () => {
+    console.log("форма отправлена");
     const brand = getFilterValue<string>(FILTER_KEYS.BRAND);
     const carBodyType = getFilterValue<string[]>(FILTER_KEYS.CAR_BODY_TYPE);
     const priceRange = getFilterValue<[number | null, number | null]>(
@@ -126,19 +127,23 @@ export const DailyRentFilter = ({
 
     try {
       const result = await trigger(filterObject);
-
+      console.log(result);
       if (result.error) {
-        if ("status" in result.error && result.error.status === 404) {
-          setIsFiltersOpen(false);
-        }
+        const errorMessage =
+          "status" in result.error && result.error.status === 404
+            ? "Объявлений не найдено"
+            : "Ошибка загрузки данных";
+
+        dispatch(setFilterError(errorMessage));
         return;
       }
 
       if (result.data) {
         dispatch(setFilteredCars(result.data.listings));
+        dispatch(setFilterError(null));
       }
     } catch (err) {
-      console.log(err);
+      console.log("err", err);
       setIsFiltersOpen(false);
     }
   };
@@ -198,7 +203,7 @@ export const DailyRentFilter = ({
   };
 
   return (
-    <>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <img src={banner} alt="" className={styles.home_info_banner} />
       <div className={styles.filtersPanel}>
         <div className={styles.home_info_points_top}>
@@ -255,6 +260,7 @@ export const DailyRentFilter = ({
             isFilterActive(FILTER_KEYS.BRAND) ? styles.active : ""
           }`}
           onClick={() => setIsBrandModalOpen(true)}
+          type="button"
         >
           <Search />
           {selectedBrand || "Марка авто"}
@@ -283,6 +289,7 @@ export const DailyRentFilter = ({
           className={`${styles.home_filter} ${styles.count} ${
             getCurrentCategoryActiveFiltersCount() > 0 ? styles.active : ""
           }`}
+          type="button"
         >
           <Filters />
           {getCurrentCategoryActiveFiltersCount() > 0 && (
@@ -310,7 +317,7 @@ export const DailyRentFilter = ({
           </button>
         </div>
 
-        <button className={styles.applyBtn} onClick={handleApplyFilters}>
+        <button className={styles.applyBtn} type="submit">
           Применить фильтры
         </button>
       </div>
@@ -326,6 +333,7 @@ export const DailyRentFilter = ({
         <button
           className={`${styles.home_filter} ${styles.filterBtn}`}
           onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+          type="button"
         >
           <Filters />
           Фильтры
@@ -375,6 +383,6 @@ export const DailyRentFilter = ({
           onSubmit={() => setIsCarBodySheetOpen(false)}
         />
       </BottomSheet>
-    </>
+    </form>
   );
 };

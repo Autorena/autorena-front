@@ -116,6 +116,11 @@
       font-weight: 600;
     }
   }
+  .ads {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
 }
 
 .favorites_carCard {

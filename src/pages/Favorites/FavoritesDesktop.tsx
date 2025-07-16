@@ -29,7 +29,7 @@ export const FavoritesDesktop = () => {
             </div>
           )}
         </div>
-        <div className={homeStyles.home_ads}>
+        <div className={styles.ads}>
           <div className={homeStyles.home_ad}>
             <p>Здесь будет реклама</p>
           </div>

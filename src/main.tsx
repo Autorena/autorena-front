@@ -7,6 +7,7 @@ import { LocationProvider } from "./HOC/LocationProvider.tsx";
 import { store } from "./redux/store.ts";
 import { Provider } from "react-redux";
 import { AuthProvider } from "./HOC/AuthProvider.tsx";
+import { SearchProvider } from "./HOC/SearchContext";
 
 createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
@@ -14,7 +15,9 @@ createRoot(document.getElementById("root")!).render(
       <AuthProvider>
         <LocationProvider>
           <ModalProvider>
-            <App />
+            <SearchProvider>
+              <App />
+            </SearchProvider>
           </ModalProvider>
         </LocationProvider>
       </AuthProvider>

@@ -4,7 +4,8 @@ import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import { useNavigate } from "react-router-dom";
-import slide1 from "../../assets/home-slider.png";
+import slide1desk from "../../assets/banner-desk-1.svg?url";
+import slide1 from "../../assets/home-slide-1.png";
 import slide2 from "../../assets/home-slide-2.png";
 import slide3 from "../../assets/home-slider-3.png";
 
@@ -19,13 +20,16 @@ export const HomeSlider = () => {
         spaceBetween={20}
       >
         {" "}
+        <SwiperSlide className={styles.home_slide}>
+          <picture>
+            <source srcSet={slide1desk} media="(min-width: 769px)" />
+            <img src={slide1} alt="" />
+          </picture>
+        </SwiperSlide>{" "}
         <SwiperSlide
           className={styles.home_slide}
           onClick={() => navigate("/filter/RENT_AUTO")}
         >
-          <img src={slide1} alt="" />
-        </SwiperSlide>{" "}
-        <SwiperSlide className={styles.home_slide}>
           <img src={slide2} alt="" />
         </SwiperSlide>
         <SwiperSlide className={styles.home_slide}>

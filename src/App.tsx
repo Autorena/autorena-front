@@ -76,6 +76,11 @@ const Messages = lazy(() =>
     default: module.Messages,
   }))
 );
+const SearchResults = lazy(() =>
+  import("./pages/SearchResults/SearchResults").then((module) => ({
+    default: module.SearchResults,
+  }))
+);
 
 export const App = () => {
   if ("scrollRestoration" in window.history) {
@@ -104,6 +109,7 @@ export const App = () => {
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/messages" element={<Messages />} />
+              <Route path="/search-results" element={<SearchResults />} />
             </Route>
           </Routes>
         </Suspense>

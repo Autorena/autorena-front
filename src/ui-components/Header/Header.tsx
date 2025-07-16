@@ -20,6 +20,7 @@ import { SearchModal } from "../../components/modals/SearchModal/SearchModal";
 import { LargeSvgImage } from "../../components/LargeSvgImage";
 import { getLargeSvgPath } from "../../utils/largeSvgPaths";
 import { useAuth } from "../../HOC/AuthProvider";
+import { useSearch } from "../../HOC/SearchContext";
 
 export const Header = () => {
   const { isAuthenticated, logout } = useAuth();
@@ -33,6 +34,7 @@ export const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   let closeTimeout: number;
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const { searchValue, setSearchValue, inputRef } = useSearch();
 
   const hiddenOnMobile = [
     "/messages",
@@ -238,7 +240,6 @@ export const Header = () => {
               }}
             >
               {" "}
-              {/* <Logo /> */}
               <LargeSvgImage src={getLargeSvgPath("logo-1")} />
             </Link>
 
@@ -253,7 +254,10 @@ export const Header = () => {
                 }`}
               >
                 <input
+                  ref={inputRef}
                   type="text"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
                   placeholder={`Поиск в ${declineCity(location)}`}
                 />
                 <button className={`red-btn ${styles.searchBtn}`}>Найти</button>
@@ -265,7 +269,6 @@ export const Header = () => {
                   onClick={() => setIsSearchModalOpen(true)}
                 >
                   <img src="assets/input-search.svg" alt="" />
-                  {/* <Search /> */}
                 </button>
 
                 {/* <button
@@ -306,7 +309,6 @@ export const Header = () => {
                 src={getLargeSvgPath("location-icon")}
                 alt="Локация"
               />
-              {/* <Location /> */}
               г. {location}
             </button>
           </div>

@@ -11,7 +11,7 @@ import { ReactComponent as Cross } from "../../assets/cross.svg";
 import { ReactComponent as Arrow } from "../../assets/swiper-arrow.svg";
 import { useLazyFilterListingsQuery } from "../../redux/listingsApi";
 import { useAppDispatch } from "../../redux/hooks";
-import { setFilteredCars } from "../../redux/listingsSlice";
+import { setFilteredCars, setFilterError } from "../../redux/listingsSlice";
 import { useFilter } from "../../HOC/FilterContext";
 import { useContext, useEffect, useState } from "react";
 import { ModalContext } from "../../HOC/ModalProvider";
@@ -226,12 +226,19 @@ export const FilterMenuDaily = ({ isOpen, onClose }: FilterMenuRentProps) => {
         page_size: 20,
       },
     };
-    console.log(filterObject);
 
     try {
       const result = await trigger(filterObject);
 
       if (result.error) {
+        const errorMessage =
+          "status" in result.error && result.error.status === 404
+            ? "Объявлений не найдено"
+            : "Ошибка загрузки данных";
+
+        dispatch(setFilterError(errorMessage));
+        dispatch(setFilteredCars([]));
+
         if ("status" in result.error && result.error.status === 404) {
           onClose();
         }
