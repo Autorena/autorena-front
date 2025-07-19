@@ -15,9 +15,11 @@ spec:
       labels:
         app: autorena-front
     spec:
+      imagePullSecrets:
+        - name: gitlab-registry-auth
       containers:
         - name: autorena-front
-          image: localhost:5000/autorena-front:0.0.2
+          image: registry.autorena.ru/autorena/autorena-front/autorena-front:0.0.2
           imagePullPolicy: Always
           ports:
             - containerPort: 80

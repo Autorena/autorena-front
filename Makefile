@@ -1,5 +1,5 @@
 IMAGE_TAG = 0.0.2
-REGISTRY = localhost:5000
+REGISTRY = registry.autorena.ru/autorena/autorena-front
 IMAGE_NAME = autorena-front
 DEPLOYMENT_NAME = autorena-front
 NAMESPACE = autorena
@@ -10,7 +10,10 @@ help: ## Показать это сообщение
 
 .PHONY: build_image
 build_image: ## Собрать docker-образ фронта и отправить в реестр
-	docker build --tag $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG) .
+	docker build \
+		--tag $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG) \
+		--platform=linux/amd64 \
+		.
 	docker push $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG)
 
 .PHONY: redeploy
