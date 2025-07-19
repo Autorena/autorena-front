@@ -14,7 +14,9 @@ build_image: ## Собрать docker-образ фронта и отправи�
 		--tag $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG) \
 		--platform=linux/amd64 \
 		.
+	echo "Image built: $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG)"
 	docker push $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG)
+	echo "Image pushed: $(REGISTRY)/$(IMAGE_NAME):$(IMAGE_TAG)"
 
 .PHONY: redeploy
 redeploy: build_image ## Пересобрать образ и перезапустить деплоймент в k8s
